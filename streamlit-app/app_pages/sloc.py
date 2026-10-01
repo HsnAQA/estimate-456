@@ -8,7 +8,11 @@ from ui_data import load_sloc_example, money, number, result_table, show_errors
 
 st.subheader("Section 4.1 Source Lines of Code", anchor=False)
 st.caption("Estimate effort and cost from code size with the same values and formulas as the lecture example.")
-st.code("Effort = LOC / Productivity. Cost = Effort x Labor rate.", language=None)
+st.code(
+    "Way 1: Effort = LOC / Productivity. Cost = Effort x Labor rate.\n"
+    "Way 2: Cost per LOC = Labor rate / Productivity. Cost = LOC x Cost per LOC. Effort = Cost / Labor rate.",
+    language=None,
+)
 st.button("Load lecture example", icon=":material/science:", on_click=load_sloc_example, key="sloc_load_example")
 
 inputs, results = st.columns(2)
@@ -40,9 +44,17 @@ with results.container(border=True):
             ("Cost per LOC", money(sloc.cost_per_loc)),
             ("Exact total cost", money(sloc.total_cost)),
         ])
-        st.caption("Rounded as in the lecture")
+        st.caption("Way 1 rounded as in the lecture")
         result_table([
             ("Rounded effort", f"{number(sloc.rounded_effort, 0)} person-months"),
             ("Team duration", f"{number(sloc.rounded_duration)} months"),
             ("Total cost", money(sloc.rounded_total_cost)),
         ])
+        st.caption("Way 2: cost per LOC first")
+        way2 = [
+            ("Cost per LOC", f"{money(sloc.cost_per_loc)} (lecture rounds to {money(sloc.rounded_cost_per_loc)})"),
+            ("Total cost = LOC x Cost per LOC", f"{money(sloc.way2_cost)} (lecture: {money(sloc.rounded_way2_cost)})"),
+        ]
+        if labor_rate > 0:
+            way2.append(("Effort = Cost / Labor rate", f"{number(sloc.way2_cost / labor_rate)} person-months"))
+        result_table(way2)

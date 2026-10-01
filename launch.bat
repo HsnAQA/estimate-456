@@ -8,7 +8,7 @@ if /I "%~1"=="streamlit" goto streamlit
 
 cls
 echo ==================================================
-echo          456 Software Estimation Suite
+echo                  Estimate 456
 echo ==================================================
 echo.
 echo   [1] Web application ^(HTML, CSS, JavaScript^)

@@ -17,7 +17,7 @@ const FONT_FILES = [
   "IBMPlexSans-Regular.woff2", "IBMPlexSans-Medium.woff2", "IBMPlexSans-SemiBold.woff2",
   "IBMPlexSansArabic-Regular.woff2", "IBMPlexSansArabic-Medium.woff2", "IBMPlexSansArabic-SemiBold.woff2",
 ];
-const BRAND_FILES = ["estimate-456-mark.svg"];
+const BRAND_FILES = ["estimate-456-mark.svg", "estimate-456-mark-32.png", "estimate-456-mark-180.png"];
 
 const CSP = [
   "default-src 'self'",

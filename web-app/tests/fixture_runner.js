@@ -18,6 +18,7 @@ const CALCULATIONS = {
   fpProductivityPlan: (i) => L.fpProductivityPlan(i.fp, i.productivity, i.developers, i.laborRate),
   defectDensity: (i) => ({ density: L.defectDensity(i.defects, i.fp) }),
   cocomo: (i) => L.cocomo(i.kloc, i.mode, i.multipliers, i.laborRate),
+  advancedCocomo: (i) => L.advancedCocomo(i.kloc, i.mode, i.phases, i.laborRate),
   delphi: (i) => L.delphi(i.maximum, i.minimum, i.threshold),
 };
 

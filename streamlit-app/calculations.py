@@ -191,6 +191,9 @@ class SlocResult:
     rounded_effort: float
     rounded_duration: float
     rounded_total_cost: float
+    way2_cost: float
+    rounded_cost_per_loc: float
+    rounded_way2_cost: float
 
 
 def calculate_sloc(
@@ -202,14 +205,21 @@ def calculate_sloc(
     labor_rate = _number(labor_rate_per_pm, "Labor rate")
     effort = loc / productivity
     rounded_effort = round_half_up(effort)
+    cost_per_loc = labor_rate / productivity
+    # Way 2 in the lecture rounds the cost per LOC to one decimal ($1.29 to $1.3) before
+    # multiplying by the size, which gives $43,160.
+    rounded_cost_per_loc = round_half_up(cost_per_loc, 1)
     return SlocResult(
         effort_person_months=effort,
         duration_months=effort / developers,
         total_cost=effort * labor_rate,
-        cost_per_loc=labor_rate / productivity,
+        cost_per_loc=cost_per_loc,
         rounded_effort=rounded_effort,
         rounded_duration=rounded_effort / developers,
         rounded_total_cost=rounded_effort * labor_rate,
+        way2_cost=loc * cost_per_loc,
+        rounded_cost_per_loc=rounded_cost_per_loc,
+        rounded_way2_cost=loc * rounded_cost_per_loc,
     )
 
 
@@ -372,6 +382,69 @@ def calculate_cocomo(
         effort_adjustment_factor=eaf,
         adjusted_effort_person_months=adjusted,
         total_cost=adjusted * labor_rate,
+    )
+
+
+@dataclass(frozen=True)
+class AdvancedPhase:
+    share_percent: float
+    eaf: float
+    effort_person_months: float
+
+
+@dataclass(frozen=True)
+class AdvancedCocomoResult:
+    c: float
+    k: float
+    initial_effort_person_months: float
+    phases: list[AdvancedPhase]
+    share_total_percent: float
+    weighted_eaf: float
+    total_effort_person_months: float
+    total_cost: float
+
+
+def calculate_advanced_cocomo(
+    kloc: float,
+    mode: str,
+    phases: Iterable[dict[str, object]],
+    labor_rate_per_pm: float = 0,
+) -> AdvancedCocomoResult:
+    """Advanced COCOMO, section 4.3.3.
+
+    The lecture says it uses the intermediate steps and assigns cost drivers to each phase,
+    but prints no phase list, phase split, or phase multipliers. Every phase share and phase
+    EAF is therefore a user input. Each phase is {"share": percent of Ei, "eaf": phase EAF}.
+    """
+    base = calculate_cocomo(kloc, mode, [], labor_rate_per_pm)
+    labor_rate = float(labor_rate_per_pm)
+    phase_list = list(phases or [])
+    if not phase_list:
+        raise ValueError("Add at least one phase.")
+    rows = []
+    for phase in phase_list:
+        share = _number(phase.get("share"), "Phase share", maximum=100)
+        eaf = _number(phase.get("eaf"), "Phase EAF", positive=True)
+        rows.append(AdvancedPhase(share, eaf, base.initial_effort_person_months * (share / 100) * eaf))
+    share_total = 0.0
+    for row in rows:
+        share_total += row.share_percent
+    if abs(share_total - 100) > 1e-9:
+        raise ValueError(f"Phase shares must add up to 100%. They add up to {format_number(share_total)}%.")
+    total = 0.0
+    weighted = 0.0
+    for row in rows:
+        total += row.effort_person_months
+        weighted += (row.share_percent / 100) * row.eaf
+    return AdvancedCocomoResult(
+        c=base.c,
+        k=base.k,
+        initial_effort_person_months=base.initial_effort_person_months,
+        phases=rows,
+        share_total_percent=share_total,
+        weighted_eaf=weighted,
+        total_effort_person_months=total,
+        total_cost=total * labor_rate,
     )
 
 

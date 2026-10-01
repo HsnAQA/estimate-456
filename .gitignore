@@ -21,6 +21,9 @@ CPIT456-FULL-TRANSFER-*/
 RARs/
 *.rar
 *.zip
+*.pdf
+*.docx
+*.pptx
 
 # Local agent handoff and machine-specific working instructions
 CLAUDE.md
@@ -30,5 +33,6 @@ handoff/
 # OS and editor files
 .DS_Store
 Thumbs.db
+*.log
 .vscode/
 .idea/

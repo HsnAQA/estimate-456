@@ -6,7 +6,7 @@ Estimate 456 is a bilingual software project estimation companion for CPIT 456. 
 
 ### Part 1, Chapter 1
 
-- SLOC effort, duration, cost, and cost per line
+- SLOC effort, duration, and cost, both ways shown in the lecture (effort first, or cost per LOC first)
 - Function Point count from five independently weighted measurement parameters
 - F1 to F14 influence factors, Sum Fi, VAF, FP, and LOC conversion
 
@@ -14,10 +14,27 @@ Estimate 456 is a bilingual software project estimation companion for CPIT 456. 
 
 - Function Point planning by hours or productivity
 - Defect density comparison
-- Basic and Intermediate COCOMO
+- COCOMO at all three levels named in the lecture, each for organic, semi-detached, and embedded projects:
+  - Basic: Ei = C x KLOC^K with the Table 8 constants
+  - Intermediate: E = EAF x Ei with 15 cost drivers
+  - Advanced: phase effort = Ei x share x phase EAF, summed over the phases you enter
 - Delphi variance and acceptance
 
-All eleven course tables are included. The app does not invent COCOMO duration equations or Intermediate COCOMO multipliers that are absent from the lecture.
+All eleven course tables are included. The lecture does not print the COCOMO duration equations, an Intermediate multiplier matrix, or Advanced phase values, so the app does not invent them: duration is explained as not calculable, and the missing values are clear user inputs. [`docs/TRACEABILITY.md`](docs/TRACEABILITY.md) maps every formula and constant to its lecture page, its exact and lecture-rounded result, where it appears in both apps, and the test that covers it.
+
+## Repository layout
+
+| Path | Contents |
+|---|---|
+| `web-app/` | HTML, CSS, and JavaScript app, its unit and browser tests, and the packaging script |
+| `streamlit-app/` | Python and Streamlit app and its tests |
+| `shared/fixtures/` | Calculation cases both implementations must pass |
+| `assets/` | Logo, licensed IBM Plex fonts, and icons, with a license ledger in `assets/README.md` |
+| `docs/` | Formula traceability |
+| `design.md` | Visual rules: tokens, type, layout, and accessibility |
+| `launch.bat`, `stop.bat` | Windows launchers |
+
+Course PDFs, lecture documents, backups, local environments, and secrets are not part of the repository.
 
 ## Applications
 
@@ -44,6 +61,7 @@ Web unit and browser checks:
 cd web-app
 node --test "tests/*.test.js"
 node tests/e2e/run-e2e.mjs
+$env:E2E_URL = "https://estimate-456.vercel.app/"; node tests/e2e/run-e2e.mjs
 ```
 
 Python and cross-implementation checks:

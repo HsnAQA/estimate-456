@@ -4,6 +4,8 @@ import math
 import unittest
 
 from calculations import (
+    COCOMO_MODES,
+    calculate_advanced_cocomo,
     calculate_cocomo,
     calculate_delphi,
     calculate_fp_hours_plan,
@@ -80,6 +82,29 @@ class CalculationTests(unittest.TestCase):
             calculate_sloc(100, 0, 1, 800)
         with self.assertRaises(ValueError):
             calculate_delphi(10, 11, 25)
+
+
+class LectureWaysAndLevelsTests(unittest.TestCase):
+    def test_sloc_way2(self) -> None:
+        result = calculate_sloc(33200, 620, 6, 800)
+        self.assertAlmostEqual(result.way2_cost, result.total_cost)
+        self.assertEqual(result.rounded_cost_per_loc, 1.3)
+        self.assertAlmostEqual(result.rounded_way2_cost, 43160)
+
+    def test_advanced_cocomo_each_mode(self) -> None:
+        phases = [{"share": 10, "eaf": 1.2}, {"share": 40, "eaf": 1.0}, {"share": 50, "eaf": 0.9}]
+        for mode, (c, k) in COCOMO_MODES.items():
+            result = calculate_advanced_cocomo(9, mode, phases, 100)
+            ei = c * 9**k
+            self.assertAlmostEqual(result.initial_effort_person_months, ei)
+            self.assertAlmostEqual(result.total_effort_person_months, ei * 0.97)
+            self.assertAlmostEqual(result.weighted_eaf, 0.97)
+
+    def test_advanced_cocomo_validation(self) -> None:
+        with self.assertRaisesRegex(ValueError, "add up to 100%"):
+            calculate_advanced_cocomo(3, "organic", [{"share": 50, "eaf": 1}])
+        with self.assertRaisesRegex(ValueError, "Add at least one phase"):
+            calculate_advanced_cocomo(3, "organic", [])
 
 
 if __name__ == "__main__":

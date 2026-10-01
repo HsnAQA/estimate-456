@@ -4,8 +4,8 @@
 
 | Section | Count | Contents |
 |---|---:|---|
-| `cases` | 19 | Lecture examples and edge cases for SLOC, Function Points, hours per FP, FP productivity, defect density, Basic COCOMO, Intermediate COCOMO, and Delphi |
-| `invalid` | 17 | Invalid inputs and the exact error message both implementations must raise |
+| `cases` | 25 | Lecture examples, independent cases, and edge cases for SLOC (both ways), Function Points, hours per FP, FP productivity, defect density, Basic COCOMO and Intermediate COCOMO in all three modes, Advanced COCOMO in all three modes, and Delphi |
+| `invalid` | 21 | Invalid inputs and the exact error message both implementations must raise |
 | `formatting` | 9 | Display formatting for numbers and money |
 
 Expected values were computed once from the lecture formulas at full double precision, independently of `web-app/logic.js` and `streamlit-app/calculations.py`. The optional `lecture` fields record the rounded values printed in `456-solution-Lect1-2.pdf`. They are display references, not test targets.

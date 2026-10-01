@@ -89,6 +89,18 @@ export async function launch(port = 9451) {
     async key(key, code, keyCode) {
       for (const type of ["keyDown", "keyUp"]) await send("Input.dispatchKeyEvent", { type, key, code, windowsVirtualKeyCode: keyCode });
     },
+    // Saves a PNG of the viewport, or of the whole page when full is true.
+    async screenshot(file, full = false) {
+      const { writeFileSync } = await import("node:fs");
+      const params = { format: "png" };
+      if (full) {
+        const m = await send("Page.getLayoutMetrics");
+        params.captureBeyondViewport = true;
+        params.clip = { x: 0, y: 0, width: m.cssContentSize.width, height: m.cssContentSize.height, scale: 1 };
+      }
+      const r = await send("Page.captureScreenshot", params);
+      writeFileSync(file, Buffer.from(r.data, "base64"));
+    },
     async close() {
       try { await send("Browser.close"); } catch { /* already closed */ }
       proc.kill();

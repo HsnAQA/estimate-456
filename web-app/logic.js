@@ -157,14 +157,21 @@
     laborRate = number(laborRate, "Labor rate");
     const effort = loc / productivity;
     const roundedEffort = roundHalfUp(effort);
+    const costPerLoc = laborRate / productivity;
+    // Way 2 in the lecture rounds the cost per LOC to one decimal ($1.29 to $1.3) before
+    // multiplying by the size, which gives $43,160.
+    const roundedCostPerLoc = roundHalfUp(costPerLoc, 1);
     return {
       effort,
       duration: effort / developers,
       totalCost: effort * laborRate,
-      costPerLoc: laborRate / productivity,
+      costPerLoc,
       roundedEffort,
       roundedDuration: roundedEffort / developers,
       roundedTotalCost: roundedEffort * laborRate,
+      way2Cost: loc * costPerLoc,
+      roundedCostPerLoc,
+      roundedWay2Cost: loc * roundedCostPerLoc,
     };
   }
 
@@ -259,6 +266,30 @@
     return { c, k, initialEffort, eaf, adjustedEffort, totalCost: adjustedEffort * laborRate };
   }
 
+  // Advanced COCOMO, section 4.3.3. The lecture says it uses the intermediate steps and
+  // assigns cost drivers to each phase, but prints no phase list, phase split, or phase
+  // multipliers. Every phase share and phase EAF is therefore a user input.
+  // phases: [{ share (percent of Ei), eaf (product of that phase's multipliers) }]
+  function advancedCocomo(kloc, mode, phases, laborRate = 0) {
+    const base = cocomo(kloc, mode, [], laborRate);
+    laborRate = Number(laborRate);
+    if (!Array.isArray(phases) || phases.length === 0) {
+      throw new Error("Add at least one phase.");
+    }
+    const rows = phases.map((phase) => {
+      const share = number(phase.share, "Phase share", { max: 100 });
+      const eaf = number(phase.eaf, "Phase EAF", { positive: true });
+      return { share, eaf, effort: base.initialEffort * (share / 100) * eaf };
+    });
+    const shareTotal = rows.reduce((sum, row) => sum + row.share, 0);
+    if (Math.abs(shareTotal - 100) > 1e-9) {
+      throw new Error(`Phase shares must add up to 100%. They add up to ${formatNumber(shareTotal)}%.`);
+    }
+    const totalEffort = rows.reduce((sum, row) => sum + row.effort, 0);
+    const weightedEaf = rows.reduce((sum, row) => sum + (row.share / 100) * row.eaf, 0);
+    return { c: base.c, k: base.k, initialEffort: base.initialEffort, phases: rows, shareTotal, weightedEaf, totalEffort, totalCost: totalEffort * laborRate };
+  }
+
   function multiplierOutsideTypicalRange(value) {
     const parsed = Number(value);
     return Number.isFinite(parsed) && (parsed < MULTIPLIER_TYPICAL_RANGE[0] || parsed > MULTIPLIER_TYPICAL_RANGE[1]);
@@ -299,6 +330,7 @@
     fpProductivityPlan,
     defectDensity,
     cocomo,
+    advancedCocomo,
     multiplierOutsideTypicalRange,
     delphi,
   };

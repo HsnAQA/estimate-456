@@ -110,7 +110,7 @@ class ChapterFourTests(unittest.TestCase):
         self.assertFalse(self.app.exception)
         html_values = [str(node.value) for node in self.app.get("html")]
         self.assertFalse(any("Coming soon" in value for value in html_values))
-        self.assertEqual([tab.label for tab in self.app.tabs], ["Basic COCOMO", "Intermediate COCOMO", "Delphi"])
+        self.assertEqual([tab.label for tab in self.app.tabs], ["Basic COCOMO", "Intermediate COCOMO", "Advanced COCOMO", "Delphi"])
 
     def test_basic_cocomo_lecture_example(self) -> None:
         metrics = metric_values(self.app)
@@ -146,7 +146,24 @@ class ChapterFourTests(unittest.TestCase):
         self.assertTrue(any("All 2 tasks are accepted" in success.value for success in self.app.success))
 
     def test_duration_blocker_is_explained(self) -> None:
-        self.assertTrue(any("Duration is not calculated" in caption.value for caption in self.app.caption))
+        notes = [caption.value for caption in self.app.caption if "Duration (D) is not calculated" in caption.value]
+        self.assertEqual(len(notes), 3, "Basic, Intermediate, and Advanced each explain the missing D equations")
+
+    def test_basic_compares_all_three_modes(self) -> None:
+        frames = [frame.value for frame in self.app.dataframe if "Ei (person-months)" in frame.value.columns]
+        self.assertEqual(frames[0]["Ei (person-months)"].tolist(), ["13.72", "14.78", "14.17"])
+
+    def test_advanced_placeholders_equal_initial_effort(self) -> None:
+        self.assertFalse(self.app.exception)
+        self.assertEqual(metric_values(self.app)["Total effort, E (person-months)"], "10.14")
+
+    def test_advanced_each_mode(self) -> None:
+        self.app.number_input(key="advanced_kloc").set_value(10.0).run()
+        for mode, expected in (("organic", "35.9"), ("embedded", "44.38"), ("semi-detached", "39.55")):
+            self.app.selectbox(key="advanced_mode").set_value(mode).run()
+            self.assertEqual(metric_values(self.app)["Total effort, E (person-months)"], expected, mode)
+        self.app.button(key="advanced_reset").click().run()
+        self.assertEqual(metric_values(self.app)["Total effort, E (person-months)"], "10.14")
 
 
 class ThemeConfigTests(unittest.TestCase):

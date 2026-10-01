@@ -13,7 +13,7 @@
 
   const PAGES = ["home", "sloc", "fp", "planning", "cocomo", "delphi", "defects", "summary", "tables"];
   // Addresses used by earlier versions of the app keep working.
-  const ALIASES = { language: ["fp", "convert"], "fp-count": ["fp", "count"], cwf: ["fp", "adjust"], reference: ["tables", "4"], quality: ["planning", ""], advanced: ["cocomo", ""] };
+  const ALIASES = { language: ["fp", "convert"], "fp-count": ["fp", "count"], cwf: ["fp", "adjust"], reference: ["tables", "4"], quality: ["planning", ""], advanced: ["cocomo", "advanced"] };
 
   const FIELDS = {
     slocLoc: ["field.slocLoc", {}],
@@ -32,6 +32,8 @@
     cocomoRate: ["field.laborRate", {}],
     intermediateKloc: ["field.kloc", {}],
     intermediateRate: ["field.laborRate", {}],
+    advancedKloc: ["field.kloc", {}],
+    advancedRate: ["field.laborRate", {}],
     delphiThreshold: ["field.threshold", { max: 100 }],
   };
 
@@ -56,6 +58,12 @@
     };
   }
 
+  // Advanced COCOMO placeholder phases. The lecture names phases "such as analysis and design"
+  // but gives no split or multipliers, so the defaults are neutral: their total equals Ei.
+  const PHASE_KEYS = ["analysis", "design", "coding", "testing"];
+  const defaultPhases = () => PHASE_KEYS.map((key) => ({ name: null, key, share: "25", eaf: "1.00" }));
+  const phaseName = (p, i) => (p.name !== null ? p.name : p.key ? t(`adv.phase.${p.key}`) : t("adv.phaseName", { n: i + 1 }));
+
   const averageDrivers = () => L.COCOMO_DRIVER_NAMES.map(() => ({ rating: "Average", multiplier: "1.00" }));
 
   function insuranceDrivers() {
@@ -69,6 +77,8 @@
     state.basicMode = D.EXAMPLES.basicCocomo.mode;
     state.intermediateMode = D.EXAMPLES.insurance.mode;
     state.drivers = insuranceDrivers();
+    state.advancedMode = D.EXAMPLES.insurance.mode;
+    state.phases = defaultPhases();
     // name null means "use the default name in the current language".
     state.defects = D.EXAMPLES.defects.map((p) => ({ name: null, defects: String(p.defects), fp: String(p.fp) }));
     state.delphi = D.EXAMPLES.delphi.tasks.map((x) => ({ name: null, lectureName: x.task, maximum: String(x.maximum), minimum: String(x.minimum), touched: true }));
@@ -80,11 +90,16 @@
 
   /* SLOC, section 4.1 */
 
+  const slocTitles = () => [
+    t("sloc.way1", { title: t("sloc.effort") }), t("sloc.way1", { title: t("sloc.duration") }), t("sloc.way1", { title: t("sloc.cost") }),
+    t("sloc.way2", { title: t("sloc.costPerLoc") }), t("sloc.way2", { title: t("sloc.cost") }), t("sloc.way2", { title: t("sloc.effort") }),
+  ];
+
   function updateSloc() {
     const f = U.readFields(FIELDS, ["slocLoc", "slocProductivity", "slocDevelopers", "slocRate"]);
     if (!f.valid) {
       U.renderResultInvalid(byId("slocResult"), t("sloc.effort"));
-      U.renderTraceWaiting(byId("slocTrace"), [t("sloc.effort"), t("sloc.duration"), t("sloc.cost"), t("sloc.costPerLoc")], f.invalidLabels);
+      U.renderTraceWaiting(byId("slocTrace"), slocTitles(), f.invalidLabels);
       latest.sloc = null;
       return;
     }
@@ -98,11 +113,20 @@
         { label: t("sloc.costPerLoc"), value: money(r.costPerLoc) },
       ],
     });
+    const e = D.EXAMPLES.sloc;
+    const isLecture = Number(v.slocLoc) === e.loc && Number(v.slocProductivity) === e.productivity && Number(v.slocDevelopers) === e.developers && Number(v.slocRate) === e.laborRate;
+    const lecture = (x) => (isLecture ? t("common.lecture", { v: x }) : "");
+    const titles = slocTitles();
+    const rate = Number(v.slocRate);
     U.renderTrace(byId("slocTrace"), [
-      { title: t("sloc.effort"), formula: t("sloc.f.effort"), line: `${val(fmt(v.slocLoc), "slocLoc")}${op("÷")}${val(fmt(v.slocProductivity), "slocProductivity")}${op("=")}${answer(fmt(r.effort), t("unit.pm"))}` },
-      { title: t("sloc.duration"), formula: t("sloc.f.duration"), line: `${val(fmt(r.effort))}${op("÷")}${val(fmt(v.slocDevelopers, 0), "slocDevelopers")}${op("=")}${answer(fmt(r.duration), t("unit.months"))}` },
-      { title: t("sloc.cost"), formula: t("sloc.f.cost"), line: `${val(fmt(r.effort))}${op("×")}${val(money(v.slocRate), "slocRate")}${op("=")}${answer(money(r.totalCost))}` },
-      { title: t("sloc.costPerLoc"), formula: t("sloc.f.costPerLoc"), line: `${val(money(v.slocRate), "slocRate")}${op("÷")}${val(fmt(v.slocProductivity), "slocProductivity")}${op("=")}${answer(money(r.costPerLoc))}` },
+      { title: titles[0], formula: t("sloc.f.effort"), line: `${val(fmt(v.slocLoc), "slocLoc")}${op("÷")}${val(fmt(v.slocProductivity), "slocProductivity")}${op("=")}${answer(fmt(r.effort), t("unit.pm"))}`, lecture: lecture("53.54, 54") },
+      { title: titles[1], formula: t("sloc.f.duration"), line: `${val(fmt(r.effort))}${op("÷")}${val(fmt(v.slocDevelopers, 0), "slocDevelopers")}${op("=")}${answer(fmt(r.duration), t("unit.months"))}`, lecture: lecture("54 ÷ 6 = 9") },
+      { title: titles[2], formula: t("sloc.f.cost"), line: `${val(fmt(r.effort))}${op("×")}${val(money(v.slocRate), "slocRate")}${op("=")}${answer(money(r.totalCost))}`, lecture: lecture("$43,200") },
+      { title: titles[3], formula: t("sloc.f.costPerLoc"), line: `${val(money(v.slocRate), "slocRate")}${op("÷")}${val(fmt(v.slocProductivity), "slocProductivity")}${op("=")}${answer(money(r.costPerLoc))}`, lecture: lecture("$1.29, $1.3") },
+      { title: titles[4], formula: t("sloc.f.way2Cost"), line: `${val(fmt(v.slocLoc), "slocLoc")}${op("×")}${val(money(r.costPerLoc))}${op("=")}${answer(money(r.way2Cost))}`, lecture: isLecture ? t("common.lecture", { v: t("sloc.way2Lecture") }) : "" },
+      rate > 0
+        ? { title: titles[5], formula: t("sloc.f.way2Effort"), line: `${val(money(r.way2Cost))}${op("÷")}${val(money(v.slocRate), "slocRate")}${op("=")}${answer(fmt(r.way2Cost / rate), t("unit.pm"))}`, lecture: lecture("43,200 ÷ 800 = 54") }
+        : { title: titles[5], formula: t("sloc.f.way2Effort"), line: esc(t("sloc.way2NoRate")) },
     ]);
     latest.sloc = { effort: r.effort, cost: r.totalCost, duration: r.duration, inputs: t("sloc.inputs", { loc: fmt(v.slocLoc), p: fmt(v.slocProductivity), d: fmt(v.slocDevelopers, 0) }) };
   }
@@ -126,7 +150,7 @@
     byId("ratingLegend").innerHTML = D.RATING_SCALE.map((name, n) => `<li><b>${n}</b>${C.rating(n, name)}</li>`).join("");
     byId("gscRows").innerHTML = D.GSC_QUESTIONS.map((question, i) => {
       const seg = [0, 1, 2, 3, 4, 5].map((n) => `<label title="${esc(C.rating(n, D.RATING_SCALE[n]))}"><input type="radio" name="gsc-${i}" value="${n}" ${n === fp.influences[i] ? "checked" : ""} aria-label="${n}, ${esc(C.rating(n, D.RATING_SCALE[n]))}" />${n}</label>`).join("");
-      return `<div class="rating"><span class="rating-q" id="gsc-q-${i}"><b>F${i + 1}</b>${C.gscQuestion(i, question)}</span><div class="seg" role="radiogroup" aria-labelledby="gsc-q-${i}">${seg}</div></div>`;
+      return `<div class="rating"><span class="rating-q" id="gsc-q-${i}"><b>F${i + 1}</b>${C.gscQuestion(i, question)}</span><div class="seg" role="radiogroup" aria-labelledby="gsc-q-${i}">${seg}</div><span class="rating-pick" id="gsc-pick-${i}"></span></div>`;
     }).join("");
     byId("languageTiles").innerHTML = Object.entries(L.LOC_PER_FP).map(([language, loc]) => `<label class="lang"><input type="radio" name="language" value="${esc(language)}" ${language === fp.language ? "checked" : ""} /><span>${esc(C.language(language))}</span><strong>${loc}</strong></label>`).join("");
   }
@@ -153,6 +177,9 @@
     const sumFi = fp.influences.reduce((a, b) => a + b, 0);
     byId("gscTotal").textContent = sumFi;
     byId("fiEquation").textContent = `ΣFi = ${fp.influences.map((value, i) => `F${i + 1}(${value})`).join(" + ")} = ${sumFi}`;
+    fp.influences.forEach((value, i) => { byId(`gsc-pick-${i}`).textContent = t("fp.pick", { f: `F${i + 1}`, v: value, meaning: C.rating(value, D.RATING_SCALE[value]) }); });
+    const s = D.EXAMPLES.safeHome;
+    byId("fpExampleNote").hidden = !(D.FP_PARAMETERS.every(([k]) => Number(fp.counts[k]) === s.counts[k] && fp.complexities[k] === s.complexity) && sumFi === 46);
     byId("stepAdjust").textContent = `Sum Fi ${sumFi}, VAF ${fmt(0.65 + 0.01 * sumFi)}`;
     byId("stepConvert").textContent = `${C.language(fp.language)}, ${locPerFp} LOC/FP`;
     const titles = [t("fp.ct"), t("fp.vaf"), t("fp.fp"), t("fp.loc")];
@@ -189,7 +216,7 @@
       { title: t("fp.ct"), formula: t("fp.f.ct"), line: `${totals}${op("=")}${answer(fmt(r.ufp))}` },
       { title: t("fp.vaf"), formula: t("fp.f.vaf"), line: `${val("0.65")}${op("+")}${val("0.01")}${op("×")}${val(String(r.tdi))}${op("=")}${answer(fmt(r.vaf))}` },
       { title: t("fp.fp"), formula: t("fp.f.fp"), line: `${val(fmt(r.ufp))}${op("×")}${val(fmt(r.vaf))}${op("=")}${answer(fmt(r.fp), t("fp.roundedTo", { n: rounded }))}` },
-      { title: t("fp.loc"), formula: t("fp.f.loc"), line: `${val(rounded)}${op("×")}${val(String(locPerFp))}${op("=")}${answer(fmt(r.locPlanning, 0), "LOC")}` },
+      { title: t("fp.loc"), formula: t("fp.f.locLang", { lang: C.language(fp.language), v: locPerFp }), line: `${val(rounded)}${op("×")}${val(String(locPerFp))}${op("=")}${answer(fmt(r.locPlanning, 0), "LOC")}` },
     ]);
     latest.fp = { fp: r.fp, roundedFp: r.roundedFp, loc: r.locPlanning };
   }
@@ -313,6 +340,7 @@
   function renderCocomoInputs() {
     byId("modeCards").innerHTML = Object.entries(L.COCOMO_MODES).map(([mode, [c, k]]) => `<label class="mode"><input type="radio" name="cocomoMode" value="${mode}" ${mode === state.basicMode ? "checked" : ""} /><strong>${modeLabel(mode)}</strong><code>C = ${c.toFixed(1)}, K = ${k.toFixed(2)}</code><span>${C.modeNote(mode, D.COCOMO_MODE_NOTES[mode])}</span></label>`).join("");
     byId("intermediateMode").innerHTML = Object.keys(L.COCOMO_MODES).map((mode) => `<label><input type="radio" name="intermediateMode" value="${mode}" ${mode === state.intermediateMode ? "checked" : ""} />${modeLabel(mode)}</label>`).join("");
+    byId("advancedMode").innerHTML = Object.keys(L.COCOMO_MODES).map((mode) => `<label><input type="radio" name="advancedMode" value="${mode}" ${mode === state.advancedMode ? "checked" : ""} />${modeLabel(mode)}</label>`).join("");
     byId("table10").innerHTML = `<table class="table"><thead><tr><th scope="col">${t("cocomo.t10.attr")}</th><th scope="col">${t("cocomo.t10.rating")}</th><th scope="col" class="num">${t("cocomo.t10.factor")}</th></tr></thead><tbody>${D.EXAMPLES.insurance.drivers.map((d) => `<tr><th scope="row">${d.code}</th><td>${C.driverRating(d.rating)}</td><td class="num">${d.multiplier === 1 ? "1.0" : d.multiplier}</td></tr>`).join("")}</tbody></table>`;
   }
 
@@ -325,10 +353,22 @@
     }).join("")}</div>`).join("");
   }
 
+  const constantsLine = (mode, r) => `${val(t("cocomo.f.constants", { mode: modeLabel(mode), c: r.c.toFixed(1), k: r.k.toFixed(2) }))}`;
+
+  // The same KLOC in all three Table 8 modes, so each mode can be checked at once.
+  function compareModes(kloc, selected) {
+    const rows = Object.keys(L.COCOMO_MODES).map((mode) => {
+      const x = L.cocomo(kloc, mode);
+      const on = mode === selected;
+      return `<tr${on ? ' class="is-selected"' : ""}><th scope="row">${modeLabel(mode)}${on ? ` <small>(${t("cocomo.selected")})</small>` : ""}</th><td class="num">${x.c.toFixed(1)}</td><td class="num">${x.k.toFixed(2)}</td><td class="num strong">${fmt(x.initialEffort)}</td></tr>`;
+    }).join("");
+    return `<div class="compare"><h3>${t("cocomo.compare")}</h3><div class="table-wrap"><table class="table"><thead><tr><th scope="col">${t("cocomo.compareType")}</th><th scope="col" class="num">C</th><th scope="col" class="num">K</th><th scope="col" class="num">${t("cocomo.compareEi")}</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  }
+
   function updateBasic() {
     const f = U.readFields(FIELDS, ["cocomoKloc", "cocomoRate"]);
     const mode = state.basicMode;
-    const titles = [t("cocomo.initialEffort"), t("cocomo.power"), t("cocomo.initialEffort"), t("cocomo.cost")];
+    const titles = [t("cocomo.constants"), t("cocomo.power"), t("cocomo.initialEffort"), t("cocomo.cost")];
     if (!f.valid) {
       U.renderResultInvalid(byId("basicResult"), t("cocomo.initialEffort"));
       U.renderTraceWaiting(byId("basicTrace"), titles, f.invalidLabels);
@@ -346,9 +386,10 @@
         { label: t("field.projectType"), value: `${modeLabel(mode)} (C = ${r.c.toFixed(1)}, K = ${r.k.toFixed(2)})` },
         { label: t("cocomo.cost"), value: money(r.totalCost) },
       ],
+      extra: compareModes(v.cocomoKloc, mode),
     });
     U.renderTrace(byId("basicTrace"), [
-      { title: titles[0], formula: t("cocomo.f.ei"), line: `${val(r.c.toFixed(1))}${op("×")}${val(fmt(v.cocomoKloc), "cocomoKloc")}${op("^")}${val(r.k.toFixed(2))}` },
+      { title: titles[0], formula: t("cocomo.f.ei"), line: constantsLine(mode, r) },
       { title: titles[1], formula: t("cocomo.f.power"), line: `${val(fmt(v.cocomoKloc), "cocomoKloc")}${op("^")}${val(r.k.toFixed(2))}${op("=")}${answer(fmt(power, 3))}`, lecture: isLecture ? t("common.lecture", { v: "4.28" }) : "" },
       { title: titles[2], formula: t("cocomo.f.eiPower"), line: `${val(r.c.toFixed(1))}${op("×")}${val(fmt(power, 3))}${op("=")}${answer(fmt(r.initialEffort), t("unit.pm"))}` },
       { title: titles[3], formula: t("cocomo.f.cost"), line: `${val(fmt(r.initialEffort))}${op("×")}${val(money(v.cocomoRate), "cocomoRate")}${op("=")}${answer(money(r.totalCost))}` },
@@ -371,7 +412,7 @@
     });
     const f = U.readFields(FIELDS, ["intermediateKloc", "intermediateRate"]);
     const mode = state.intermediateMode;
-    const titles = [t("cocomo.initialEffort"), t("cocomo.eaf"), t("cocomo.adjustedEffort"), t("cocomo.cost")];
+    const titles = [t("cocomo.constants"), t("cocomo.initialEffort"), t("cocomo.eaf"), t("cocomo.adjustedEffort"), t("cocomo.cost")];
     if (!f.valid || !driversValid) {
       U.renderResultInvalid(byId("intermediateResult"), t("cocomo.adjustedEffort"));
       U.renderTraceWaiting(byId("intermediateTrace"), titles, [...f.invalidLabels, ...(driversValid ? [] : [t("field.multiplier")])]);
@@ -385,7 +426,7 @@
       const x = e.drivers.find((item) => item.index === i);
       return Number(d.multiplier) === (x ? x.multiplier : 1);
     });
-    const applied = state.drivers.map((d, i) => ({ d, i })).filter(({ d }) => Number(d.multiplier) !== 1);
+    const applied = state.drivers.map((d, i) => ({ d, i })).filter(({ d }) => Number(d.multiplier) !== 1 || d.rating !== "Average");
     const lecture = (x) => (isLecture ? t("common.lecture", { v: x }) : "");
     U.renderResult(byId("intermediateResult"), {
       label: t("cocomo.adjustedEffort"), value: fmt(r.adjustedEffort), unit: t("unit.pm"), note: lecture("15.5"),
@@ -397,12 +438,76 @@
       extra: isLecture ? `<p class="note">${icon("info")}<span>${t("cocomo.lectureNote")}</span></p>` : "",
     });
     U.renderTrace(byId("intermediateTrace"), [
-      { title: titles[0], formula: t("cocomo.f.ei"), line: `${val(r.c.toFixed(1))}${op("×")}${val(fmt(v.intermediateKloc), "intermediateKloc")}${op("^")}${val(r.k.toFixed(2))}${op("=")}${answer(fmt(r.initialEffort), t("unit.pm"))}` },
-      { title: titles[1], formula: applied.length ? t("cocomo.f.eafSome", { n: 15 - applied.length }) : t("cocomo.f.eafNone"), line: applied.length ? `${applied.map(({ d, i }) => val(fmt(d.multiplier), `driver-mult-${i}`)).join(op("×"))}${op("=")}${answer(fmt(r.eaf, 4))}` : answer("1.00") },
-      { title: titles[2], formula: t("cocomo.f.e"), line: `${val(fmt(r.eaf, 4))}${op("×")}${val(fmt(r.initialEffort))}${op("=")}${answer(fmt(r.adjustedEffort), t("unit.pm"))}` },
-      { title: titles[3], formula: t("cocomo.f.costE"), line: `${val(fmt(r.adjustedEffort))}${op("×")}${val(money(v.intermediateRate), "intermediateRate")}${op("=")}${answer(money(r.totalCost))}` },
+      { title: titles[0], formula: t("cocomo.f.ei"), line: constantsLine(mode, r) },
+      { title: titles[1], formula: t("cocomo.f.ei"), line: `${val(r.c.toFixed(1))}${op("×")}${val(fmt(v.intermediateKloc), "intermediateKloc")}${op("^")}${val(r.k.toFixed(2))}${op("=")}${answer(fmt(r.initialEffort), t("unit.pm"))}`, lecture: lecture("3.2 × 3.16 = 10.11") },
+      { title: titles[2], formula: applied.length ? t("cocomo.f.eafDrivers", { n: 15 - applied.length }) : t("cocomo.f.eafNone"), line: applied.length ? `${applied.map(({ d, i }) => val(`${driverCode(L.COCOMO_DRIVER_NAMES[i])} ${C.driverRating(d.rating)} ${fmt(d.multiplier)}`, `driver-mult-${i}`)).join(op("×"))}${op("=")}${answer(fmt(r.eaf, 4))}` : answer("1.00"), lecture: lecture("1.53") },
+      { title: titles[3], formula: t("cocomo.f.e"), line: `${val(fmt(r.eaf, 4))}${op("×")}${val(fmt(r.initialEffort))}${op("=")}${answer(fmt(r.adjustedEffort), t("unit.pm"))}`, lecture: lecture("1.53 × 10.11 = 15.5") },
+      { title: titles[4], formula: t("cocomo.f.costE"), line: `${val(fmt(r.adjustedEffort))}${op("×")}${val(money(v.intermediateRate), "intermediateRate")}${op("=")}${answer(money(r.totalCost))}` },
     ]);
-    latest.intermediate = { effort: r.adjustedEffort, cost: r.totalCost, inputs: t("cocomo.intermediateInputs", { kloc: fmt(v.intermediateKloc), mode: modeLabel(mode), eaf: fmt(r.eaf, 4) }) };
+    latest.intermediate = { effort: r.adjustedEffort, cost: r.totalCost, eaf: r.eaf, kloc: v.intermediateKloc, mode, inputs: t("cocomo.intermediateInputs", { kloc: fmt(v.intermediateKloc), mode: modeLabel(mode), eaf: fmt(r.eaf, 4) }) };
+  }
+
+  /* Advanced COCOMO, section 4.3.3 */
+
+  function renderPhases() {
+    byId("phaseRows").innerHTML = state.phases.map((p, i) => `<div class="phase" data-index="${i}">
+      <input class="cell-input text phase-name" type="text" value="${esc(phaseName(p, i))}" aria-label="${esc(t("adv.rowName", { n: i + 1 }))}" />
+      <input id="phase-share-${i}" class="cell-input phase-share" type="number" inputmode="decimal" min="0" max="100" step="any" value="${esc(p.share)}" aria-label="${esc(t("adv.rowShare", { n: i + 1 }))}" aria-describedby="phase-share-${i}-error" />
+      <input id="phase-eaf-${i}" class="cell-input phase-eaf" type="number" inputmode="decimal" min="0" step="0.01" value="${esc(p.eaf)}" aria-label="${esc(t("adv.rowEaf", { n: i + 1 }))}" aria-describedby="phase-eaf-${i}-error" />
+      <button class="remove-btn remove-phase" type="button" aria-label="${esc(t("common.removeRow", { n: i + 1 }))}">${icon("trash")}</button>
+      <p id="phase-share-${i}-error" class="error"></p><p id="phase-eaf-${i}-error" class="error"></p>
+    </div>`).join("");
+    updateAdvanced();
+  }
+
+  function updateAdvanced() {
+    let rowsValid = true;
+    state.phases.forEach((p, i) => {
+      const sm = U.check(p.share, "field.phaseShare", { max: 100 });
+      const em = U.check(p.eaf, "field.phaseEaf", { positive: true });
+      U.setError(byId(`phase-share-${i}`), sm, byId(`phase-share-${i}-error`));
+      U.setError(byId(`phase-eaf-${i}`), em, byId(`phase-eaf-${i}-error`));
+      if (sm || em) rowsValid = false;
+    });
+    const shareSum = rowsValid ? state.phases.reduce((sum, p) => sum + Number(p.share), 0) : null;
+    const sumOk = state.phases.length > 0 && shareSum !== null && Math.abs(shareSum - 100) <= 1e-9;
+    const total = byId("phaseTotal");
+    total.textContent = !state.phases.length ? t("adv.empty") : shareSum === null ? "" : t(sumOk ? "adv.shareTotal" : "adv.shareFix", { v: fmt(shareSum) });
+    total.classList.toggle("is-error", !sumOk && shareSum !== null);
+    const f = U.readFields(FIELDS, ["advancedKloc", "advancedRate"]);
+    const mode = state.advancedMode;
+    const titles = [t("cocomo.constants"), t("cocomo.initialEffort"), ...state.phases.map((p, i) => esc(phaseName(p, i) || t("adv.phaseName", { n: i + 1 }))), t("adv.total"), t("cocomo.cost")];
+    if (!f.valid || !rowsValid || !sumOk) {
+      const reasons = [...f.invalidLabels];
+      if (!rowsValid) reasons.push(t("adv.phases"));
+      else if (!sumOk) reasons.push(t("adv.col.share"));
+      U.renderResultInvalid(byId("advancedResult"), t("adv.total"));
+      U.renderTraceWaiting(byId("advancedTrace"), titles, reasons);
+      latest.advanced = null;
+      return;
+    }
+    const v = f.values;
+    const r = L.advancedCocomo(v.advancedKloc, mode, state.phases.map((p) => ({ share: p.share, eaf: p.eaf })), v.advancedRate);
+    U.renderResult(byId("advancedResult"), {
+      label: t("adv.total"), value: fmt(r.totalEffort), unit: t("unit.pm"),
+      facts: [
+        { label: t("cocomo.initialEffort"), value: `${fmt(r.initialEffort)} ${t("unit.pmShort")}` },
+        { label: t("adv.weightedEaf"), value: fmt(r.weightedEaf, 4) },
+        { label: t("cocomo.cost"), value: money(r.totalCost) },
+      ],
+    });
+    const phaseSteps = state.phases.map((p, i) => ({
+      title: esc(phaseName(p, i) || t("adv.phaseName", { n: i + 1 })), formula: t("adv.f.phase"),
+      line: `${val(fmt(r.initialEffort))}${op("×")}${val(`${fmt(r.phases[i].share)}%`, `phase-share-${i}`)}${op("×")}${val(fmt(r.phases[i].eaf, 4), `phase-eaf-${i}`)}${op("=")}${answer(fmt(r.phases[i].effort), t("unit.pm"))}`,
+    }));
+    U.renderTrace(byId("advancedTrace"), [
+      { title: titles[0], formula: t("cocomo.f.ei"), line: constantsLine(mode, r) },
+      { title: titles[1], formula: t("cocomo.f.ei"), line: `${val(r.c.toFixed(1))}${op("×")}${val(fmt(v.advancedKloc), "advancedKloc")}${op("^")}${val(r.k.toFixed(2))}${op("=")}${answer(fmt(r.initialEffort), t("unit.pm"))}` },
+      ...phaseSteps,
+      { title: t("adv.total"), formula: t("adv.f.total"), line: `${r.phases.map((x) => val(fmt(x.effort))).join(op("+"))}${op("=")}${answer(fmt(r.totalEffort), t("unit.pm"))}` },
+      { title: t("cocomo.cost"), formula: t("cocomo.f.costE"), line: `${val(fmt(r.totalEffort))}${op("×")}${val(money(v.advancedRate), "advancedRate")}${op("=")}${answer(money(r.totalCost))}` },
+    ]);
+    latest.advanced = { effort: r.totalEffort, cost: r.totalCost, inputs: t("adv.inputs", { kloc: fmt(v.advancedKloc), mode: modeLabel(mode), n: state.phases.length }) };
   }
 
   /* Delphi, section 4.4, Table 11 */
@@ -488,18 +593,13 @@
 
   /* Overview, summary, and course table library */
 
-  function renderHome() {
-    byId("homeDesc").textContent = t("home.desc");
-    byId("homeMethods").textContent = "";
-    byId("homeTables").textContent = "";
-  }
-
   const METHOD_ROWS = [
     { key: "sloc", color: "sloc", name: "method.sloc", page: "sloc", duration: (x) => `${fmt(x.duration)} ${t("unit.months")}` },
     { key: "productivity", color: "planning", name: "method.productivity", page: "planning/productivity", duration: () => t("common.notCalculated") },
     { key: "hours", color: "planning", name: "method.hours", page: "planning/hours", cost: () => t("common.notCalculated"), duration: (x) => `${fmt(x.duration)} ${t("unit.months")}` },
     { key: "basic", color: "cocomo", name: "method.basic", page: "cocomo/basic", duration: () => t("common.notInLecture") },
     { key: "intermediate", color: "cocomo", name: "method.intermediate", page: "cocomo/intermediate", duration: () => t("common.notInLecture") },
+    { key: "advanced", color: "cocomo", name: "method.advanced", page: "cocomo/advanced", duration: () => t("common.notInLecture") },
   ];
 
   function summaryRows() {
@@ -605,12 +705,27 @@
     });
     setTitles();
     if (page === "planning" && arg) selectTabById(arg === "productivity" ? "tab-productivity" : "tab-hours");
-    if (page === "cocomo" && arg) selectTabById(arg === "intermediate" ? "tab-intermediate" : "tab-basic");
+    if (page === "cocomo" && arg) selectTabById({ intermediate: "tab-intermediate", advanced: "tab-advanced" }[arg] || "tab-basic");
+    if (page === "home") selectTabById(arg === "part2" ? "part-tab-2" : "part-tab-1");
     if (page === "tables" && Number(arg) >= 1 && Number(arg) <= 11) { selectedTable = Number(arg); renderLibrary(); }
     closeNav(false);
     window.scrollTo(0, 0);
-    if (page === "fp" && ["count", "adjust", "convert"].includes(arg)) byId({ count: "fpCountCard", adjust: "fpAdjustCard", convert: "fpConvertCard" }[arg]).scrollIntoView();
+    if (page === "fp" && FP_STEPS.includes(arg)) setFpStep(arg);
     if (moveFocus) byId(`page-${page}`).querySelector("h1").focus({ preventScroll: true });
+  }
+
+  // Function Points shows one step at a time: Count, then Adjust, then Convert.
+  const FP_STEPS = ["count", "adjust", "convert"];
+  const FP_CARDS = { count: "fpCountCard", adjust: "fpAdjustCard", convert: "fpConvertCard" };
+  let fpStep = "count";
+
+  function setFpStep(step) {
+    fpStep = FP_STEPS.includes(step) ? step : "count";
+    FP_STEPS.forEach((x) => { byId(FP_CARDS[x]).hidden = x !== fpStep; });
+    document.querySelectorAll(".stepper [data-fp-step]").forEach((b) => {
+      if (b.dataset.fpStep === fpStep) b.setAttribute("aria-current", "step");
+      else b.removeAttribute("aria-current");
+    });
   }
 
   function openNav() {
@@ -651,6 +766,7 @@
     renderFpInputs();
     renderCocomoInputs();
     renderDrivers();
+    renderPhases();
     renderDefects();
     renderDelphiSteps();
     renderDelphi();
@@ -670,6 +786,7 @@
       { label: t("planning.productivity"), hint: t("common.section", { s: "4.2.4" }), hash: "planning/productivity" },
       { label: t("cocomo.basic"), hint: t("common.section", { s: "4.3.1" }), hash: "cocomo/basic" },
       { label: t("cocomo.intermediate"), hint: t("common.section", { s: "4.3.2" }), hash: "cocomo/intermediate" },
+      { label: t("cocomo.advanced"), hint: t("common.section", { s: "4.3.3" }), hash: "cocomo/advanced" },
       { label: t("delphi.title"), hint: t("common.section", { s: "4.4" }), hash: "delphi" },
       { label: t("defects.title"), hint: t("common.section", { s: "4.2.5" }), hash: "defects" },
       { label: t("summary.title"), hint: t("summary.table"), hash: "summary" },
@@ -709,9 +826,10 @@
 
   function snapshot() {
     return JSON.parse(JSON.stringify({
-      v: 1,
+      v: 2,
       fields: Object.fromEntries(Object.keys(FIELDS).map((id) => [id, byId(id).value])),
       fp: state.fp, basicMode: state.basicMode, intermediateMode: state.intermediateMode, drivers: state.drivers,
+      advancedMode: state.advancedMode, phases: state.phases,
       defects: state.defects, delphi: state.delphi, delphiSelected: state.delphiSelected,
     }));
   }
@@ -726,13 +844,14 @@
     const list = (v, max) => Array.isArray(v) && v.length <= max;
     const has = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
     try {
-      return x.v === 1
+      return x.v === 2
         && Object.keys(FIELDS).every((id) => str(x.fields[id]))
         && D.FP_PARAMETERS.every(([k]) => count(x.fp.counts[k]) && ["simple", "average", "complex"].includes(x.fp.complexities[k]))
         && Array.isArray(x.fp.influences) && x.fp.influences.length === D.GSC_QUESTIONS.length
         && x.fp.influences.every((n) => Number.isInteger(n) && n >= 0 && n <= 5)
         && has(L.LOC_PER_FP, x.fp.language)
-        && [x.basicMode, x.intermediateMode].every((m) => has(L.COCOMO_MODES, m))
+        && [x.basicMode, x.intermediateMode, x.advancedMode].every((m) => has(L.COCOMO_MODES, m))
+        && list(x.phases, 20) && x.phases.every((p) => nameOk(p.name) && (p.key === null || PHASE_KEYS.includes(p.key)) && str(p.share) && str(p.eaf))
         && Array.isArray(x.drivers) && x.drivers.length === L.COCOMO_DRIVER_NAMES.length
         && x.drivers.every((d) => L.DRIVER_RATINGS.includes(d.rating) && str(d.multiplier))
         && list(x.defects, 50) && x.defects.every((d) => nameOk(d.name) && str(d.defects) && str(d.fp))
@@ -747,6 +866,7 @@
     Object.entries(x.fields).forEach(([id, value]) => { byId(id).value = value; });
     Object.assign(state, {
       fp: x.fp, basicMode: x.basicMode, intermediateMode: x.intermediateMode, drivers: x.drivers,
+      advancedMode: x.advancedMode, phases: x.phases,
       defects: x.defects, delphi: x.delphi, delphiSelected: Math.max(0, Math.min(x.delphiSelected, x.delphi.length - 1)),
     });
   }
@@ -774,6 +894,7 @@
     renderFpInputs();
     renderCocomoInputs();
     renderDrivers();
+    renderPhases();
     renderDefects();
     renderDelphi();
     updateAll();
@@ -832,12 +953,12 @@
     updateDefects();
     updateBasic();
     updateIntermediate();
+    updateAdvanced();
     updateDelphi();
     refreshDerived();
   }
 
   function refreshDerived() {
-    renderHome();
     renderSummary();
     saveSoon();
   }
@@ -853,6 +974,7 @@
       [["productivityFp", "fpPerPm", "productivityRate"], updateProductivity],
       [["cocomoKloc", "cocomoRate"], updateBasic],
       [["intermediateKloc", "intermediateRate"], updateIntermediate],
+      [["advancedKloc", "advancedRate"], updateAdvanced],
     ];
     document.addEventListener("input", (e) => {
       const el = e.target;
@@ -861,6 +983,14 @@
       else if (el.closest("#fpRows, #gscRows, #languageTiles")) { readFpInputs(); updateFp(); }
       else if (el.name === "cocomoMode") { state.basicMode = el.value; updateBasic(); }
       else if (el.name === "intermediateMode") { state.intermediateMode = el.value; updateIntermediate(); }
+      else if (el.name === "advancedMode") { state.advancedMode = el.value; updateAdvanced(); }
+      else if (el.closest("#phaseRows")) {
+        const p = state.phases[Number(el.closest(".phase").dataset.index)];
+        if (el.classList.contains("phase-name")) p.name = el.value;
+        else if (el.classList.contains("phase-share")) p.share = el.value;
+        else p.eaf = el.value;
+        updateAdvanced();
+      }
       else if (el.closest("#driverGroups")) {
         const i = Number(el.closest(".driver").dataset.index);
         if (el.tagName === "SELECT") {
@@ -897,13 +1027,18 @@
     });
     byId("loadFpExample").addEventListener("click", () => { loadFpExample(D.EXAMPLES.example1); refreshDerived(); });
     byId("loadSafeHome").addEventListener("click", () => { loadFpExample(D.EXAMPLES.safeHome); refreshDerived(); });
-    byId("homeLoadSafeHome").addEventListener("click", () => { loadFpExample(D.EXAMPLES.safeHome); refreshDerived(); window.location.hash = "fp"; });
-    byId("homeLoadLecture").addEventListener("click", resetAll);
     byId("resetAll").addEventListener("click", resetAll);
 
     document.addEventListener("click", (e) => {
-      const scroll = e.target.closest("[data-scroll]");
-      if (scroll) byId(scroll.dataset.scroll).scrollIntoView({ behavior: "smooth", block: "start" });
+      const step = e.target.closest("[data-fp-step]");
+      if (step) {
+        setFpStep(step.dataset.fpStep);
+        window.history.replaceState(null, "", `#fp/${fpStep}`);
+        const card = byId(FP_CARDS[fpStep]);
+        if (card.getBoundingClientRect().top < 0) document.querySelector(".stepper").scrollIntoView({ block: "start" });
+      }
+      const part = e.target.closest(".part-option");
+      if (part) window.history.replaceState(null, "", part.id === "part-tab-2" ? "#home/part2" : "#home");
       if (e.target.closest("#useFpInPlanning") && latest.fp) {
         byId("hoursFp").value = latest.fp.roundedFp;
         updateHours(); refreshDerived();
@@ -954,6 +1089,29 @@
       renderCocomoInputs(); renderDrivers(); updateIntermediate(); refreshDerived();
     });
     byId("resetDrivers").addEventListener("click", () => { state.drivers = averageDrivers(); renderDrivers(); updateIntermediate(); refreshDerived(); });
+
+    byId("addPhase").addEventListener("click", () => {
+      state.phases.push({ name: null, key: null, share: "0", eaf: "1.00" });
+      renderPhases(); refreshDerived();
+      byId("phaseRows").querySelector(".phase:last-child .phase-name").focus();
+    });
+    byId("phaseRows").addEventListener("click", (e) => {
+      const btn = e.target.closest(".remove-phase");
+      if (!btn) return;
+      state.phases.splice(Number(btn.closest(".phase").dataset.index), 1);
+      renderPhases(); refreshDerived();
+      byId("addPhase").focus();
+    });
+    byId("advUseIntermediate").addEventListener("click", () => {
+      const x = latest.intermediate;
+      if (!x) { showToast(t("toast.noIntermediate")); return; }
+      byId("advancedKloc").value = x.kloc;
+      state.advancedMode = x.mode;
+      const eaf = String(L.roundHalfUp(x.eaf, 4));
+      state.phases.forEach((p) => { p.eaf = eaf; });
+      renderCocomoInputs(); renderPhases(); refreshDerived();
+      showToast(t("toast.usedIntermediate", { eaf }));
+    });
 
     byId("loadDelphiExample").addEventListener("click", () => {
       byId("delphiThreshold").value = D.EXAMPLES.delphi.threshold;
@@ -1043,6 +1201,7 @@
   });
   lectureDefaults();
   loadSaved();
+  setFpStep("count");
   U.initTabs();
   U.initLinking();
   bind();

@@ -171,6 +171,19 @@ def driver_frame(insurance: bool = False) -> pd.DataFrame:
     return pd.DataFrame({DRIVER_COLUMN: COCOMO_DRIVER_NAMES, "Rating": ratings, "Multiplier": multipliers})
 
 
+# Advanced COCOMO placeholder phases. The lecture names phases "such as analysis and design"
+# but gives no split or multipliers, so the defaults are neutral and their total equals Ei.
+PHASE_COLUMNS = ["Phase", "Share of Ei (%)", "Phase EAF"]
+
+
+def phase_frame() -> pd.DataFrame:
+    return pd.DataFrame({
+        "Phase": ["Analysis", "Design", "Coding", "Testing"],
+        "Share of Ei (%)": [25.0, 25.0, 25.0, 25.0],
+        "Phase EAF": [1.0, 1.0, 1.0, 1.0],
+    })
+
+
 def delphi_frame() -> pd.DataFrame:
     tasks = EXAMPLES["delphi"]["tasks"]
     return pd.DataFrame(
@@ -204,6 +217,9 @@ WIDGET_DEFAULTS: dict[str, Any] = {
     "intermediate_mode": EXAMPLES["insurance"]["mode"],
     "intermediate_kloc": float(EXAMPLES["insurance"]["kloc"]),
     "intermediate_rate": float(EXAMPLES["insurance"]["laborRate"]),
+    "advanced_mode": EXAMPLES["insurance"]["mode"],
+    "advanced_kloc": float(EXAMPLES["insurance"]["kloc"]),
+    "advanced_rate": float(EXAMPLES["insurance"]["laborRate"]),
     "delphi_threshold": float(EXAMPLES["delphi"]["threshold"]),
 }
 
@@ -212,6 +228,7 @@ TABLE_DEFAULTS: dict[str, Callable[[], pd.DataFrame]] = {
     "gsc_input": lambda: gsc_frame(EXAMPLE_GSC_VALUES),
     "defect_input": defect_frame,
     "driver_input": lambda: driver_frame(insurance=True),
+    "phase_input": phase_frame,
     "delphi_input": delphi_frame,
 }
 
@@ -314,6 +331,13 @@ def load_insurance_example() -> None:
 
 def set_all_drivers_average() -> None:
     replace_table("driver_input", driver_frame(insurance=False))
+
+
+def reset_phases() -> None:
+    st.session_state.advanced_mode = EXAMPLES["insurance"]["mode"]
+    st.session_state.advanced_kloc = float(EXAMPLES["insurance"]["kloc"])
+    st.session_state.advanced_rate = float(EXAMPLES["insurance"]["laborRate"])
+    replace_table("phase_input", phase_frame())
 
 
 def load_delphi_example() -> None:

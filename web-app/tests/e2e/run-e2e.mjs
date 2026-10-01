@@ -11,6 +11,7 @@ const PAGE = process.env.E2E_URL || pathToFileURL(path.resolve(here, "..", "..",
 const H = `const $ = (s) => document.querySelector(s); const $$ = (s) => [...document.querySelectorAll(s)];
 const setVal = (el, v) => { el.value = v; el.dispatchEvent(new Event("input", { bubbles: true })); };
 const txt = (s) => ($(s) || {}).innerText || "";
+const ptxt = (s) => txt(s).replace(/[\u2066-\u2069]/g, "");
 const click = (s) => $(s).click();
 const pickRadio = (name, value) => { const r = $('input[name="' + name + '"][value="' + value + '"]'); r.checked = true; r.dispatchEvent(new Event("input", { bubbles: true })); };
 const strong = (s) => txt(s + " .result-value strong");`;
@@ -44,10 +45,20 @@ async function functional(lang) {
   check(`${tag} light theme is the default`, await run(`document.documentElement.dataset.theme`), "light");
   check(`${tag} panels are not pure white`, await run(`getComputedStyle($(".panel")).backgroundColor`), (v) => v !== "rgb(255, 255, 255)");
   check(`${tag} page background is snow`, await run(`getComputedStyle(document.body).backgroundColor`), "rgb(244, 246, 249)");
-  check(`${tag} home has two lecture parts`, await run(`$$(".part-card").length`), 2);
-  check(`${tag} Part 1 has SLOC and FP`, await run(`$$(".part-one li").length`), 2);
-  check(`${tag} Part 2 has planning, quality, COCOMO, and Delphi`, await run(`$$(".part-two li").length`), 4);
-  if (lang === "ar") check(`${tag} Arabic interface text`, await run(`txt("#home-title")`), "تقدير البرمجيات، خطوة بخطوة.");
+  // Home: logo and name, one question, two parts, and only the chosen part's methods.
+  const visibleCards = `$$(".method-card").filter((e) => e.getClientRects().length).length`;
+  check(`${tag} home shows the logo and product name`, await run(`$(".home-logo").naturalWidth > 0 && txt("#home-title")`), lang === "ar" ? "تقدير 456" : "Estimate 456");
+  check(`${tag} home lead sentence`, await run(`txt(".home-head p")`), (v) => v.length > 20 && v.length < 160);
+  check(`${tag} home offers exactly two parts`, await run(`$$(".part-option").length`), 2);
+  check(`${tag} Part 1 is chosen first and shows SLOC and FP only`, await run(`$("#part-tab-1").getAttribute("aria-selected") + " " + ${visibleCards} + " " + $$("#part-panel-1 .method-card a").map((a) => a.getAttribute("href")).join(",")`), "true 2 #sloc,#fp");
+  await run(`click("#part-tab-2")`);
+  check(`${tag} choosing Part 2 shows its six methods only`, await run(`$("#part-panel-1").hidden + " " + ${visibleCards} + " " + location.hash`), "true 6 #home/part2");
+  check(`${tag} Part 2 lists every COCOMO level`, await run(`$$("#part-panel-2 .method-card a").map((a) => a.getAttribute("href")).join(",")`), "#planning/hours,#defects,#cocomo/basic,#cocomo/intermediate,#cocomo/advanced,#delphi");
+  check(`${tag} method cards show what they calculate and the main input`, await run(`$$("#part-panel-2 .method-card").every((c) => c.querySelectorAll("dd").length === 2 && c.querySelectorAll("dd")[0].innerText.trim() && c.querySelectorAll("dd")[1].innerText.trim())`), true);
+  check(`${tag} home is not crowded: no tables or results`, await run(`$$("#page-home table, #page-home .result, #page-home .trace").length`), 0);
+  check(`${tag} tables and comparison are secondary links`, await run(`$$(".home-secondary a").map((a) => a.getAttribute("href") + ":" + a.classList.contains("btn")).join(",")`), "#tables:false,#summary:false");
+  await open("home/part2");
+  check(`${tag} #home/part2 opens Part 2`, await run(`$("#part-tab-2").getAttribute("aria-selected")`), "true");
 
   // SLOC
   await open("sloc");
@@ -61,6 +72,9 @@ async function functional(lang) {
   check(`${tag} SLOC invalid result`, await run(`$("#slocProductivity").getAttribute("aria-invalid") + " " + ($("#slocResult .result-empty") !== null)`), "true true");
   await run(`click("#loadSlocExample")`);
   check(`${tag} SLOC lecture example restores`, await run(`strong("#slocResult")`), "53.55");
+  check(`${tag} SLOC shows Way 1 and Way 2`, await run(`$$("#slocTrace .trace > li").length`), 6);
+  check(`${tag} SLOC Way 2 cost`, await run(`txt("#slocTrace .trace > li:nth-child(5)")`), /43,160[\s\S]*33,200[\s\S]*\$1\.29[\s\S]*\$42,838\.71/);
+  check(`${tag} SLOC Way 2 effort`, await run(`txt("#slocTrace .trace > li:nth-child(6) .line")`), /42,838\.71[\s\S]*800[\s\S]*53\.55/);
 
   // Function Points
   await open("fp");
@@ -70,12 +84,23 @@ async function functional(lang) {
   check(`${tag} FP 14 questions`, await run(`$$("#gscRows .rating").length`), 14);
   check(`${tag} FP explains each Fi value`, await run(`txt("#fiEquation")`), /F1\(2\)[\s\S]*F14\(4\)[\s\S]*48/);
   check(`${tag} FP explains count times weight`, await run(`txt("#fp-total-inputs")`), /13\s*×\s*4\s*=\s*52/);
+  check(`${tag} FP every row has its own weight`, await run(`["inputs", "outputs", "inquiries", "files", "interfaces"].map((k) => txt("#fp-total-" + k)).join(" | ")`), /13 × 4 = 52 \| 10 × 5 = 50 \| 3 × 4 = 12 \| 4 × 10 = 40 \| 2 × 7 = 14/);
+  check(`${tag} FP shows one step at a time`, await run(`[$("#fpCountCard").hidden, $("#fpAdjustCard").hidden, $("#fpConvertCard").hidden].join(" ")`), "false true true");
+  await run(`$("#fpCountCard .step-nav .btn-primary").click()`);
+  check(`${tag} FP next step opens F1 to F14`, await run(`[$("#fpCountCard").hidden, $("#fpAdjustCard").hidden, location.hash].join(" ")`), "true false #fp/adjust");
+  check(`${tag} FP shows F1 to F14 with their meaning`, await run(`$$("#gscRows .rating-q b").map((b) => b.innerText).join(",") + " " + ptxt("#gsc-pick-0")`), new RegExp("^F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,F13,F14 F1 = 2"));
+  check(`${tag} FP LOC step names the language and Table 1`, await run(`ptxt("#fpTrace .trace > li:nth-child(4) .formula")`), /SQL\/Oracle = 12/);
+  check(`${tag} FP SafeHome note hidden for Example 1`, await run(`$("#fpExampleNote").hidden`), true);
   await run(`pickRadio("fp-inputs", "complex")`);
   check(`${tag} FP complexity changes CT`, await run(`txt("#fpCountTotal")`), "194");
   await run(`pickRadio("gsc-0", "5")`);
   check(`${tag} FP rating changes Sum Fi`, await run(`txt("#gscTotal")`), "51");
   await run(`pickRadio("language", "C")`);
   check(`${tag} FP language changes LOC`, await run(`txt("#fpResult") + " " + txt("#stepConvert")`), /28,800 LOC[\s\S]*128 LOC\/FP/);
+  await run(`click("#loadSafeHome")`);
+  check(`${tag} FP SafeHome says the F split is not from the lecture`, await run(`$("#fpExampleNote").hidden + " " + strong("#fpResult")`), "false 55.5");
+  await run(`click("#loadFpExample")`);
+  await run(`pickRadio("fp-inputs", "complex"); pickRadio("gsc-0", "5"); pickRadio("language", "C")`);
   await run(`setVal($("#fp-count-files"), "-1")`);
   check(`${tag} FP invalid count`, await run(`txt("#fp-count-files-error")`), (v) => v.length > 5);
   await run(`click("#loadSafeHome")`);
@@ -132,6 +157,30 @@ async function functional(lang) {
   check(`${tag} intermediate mode change`, await run(`strong("#intermediateResult")`), (v) => v !== "10.14");
   await run(`click("#loadCocomoExample")`);
   check(`${tag} insurance example`, await run(`strong("#intermediateResult")`), "15.61");
+  check(`${tag} intermediate shows C and K`, await run(`ptxt("#intermediateTrace .trace > li:first-child .line")`), /C = 3\.2[\s\S]*K = 1\.05/);
+  check(`${tag} intermediate EAF names every driver used`, await run(`txt("#intermediateTrace .trace > li:nth-child(3) .line")`), /SPC[\s\S]*1\.2[\s\S]*ETC[\s\S]*1\.35[\s\S]*AC[\s\S]*0\.95[\s\S]*=[\s\S]*1\.539/);
+  check(`${tag} every COCOMO tab explains the missing duration equations`, await run(`$$("#page-cocomo .note").filter((n) => n.innerText.includes("(D)")).length`), 3);
+  await open("cocomo/basic");
+  check(`${tag} basic compares all three modes`, await run(`$$("#basicResult .compare tbody tr").map((r) => r.lastElementChild.innerText).join(" ")`), "13.72 14.78 14.17");
+  await open("cocomo/advanced");
+  check(`${tag} Advanced COCOMO tab opens`, await run(`$("#tab-advanced").getAttribute("aria-selected") + " " + $("#panel-advanced").hidden`), "true false");
+  check(`${tag} Advanced placeholders equal Ei`, await run(`strong("#advancedResult")`), "10.14");
+  check(`${tag} Advanced trace has one step per phase`, await run(`$$("#advancedTrace .trace > li").length`), 8);
+  await run(`setVal($("#phase-eaf-0"), "1.2"); setVal($("#phase-eaf-3"), "0.9")`);
+  check(`${tag} Advanced phase EAF changes E`, await run(`strong("#advancedResult")`), "10.4");
+  await run(`pickRadio("advancedMode", "embedded")`);
+  check(`${tag} Advanced embedded mode`, await run(`ptxt("#advancedTrace .trace > li:first-child .line")`), /C = 2\.8[\s\S]*K = 1\.20/);
+  await run(`setVal($("#phase-share-1"), "30")`);
+  check(`${tag} Advanced shares must add up to 100`, await run(`$("#phaseTotal").classList.contains("is-error") + " " + ($("#advancedResult .result-empty") !== null)`), "true true");
+  await run(`setVal($("#phase-share-1"), "25"); setVal($("#phase-eaf-2"), "0")`);
+  check(`${tag} Advanced invalid phase EAF`, await run(`$("#phase-eaf-2").getAttribute("aria-invalid") + " " + (txt("#phase-eaf-2-error").length > 5)`), "true true");
+  await run(`setVal($("#phase-eaf-2"), "1")`);
+  await run(`click("#addPhase")`);
+  check(`${tag} Advanced add phase`, await run(`$$("#phaseRows .phase").length`), 5);
+  await run(`$$(".remove-phase")[4].click()`);
+  check(`${tag} Advanced remove phase`, await run(`$$("#phaseRows .phase").length + " " + ($("#advancedResult .result-empty") === null)`), "4 true");
+  await run(`click("#advUseIntermediate")`);
+  check(`${tag} Advanced with the Intermediate EAF equals Intermediate E`, await run(`strong("#advancedResult")`), "15.61");
 
   // Delphi
   await open("delphi");
@@ -157,13 +206,13 @@ async function functional(lang) {
 
   // Summary
   await open("summary");
-  check(`${tag} summary chart bars`, await run(`$$("#summaryChart .bar").length`), 5);
-  check(`${tag} summary rows`, await run(`$$("#summaryRows tr").length`), 6);
+  check(`${tag} summary chart bars`, await run(`$$("#summaryChart .bar").length`), 6);
+  check(`${tag} summary rows`, await run(`$$("#summaryRows tr").length`), 7);
   await run(`window.__csv = null; const make = URL.createObjectURL; URL.createObjectURL = (blob) => { window.__csv = blob; return make.call(URL, blob); }`);
   await run(`click("#downloadCsv")`);
   check(`${tag} CSV download toast`, await toast(), (v) => v.length > 3);
   const csv = await run(`window.__csv ? window.__csv.text() : ""`);
-  check(`${tag} CSV has 6 data rows and a header`, csv.split(String.fromCharCode(13, 10)).length, 7);
+  check(`${tag} CSV has 7 data rows and a header`, csv.split(String.fromCharCode(13, 10)).length, 8);
   check(`${tag} CSV has no bidi isolate marks`, [...csv].some((c) => c.charCodeAt(0) >= 0x2066 && c.charCodeAt(0) <= 0x2069), false);
   if (lang === "ar") {
     check(`${tag} Arabic result isolates inserted values`, await run(`[...txt("#summaryRows")].some((c) => c.charCodeAt(0) === 0x2068)`), true);
@@ -196,7 +245,7 @@ async function functional(lang) {
   }
   await open("home");
   check(`${tag} top bar has no project field`, await run(`$("#projectName") === null && $(".project-field") === null`), true);
-  check(`${tag} overview description`, await run(`txt("#homeDesc")`), (v) => v.length > 10);
+
   await open("sloc");
   await run(`setVal($("#slocLoc"), "1000"); click("#resetAll")`);
   check(`${tag} reset to lecture examples`, await run(`strong("#slocResult")`), "53.55");
@@ -243,7 +292,7 @@ async function productFeatures() {
   check("[product] FP choice kept after reload", await run(`txt("#fpCountTotal")`), "194");
   await openKeep("delphi");
   check("[product] added Delphi task kept after reload", await run(`$$("#delphiRows tr").length`), 3);
-  check("[product] saved data holds inputs, not results", await run(`const w = JSON.parse(localStorage.getItem("cpit456-workspace")); w.v === 1 && !("latest" in w) && w.fields.slocLoc === "40000"`), true);
+  check("[product] saved data holds inputs, not results", await run(`const w = JSON.parse(localStorage.getItem("cpit456-workspace")); w.v === 2 && !("latest" in w) && w.fields.slocLoc === "40000"`), true);
 
   // A damaged saved workspace falls back to the lecture examples.
   await run(`localStorage.setItem("cpit456-workspace", "{not json")`);
@@ -277,15 +326,17 @@ async function productFeatures() {
   check("[product] summary bars use method colors", await run(`new Set($$("#summaryChart .bar-fill").map((e) => getComputedStyle(e).backgroundColor)).size`), 3);
 
   // Footer and a changed result highlight.
-  check("[product] footer shows product, author, and course", await run(`txt(".site-foot")`), /Estimate 456[\s\S]*CPIT 456[\s\S]*Hassan Asiri/);
-  check("[product] footer links to the public repository", await run(`$("#repoLink").href + " " + $("#repoLink").target`), "https://github.com/HsnAQA/estimate-456 _blank");
+  check("[product] footer shows logo, product, author, repository, and course", await run(`($(".foot-brand img").naturalWidth > 0) + " " + txt(".site-foot")`), /^true Estimate 456[\s\S]*Made by Hassan Asiri[\s\S]*github\.com\/HsnAQA\/estimate-456[\s\S]*CPIT 456/);
+  check("[product] footer has a visible GitHub icon", await run(`const r = $("#repoLink .gh-mark").getBoundingClientRect(); r.width >= 16 && r.height >= 16 && $("#repoLink .gh-mark path").getAttribute("d").length > 100`), true);
+  check("[product] footer links to the live site", await run(`$("#siteLink").href`), "https://estimate-456.vercel.app/");
+  check("[product] footer links to the public repository", await run(`$("#repoLink").href + " " + $("#repoLink").target + " " + $("#repoLink").rel`), "https://github.com/HsnAQA/estimate-456 _blank noopener noreferrer");
   await open("sloc");
   await run(`setVal($("#slocLoc"), "34000")`);
   check("[product] changed result is highlighted", await run(`$("#slocResult .result-value strong").classList.contains("changed")`), true);
 
   // Touch targets are at least 44 px tall on a phone.
   await b.viewport(375, 812);
-  for (const page of ["home", "sloc", "fp", "planning", "cocomo", "delphi", "defects", "summary", "tables"]) {
+  for (const page of ["home", "home/part2", "sloc", "fp", "fp/adjust", "planning", "cocomo", "cocomo/intermediate", "cocomo/advanced", "delphi", "defects", "summary", "tables"]) {
     await open(page);
     const small = await run(`JSON.stringify($$(".topbar button, .topbar input, main button, main select, main input:not([type=radio]):not([type=checkbox]), main .seg label, main a.btn").filter((e) => e.getClientRects().length && getComputedStyle(e).visibility !== "hidden").filter((e) => e.getBoundingClientRect().height < 43.5).map((e) => (e.id || e.className || e.tagName) + ":" + Math.round(e.getBoundingClientRect().height)).slice(0, 5))`);
     check(`[product] 375 ${page} touch targets at least 44 px`, small, "[]");
@@ -294,7 +345,7 @@ async function productFeatures() {
 }
 
 async function layout() {
-  const pages = ["home", "sloc", "fp", "planning", "cocomo", "delphi", "defects", "summary", "tables"];
+  const pages = ["home", "home/part2", "sloc", "fp", "fp/adjust", "planning", "cocomo", "cocomo/advanced", "delphi", "defects", "summary", "tables"];
   for (const lang of ["en", "ar"]) {
     for (const theme of ["light", "dark"]) {
       await open("home");

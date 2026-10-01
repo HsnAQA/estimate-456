@@ -24,11 +24,13 @@ spacing:
 
 # Current web design (2026-10-02)
 
-The web app (`web-app/`) is now Estimate 456. Its navigation follows the source lecture in two explicit parts: Part 1 for SLOC and Function Points, then Part 2 for planning, quality, COCOMO, and Delphi. The home page teaches that route before presenting any calculator. Where `stitch/design.md` and the list below disagree, the list below wins.
+The web app (`web-app/`) is now Estimate 456. Its navigation follows the source lecture in two explicit parts: Part 1 for SLOC and Function Points, then Part 2 for planning, quality, COCOMO, and Delphi. The home page shows the logo and name, one sentence, and one question: Part 1 or Part 2. Only the chosen part's method cards appear, each with what it calculates, its main input, and one Open button. Course tables and result comparison are quiet text links below the cards. No tables or results appear on the home page. Where `stitch/design.md` and the list below disagree, the list below wins.
 
-- Product identity: the short name is `Estimate 456`, Arabic `تقدير 456`. The project-owned logo is a geometric E with three data points. No previous product name appears in the interface.
+- Product identity: the short name is `Estimate 456`, Arabic `تقدير 456`. The project-owned logo is a rounded blue tile with a snow-white geometric E and one data point at the end of the middle bar (`assets/brand/estimate-456-mark.svg`, PNG sizes beside it). It reads at 16 px. No previous product name appears in the interface.
 - Teaching rule: derived values cannot appear without context. Function Point rows show `count × weight = row total`. F1 through F14 are visible beside their questions, and the live equation shows every selected value that produces Sum Fi.
-- Information architecture: Part 1 maps to Chapter 1. Part 2 maps to Chapter 4. Reference tables and result comparison are supporting tools, not competing top-level methods.
+- Information architecture: Part 1 maps to Chapter 1. Part 2 maps to Chapter 4. Reference tables and result comparison are supporting tools, not competing top-level methods. COCOMO has three tabs: Basic, Intermediate, and Advanced.
+- Progressive disclosure: Function Points shows one step at a time (Count, Adjust, Convert) with Next and Back buttons, while the result and worked solution stay beside it on wide screens and below it on narrow screens.
+- Footer: logo, name, Made by Hassan Asiri, a GitHub link with the GitHub mark and the repository address, a live site link, and one line about the lecture source.
 
 - Light is the main theme and is snow white: page `--bg: #f4f6f9`, panels `--surface: #fcfcfd`, inputs `--field: #fdfdfe`. No surface uses pure white. Panels have a 1 px hairline shadow in light mode only.
 - One interaction color: `--accent: #2b5cb8` light, `#82a9f0` dark, for buttons, links, focus, and selection. Green, amber, and red appear only for accepted, warning, and error states.

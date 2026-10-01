@@ -8,6 +8,7 @@ from calculations import (
     COCOMO_MODE_LABELS,
     COCOMO_MODES,
     DRIVER_RATINGS,
+    calculate_advanced_cocomo,
     calculate_cocomo,
     calculate_delphi,
     check_number,
@@ -18,6 +19,7 @@ from ui_data import (
     DRIVER_COLUMN,
     EXAMPLES,
     LECTURE_ROUNDED,
+    PHASE_COLUMNS,
     applied_edits,
     edit_table,
     editor_key,
@@ -27,6 +29,7 @@ from ui_data import (
     money,
     number,
     replace_table,
+    reset_phases,
     result_table,
     set_all_drivers_average,
     show_errors,
@@ -59,8 +62,13 @@ def on_driver_change() -> None:
     replace_table("driver_input", frame)
 
 
-st.caption("Sections 4.3 and 4.4. Estimate effort with Basic or Intermediate COCOMO, then review expert estimates with the Delphi technique.")
-basic, intermediate, delphi = st.tabs(["Basic COCOMO", "Intermediate COCOMO", "Delphi"])
+DURATION_NOTE = (
+    "Duration (D) is not calculated. Page 9 of the lecture says each mode has a development time equation, "
+    "but the equations are not printed, so no duration constants are available from the course material."
+)
+
+st.caption("Sections 4.3 and 4.4. Estimate effort with Basic, Intermediate, or Advanced COCOMO, then review expert estimates with the Delphi technique.")
+basic, intermediate, advanced, delphi = st.tabs(["Basic COCOMO", "Intermediate COCOMO", "Advanced COCOMO", "Delphi"])
 
 with basic:
     with st.container(horizontal=True, vertical_alignment="center"):
@@ -94,10 +102,23 @@ with basic:
             example = EXAMPLES["basicCocomo"]
             if kloc == example["kloc"] and mode == example["mode"]:
                 st.info(LECTURE_ROUNDED["basicCocomo"], icon=":material/info:")
-        st.caption(
-            "Duration is not calculated. The lecture introduces a Development time (D) equation for each mode "
-            "but does not print those equations, so no duration constants are available from the course material."
-        )
+            st.markdown("**The same size in each project type**")
+            st.dataframe(
+                pd.DataFrame(
+                    [
+                        {
+                            "Software Project Type": COCOMO_MODE_LABELS[item] + (" (selected)" if item == mode else ""),
+                            "C": f"{calculate_cocomo(kloc, item).c:.1f}",
+                            "K": f"{calculate_cocomo(kloc, item).k:.2f}",
+                            "Ei (person-months)": number(calculate_cocomo(kloc, item).initial_effort_person_months),
+                        }
+                        for item in COCOMO_MODES
+                    ]
+                ),
+                hide_index=True,
+                width="stretch",
+            )
+        st.caption(DURATION_NOTE)
 
 with intermediate:
     with st.container(horizontal=True, vertical_alignment="center"):
@@ -178,6 +199,7 @@ with intermediate:
             if i_kloc == example["kloc"] and i_mode == example["mode"] and multipliers == expected:
                 st.info(LECTURE_ROUNDED["intermediateCocomo"], icon=":material/info:")
 
+    st.caption(DURATION_NOTE)
     st.markdown("**Table 10. Intermediate COCOMO Example**")
     st.caption("Customized insurance project with four modules, 3 KLOC in total, organic type.")
     st.table(
@@ -189,6 +211,68 @@ with intermediate:
             index=pd.Index([item["code"] for item in EXAMPLES["insurance"]["drivers"]], name="Applicable cost driver attributes"),
         )
     )
+
+with advanced:
+    with st.container(horizontal=True, vertical_alignment="center"):
+        st.markdown("**Advanced COCOMO, section 4.3.3**")
+        st.button("Reset phases", icon=":material/restart_alt:", on_click=reset_phases, key="advanced_reset")
+    st.code("Ei = C x (KLOC)^K. Phase effort = Ei x Share x Phase EAF. E = sum of the phase efforts.", language=None)
+    st.info(
+        "The lecture says Advanced COCOMO uses the Intermediate steps and assigns cost drivers to each phase, "
+        "such as analysis and design. It prints no phase split and no phase multipliers, so enter both. "
+        "The default phases are placeholders with EAF 1.00, so their total equals Ei.",
+        icon=":material/info:",
+    )
+    first, second, third = st.columns(3)
+    a_kloc = first.number_input("Project size (KLOC)", min_value=0.0, step=0.5, key="advanced_kloc")
+    a_mode = second.selectbox("Software project type", list(COCOMO_MODES), format_func=lambda item: COCOMO_MODE_LABELS[item], key="advanced_mode")
+    a_rate = third.number_input("Labor rate (USD/person-month)", min_value=0.0, step=50.0, key="advanced_rate")
+    st.caption("Add or remove phases with the table toolbar. Shares must add up to 100%.")
+    phases = edit_table(
+        "phase_input",
+        num_rows="dynamic",
+        hide_index=True,
+        column_config={
+            "Phase": st.column_config.TextColumn(required=True),
+            "Share of Ei (%)": st.column_config.NumberColumn(min_value=0.0, max_value=100.0, required=True),
+            "Phase EAF": st.column_config.NumberColumn(min_value=0.0, step=0.01, format="%.2f", required=True),
+        },
+        width="stretch",
+    )
+    phase_errors = []
+    phase_rows = []
+    for position, (_, row) in enumerate(phases.iterrows(), start=1):
+        errors = [
+            check_number(row[PHASE_COLUMNS[1]], "Phase share", maximum=100),
+            check_number(row[PHASE_COLUMNS[2]], "Phase EAF", positive=True),
+        ]
+        phase_errors.extend(f"Row {position}: {error}" for error in errors if error)
+        phase_rows.append({"share": row[PHASE_COLUMNS[1]], "eaf": row[PHASE_COLUMNS[2]]})
+    with st.container(border=True):
+        st.markdown("**Advanced COCOMO result**")
+        if not phase_rows:
+            phase_errors.append("Add at least one phase.")
+        elif not phase_errors:
+            share_total = sum(float(item["share"]) for item in phase_rows)
+            if abs(share_total - 100) > 1e-9:
+                phase_errors.append(f"Phase shares must add up to 100%. They add up to {number(share_total)}%.")
+        if show_errors([check_number(a_kloc, "KLOC"), check_number(a_rate, "Labor rate"), *phase_errors]):
+            result = calculate_advanced_cocomo(a_kloc, a_mode, phase_rows, a_rate)
+            st.metric("Total effort, E (person-months)", number(result.total_effort_person_months))
+            result_table([
+                ("Software project type", f"{COCOMO_MODE_LABELS[a_mode]} (C = {result.c:.1f}, K = {result.k:.2f})"),
+                ("Initial effort (Ei)", f"{number(result.initial_effort_person_months)} person-months"),
+                *[
+                    (
+                        f"{name}: Ei x {number(item.share_percent)}% x {number(item.eaf, 4)}",
+                        f"{number(item.effort_person_months)} person-months",
+                    )
+                    for name, item in zip(phases[PHASE_COLUMNS[0]].tolist(), result.phases)
+                ],
+                ("Weighted EAF", number(result.weighted_eaf, 4)),
+                ("Estimated cost", money(result.total_cost)),
+            ])
+    st.caption(DURATION_NOTE)
 
 with delphi:
     with st.container(horizontal=True, vertical_alignment="center"):

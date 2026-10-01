@@ -22,12 +22,16 @@
         "costPerLoc": 1.2903225806451613,
         "roundedEffort": 54,
         "roundedDuration": 9.0,
-        "roundedTotalCost": 43200
+        "roundedTotalCost": 43200,
+        "way2Cost": 42838.709677419356,
+        "roundedCostPerLoc": 1.3,
+        "roundedWay2Cost": 43160.0
       },
       "lecture": {
         "effort": "53.54 = 54 person-months",
         "duration": "54 / 6 = 9 months",
-        "totalCost": "54 x 800 = $43,200"
+        "totalCost": "54 x 800 = $43,200",
+        "way2": "800/620 = $1.29 = $1.3. 33,200 x 1.3 = $43,160 = $43,200. 43,200/800 = 54 person-months"
       }
     },
     {
@@ -47,7 +51,10 @@
         "costPerLoc": 1.2903225806451613,
         "roundedEffort": 3,
         "roundedDuration": 3.0,
-        "roundedTotalCost": 2400
+        "roundedTotalCost": 2400,
+        "way2Cost": 2000.0,
+        "roundedCostPerLoc": 1.3,
+        "roundedWay2Cost": 2015.0
       }
     },
     {
@@ -67,7 +74,10 @@
         "costPerLoc": 1.2903225806451613,
         "roundedEffort": 0,
         "roundedDuration": 0.0,
-        "roundedTotalCost": 0
+        "roundedTotalCost": 0,
+        "way2Cost": 0.0,
+        "roundedCostPerLoc": 1.3,
+        "roundedWay2Cost": 0.0
       }
     },
     {
@@ -515,6 +525,229 @@
         "variance": 0.0,
         "accepted": true
       }
+    },
+    {
+      "id": "cocomo-basic-organic-12k",
+      "calc": "cocomo",
+      "source": "Independent case: Basic COCOMO, organic, 12.5 KLOC (Table 8 constants)",
+      "input": {
+        "kloc": 12.5,
+        "mode": "organic",
+        "multipliers": [],
+        "laborRate": 0
+      },
+      "expected": {
+        "c": 3.2,
+        "k": 1.05,
+        "initialEffort": 45.384284390880936,
+        "eaf": 1.0,
+        "adjustedEffort": 45.384284390880936,
+        "totalCost": 0.0
+      }
+    },
+    {
+      "id": "cocomo-intermediate-embedded",
+      "calc": "cocomo",
+      "source": "Independent case: Intermediate COCOMO, embedded, 10 KLOC, two user multipliers",
+      "input": {
+        "kloc": 10,
+        "mode": "embedded",
+        "multipliers": [
+          1.15,
+          0.9
+        ],
+        "laborRate": 1000
+      },
+      "expected": {
+        "c": 2.8,
+        "k": 1.2,
+        "initialEffort": 44.37700938891117,
+        "eaf": 1.035,
+        "adjustedEffort": 45.930204717523054,
+        "totalCost": 45930.204717523055
+      }
+    },
+    {
+      "id": "cocomo-intermediate-semidetached",
+      "calc": "cocomo",
+      "source": "Independent case: Intermediate COCOMO, semi-detached, 25 KLOC, three user multipliers",
+      "input": {
+        "kloc": 25,
+        "mode": "semi-detached",
+        "multipliers": [
+          1.1,
+          1.07,
+          0.95
+        ],
+        "laborRate": 500
+      },
+      "expected": {
+        "c": 3.0,
+        "k": 1.12,
+        "initialEffort": 110.36060291724367,
+        "eaf": 1.1181500000000002,
+        "adjustedEffort": 123.39970815191603,
+        "totalCost": 61699.854075958014
+      }
+    },
+    {
+      "id": "cocomo-advanced-neutral",
+      "calc": "advancedCocomo",
+      "source": "Advanced COCOMO default placeholders: four phases of 25% with EAF 1.00 equal Ei",
+      "input": {
+        "kloc": 3,
+        "mode": "organic",
+        "phases": [
+          {
+            "share": 25,
+            "eaf": 1
+          },
+          {
+            "share": 25,
+            "eaf": 1
+          },
+          {
+            "share": 25,
+            "eaf": 1
+          },
+          {
+            "share": 25,
+            "eaf": 1
+          }
+        ],
+        "laborRate": 800
+      },
+      "expected": {
+        "c": 3.2,
+        "k": 1.05,
+        "initialEffort": 10.142086162075564,
+        "phases": [
+          {
+            "share": 25.0,
+            "eaf": 1.0,
+            "effort": 2.535521540518891
+          },
+          {
+            "share": 25.0,
+            "eaf": 1.0,
+            "effort": 2.535521540518891
+          },
+          {
+            "share": 25.0,
+            "eaf": 1.0,
+            "effort": 2.535521540518891
+          },
+          {
+            "share": 25.0,
+            "eaf": 1.0,
+            "effort": 2.535521540518891
+          }
+        ],
+        "shareTotal": 100.0,
+        "weightedEaf": 1.0,
+        "totalEffort": 10.142086162075564,
+        "totalCost": 8113.668929660452
+      }
+    },
+    {
+      "id": "cocomo-advanced-embedded",
+      "calc": "advancedCocomo",
+      "source": "Independent case: Advanced COCOMO, embedded, 20 KLOC, four user phases",
+      "input": {
+        "kloc": 20,
+        "mode": "embedded",
+        "phases": [
+          {
+            "share": 20,
+            "eaf": 1.1
+          },
+          {
+            "share": 30,
+            "eaf": 1.0
+          },
+          {
+            "share": 35,
+            "eaf": 0.95
+          },
+          {
+            "share": 15,
+            "eaf": 1.2
+          }
+        ],
+        "laborRate": 1000
+      },
+      "expected": {
+        "c": 2.8,
+        "k": 1.2,
+        "initialEffort": 101.95159536946048,
+        "phases": [
+          {
+            "share": 20.0,
+            "eaf": 1.1,
+            "effort": 22.42935098128131
+          },
+          {
+            "share": 30.0,
+            "eaf": 1.0,
+            "effort": 30.58547861083814
+          },
+          {
+            "share": 35.0,
+            "eaf": 0.95,
+            "effort": 33.8989054603456
+          },
+          {
+            "share": 15.0,
+            "eaf": 1.2,
+            "effort": 18.351287166502885
+          }
+        ],
+        "shareTotal": 100.0,
+        "weightedEaf": 1.0325,
+        "totalEffort": 105.26502221896794,
+        "totalCost": 105265.02221896795
+      }
+    },
+    {
+      "id": "cocomo-advanced-semidetached",
+      "calc": "advancedCocomo",
+      "source": "Independent case: Advanced COCOMO, semi-detached, 8 KLOC, two user phases",
+      "input": {
+        "kloc": 8,
+        "mode": "semi-detached",
+        "phases": [
+          {
+            "share": 40,
+            "eaf": 1.05
+          },
+          {
+            "share": 60,
+            "eaf": 0.9
+          }
+        ],
+        "laborRate": 0
+      },
+      "expected": {
+        "c": 3.0,
+        "k": 1.12,
+        "initialEffort": 30.80222154150971,
+        "phases": [
+          {
+            "share": 40.0,
+            "eaf": 1.05,
+            "effort": 12.93693304743408
+          },
+          {
+            "share": 60.0,
+            "eaf": 0.9,
+            "effort": 16.63319963241524
+          }
+        ],
+        "shareTotal": 100.0,
+        "weightedEaf": 0.9600000000000001,
+        "totalEffort": 29.570132679849323,
+        "totalCost": 0.0
+      }
     }
   ],
   "invalid": [
@@ -811,6 +1044,69 @@
         "threshold": 101
       },
       "error": "Acceptable variance must be 100 or less."
+    },
+    {
+      "id": "cocomo-advanced-share-sum",
+      "calc": "advancedCocomo",
+      "input": {
+        "kloc": 3,
+        "mode": "organic",
+        "phases": [
+          {
+            "share": 30,
+            "eaf": 1
+          },
+          {
+            "share": 30,
+            "eaf": 1
+          }
+        ],
+        "laborRate": 0
+      },
+      "error": "Phase shares must add up to 100%. They add up to 60%."
+    },
+    {
+      "id": "cocomo-advanced-no-phases",
+      "calc": "advancedCocomo",
+      "input": {
+        "kloc": 3,
+        "mode": "organic",
+        "phases": [],
+        "laborRate": 0
+      },
+      "error": "Add at least one phase."
+    },
+    {
+      "id": "cocomo-advanced-zero-eaf",
+      "calc": "advancedCocomo",
+      "input": {
+        "kloc": 3,
+        "mode": "organic",
+        "phases": [
+          {
+            "share": 100,
+            "eaf": 0
+          }
+        ],
+        "laborRate": 0
+      },
+      "error": "Phase EAF must be greater than 0."
+    },
+    {
+      "id": "cocomo-advanced-share-above-100",
+      "calc": "advancedCocomo",
+      "input": {
+        "kloc": 3,
+        "mode": "organic",
+        "phases": [
+          {
+            "share": 120,
+            "eaf": 1
+          }
+        ],
+        "laborRate": 0
+      },
+      "error": "Phase share must be 100 or less."
     }
   ],
   "formatting": [

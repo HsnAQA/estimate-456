@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from calculations import (
+    calculate_advanced_cocomo,
     calculate_cocomo,
     calculate_defect_density,
     calculate_delphi,
@@ -43,6 +44,9 @@ def _sloc(i: dict[str, Any]) -> dict[str, Any]:
         "roundedEffort": r.rounded_effort,
         "roundedDuration": r.rounded_duration,
         "roundedTotalCost": r.rounded_total_cost,
+        "way2Cost": r.way2_cost,
+        "roundedCostPerLoc": r.rounded_cost_per_loc,
+        "roundedWay2Cost": r.rounded_way2_cost,
     }
 
 
@@ -93,6 +97,20 @@ def _cocomo(i: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _advanced(i: dict[str, Any]) -> dict[str, Any]:
+    r = calculate_advanced_cocomo(i["kloc"], i["mode"], i["phases"], i["laborRate"])
+    return {
+        "c": r.c,
+        "k": r.k,
+        "initialEffort": r.initial_effort_person_months,
+        "phases": [{"share": p.share_percent, "eaf": p.eaf, "effort": p.effort_person_months} for p in r.phases],
+        "shareTotal": r.share_total_percent,
+        "weightedEaf": r.weighted_eaf,
+        "totalEffort": r.total_effort_person_months,
+        "totalCost": r.total_cost,
+    }
+
+
 def _delphi(i: dict[str, Any]) -> dict[str, Any]:
     r = calculate_delphi(i["maximum"], i["minimum"], i["threshold"])
     return {"variance": r.variance_percent, "accepted": r.accepted}
@@ -105,6 +123,7 @@ CALCULATIONS: dict[str, Callable[[dict[str, Any]], dict[str, Any]]] = {
     "fpProductivityPlan": _productivity,
     "defectDensity": lambda i: {"density": calculate_defect_density(i["defects"], i["fp"])},
     "cocomo": _cocomo,
+    "advancedCocomo": _advanced,
     "delphi": _delphi,
 }
 
@@ -131,6 +150,10 @@ def assert_close(test: Any, actual: Any, expected: Any, where: str, tolerance: d
     elif isinstance(expected, dict):
         for key, value in expected.items():
             assert_close(test, actual[key], value, f"{where}.{key}", tolerance)
+    elif isinstance(expected, list):
+        test.assertEqual(len(actual), len(expected), f"{where}: length")
+        for index, value in enumerate(expected):
+            assert_close(test, actual[index], value, f"{where}[{index}]", tolerance)
     else:
         limit = max(tolerance["absolute"], tolerance["relative"] * abs(expected))
         test.assertLessEqual(abs(actual - expected), limit, f"{where}: expected {expected}, received {actual}")
