@@ -393,7 +393,6 @@
     "field.phaseEaf": ["Phase EAF", "EAF المرحلة"],
     "toast.usedIntermediate": ["Size, type, and EAF {eaf} copied from Intermediate COCOMO.", "تم نسخ الحجم والنوع وEAF {eaf} من COCOMO المتوسط."],
     "toast.noIntermediate": ["Fix the Intermediate COCOMO inputs first.", "أصلح مدخلات COCOMO المتوسط أولا."],
-    "foot.live": ["Live site", "الموقع المنشور"],
 
     "tables.title": ["Course table library", "مكتبة جداول المقرر"],
     "tables.desc": ["All 11 tables from the CPIT 456 lecture.", "جميع الجداول الإحدى عشرة من محاضرة CPIT 456."],

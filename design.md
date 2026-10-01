@@ -30,7 +30,7 @@ The web app (`web-app/`) is now Estimate 456. Its navigation follows the source 
 - Teaching rule: derived values cannot appear without context. Function Point rows show `count × weight = row total`. F1 through F14 are visible beside their questions, and the live equation shows every selected value that produces Sum Fi.
 - Information architecture: Part 1 maps to Chapter 1. Part 2 maps to Chapter 4. Reference tables and result comparison are supporting tools, not competing top-level methods. COCOMO has three tabs: Basic, Intermediate, and Advanced.
 - Progressive disclosure: Function Points shows one step at a time (Count, Adjust, Convert) with Next and Back buttons, while the result and worked solution stay beside it on wide screens and below it on narrow screens.
-- Footer: logo, name, Made by Hassan Asiri, a GitHub link with the GitHub mark and the repository address, a live site link, and one line about the lecture source.
+- Footer: logo, name, Made by Hassan Asiri, a GitHub link with the GitHub mark and the repository address, and one line about the lecture source.
 
 - Light is the main theme and is snow white: page `--bg: #f4f6f9`, panels `--surface: #fcfcfd`, inputs `--field: #fdfdfe`. No surface uses pure white. Panels have a 1 px hairline shadow in light mode only.
 - One interaction color: `--accent: #2b5cb8` light, `#82a9f0` dark, for buttons, links, focus, and selection. Green, amber, and red appear only for accepted, warning, and error states.

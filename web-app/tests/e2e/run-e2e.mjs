@@ -283,9 +283,12 @@ async function productFeatures() {
 
   // Inputs are saved in the browser and come back after a reload.
   await run(`setVal($("#slocLoc"), "40000")`);
+  await b.sleep(400);
   await openKeep("fp");
   await run(`pickRadio("fp-inputs", "complex")`);
   await run(`click("#addDelphiTask")`);
+  // Saving is debounced by 250 ms; wait for it so the check does not race the reload.
+  await b.sleep(400);
   await openKeep("sloc");
   check("[product] SLOC input kept after reload", await run(`$("#slocLoc").value + " " + strong("#slocResult")`), "40000 64.52");
   await openKeep("fp");
@@ -328,7 +331,7 @@ async function productFeatures() {
   // Footer and a changed result highlight.
   check("[product] footer shows logo, product, author, repository, and course", await run(`($(".foot-brand img").naturalWidth > 0) + " " + txt(".site-foot")`), /^true Estimate 456[\s\S]*Made by Hassan Asiri[\s\S]*github\.com\/HsnAQA\/estimate-456[\s\S]*CPIT 456/);
   check("[product] footer has a visible GitHub icon", await run(`const r = $("#repoLink .gh-mark").getBoundingClientRect(); r.width >= 16 && r.height >= 16 && $("#repoLink .gh-mark path").getAttribute("d").length > 100`), true);
-  check("[product] footer links to the live site", await run(`$("#siteLink").href`), "https://estimate-456.vercel.app/");
+  check("[product] footer has no link to the site itself", await run(`$("#siteLink") === null && !$$(".site-foot a").some((a) => a.hostname === location.hostname)`), true);
   check("[product] footer links to the public repository", await run(`$("#repoLink").href + " " + $("#repoLink").target + " " + $("#repoLink").rel`), "https://github.com/HsnAQA/estimate-456 _blank noopener noreferrer");
   await open("sloc");
   await run(`setVal($("#slocLoc"), "34000")`);

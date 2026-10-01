@@ -99,5 +99,4 @@ All calculations run locally in the browser. Inputs are saved only in browser st
 
 Made by Hassan Asiri.
 
-- Live site: https://estimate-456.vercel.app
-- Repository: https://github.com/HsnAQA/estimate-456
+Live site: https://estimate-456.vercel.app
