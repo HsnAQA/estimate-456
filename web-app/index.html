@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Estimate 456: bilingual software project estimation with source-based formulas and worked solutions" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f6f7f8" />
+    <title>Estimate 456 | CPIT 456</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/brand/estimate-456-mark.svg" />
+    <script src="theme.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
+
+    <!-- icons:start (generated from assets/icons by tools/sync-icons.js) -->
+    <svg class="icon-sprite" aria-hidden="true" focusable="false">
+      <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+      <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6c-2-1.5-5-2-8-1.5V19c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V4.5C17 4 14 4.5 12 6z"/><path d="M12 6v14.5"/></symbol>
+      <symbol id="i-bug" viewBox="0 0 24 24"><rect x="8" y="7" width="8" height="13" rx="4"/><path d="M12 7V4M4 13h4M16 13h4M5 19l3-2M19 19l-3-2M5 7l3 2M19 7l-3 2"/></symbol>
+      <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+      <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+      <symbol id="i-code" viewBox="0 0 24 24"><path d="M9 7l-5 5 5 5M15 7l5 5-5 5"/></symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></symbol>
+      <symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-9V3"/><path d="M7.5 14h9"/></symbol>
+      <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7"/><path d="M6 9.5V20h12V9.5"/></symbol>
+      <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-reset" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v4h-4"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+      <symbol id="i-sigma" viewBox="0 0 24 24"><path d="M18 5H6l7 7-7 7h12"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+      <symbol id="i-tree" viewBox="0 0 24 24"><rect x="3" y="4" width="6" height="5" rx="1"/><rect x="15" y="4" width="6" height="5" rx="1"/><rect x="15" y="15" width="6" height="5" rx="1"/><path d="M9 6.5h6M6 9v8.5h9"/></symbol>
+      <symbol id="i-trend" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+      <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2A5 5 0 0 1 21 19"/></symbol>
+      <symbol id="i-warning" viewBox="0 0 24 24"><path d="M12 4L2.8 19.5h18.4z"/><path d="M12 10v4M12 17h.01"/></symbol>
+      <symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+    </svg>
+    <!-- icons:end -->
+
+    <aside id="sidebar" class="sidebar" data-i18n-attr="aria-label:nav.label">
+      <div class="brand">
+        <img class="brand-mark" src="../assets/brand/estimate-456-mark.svg" alt="" width="36" height="36" />
+        <span class="brand-text"><strong data-i18n="app.name">Estimate 456</strong><small data-i18n="app.course">CPIT 456</small></span>
+        <button id="closeNav" class="icon-btn only-drawer" type="button" data-i18n-attr="aria-label:menu.close"><svg class="icon"><use href="#i-close" /></svg></button>
+      </div>
+      <nav class="nav" data-i18n-attr="aria-label:nav.label">
+        <a href="#home" data-page="home"><svg class="icon"><use href="#i-home" /></svg><span data-i18n="nav.overview">Overview</span></a>
+        <p class="nav-group"><span data-i18n="nav.part1">Part 1</span><small data-i18n="nav.chapter1">Chapter 1</small></p>
+        <a href="#sloc" data-page="sloc"><svg class="icon"><use href="#i-code" /></svg><span data-i18n="nav.sloc">SLOC</span></a>
+        <a href="#fp" data-page="fp"><svg class="icon"><use href="#i-sigma" /></svg><span data-i18n="nav.fp">Function Points</span></a>
+        <p class="nav-group"><span data-i18n="nav.part2">Part 2</span><small data-i18n="nav.chapter4">Chapter 4</small></p>
+        <a href="#planning" data-page="planning"><svg class="icon"><use href="#i-calendar" /></svg><span data-i18n="nav.planning">FP planning</span></a>
+        <a href="#defects" data-page="defects"><svg class="icon"><use href="#i-bug" /></svg><span data-i18n="nav.defects">Defect density</span></a>
+        <a href="#cocomo" data-page="cocomo"><svg class="icon"><use href="#i-tree" /></svg><span data-i18n="nav.cocomo">COCOMO</span></a>
+        <a href="#delphi" data-page="delphi"><svg class="icon"><use href="#i-users" /></svg><span data-i18n="nav.delphi">Delphi</span></a>
+        <p class="nav-group" data-i18n="nav.reference">Reference</p>
+        <a href="#tables" data-page="tables"><svg class="icon"><use href="#i-book" /></svg><span data-i18n="nav.tables">Course tables</span></a>
+        <a href="#summary" data-page="summary"><svg class="icon"><use href="#i-trend" /></svg><span data-i18n="nav.summary">Compare results</span></a>
+      </nav>
+      <div class="sidebar-foot">
+        <div class="pref">
+          <span class="pref-label" id="themeLabel" data-i18n="theme.label">Theme</span>
+          <div class="seg" role="group" aria-labelledby="themeLabel">
+            <button type="button" data-theme-choice="light" aria-pressed="true"><svg class="icon"><use href="#i-sun" /></svg><span data-i18n="theme.light">Light</span></button>
+            <button type="button" data-theme-choice="dark" aria-pressed="false"><svg class="icon"><use href="#i-moon" /></svg><span data-i18n="theme.dark">Dark</span></button>
+          </div>
+        </div>
+        <div class="pref">
+          <span class="pref-label" id="langLabel" data-i18n="lang.label">Language</span>
+          <div class="seg" role="group" aria-labelledby="langLabel">
+            <button type="button" data-lang-choice="en" aria-pressed="true" lang="en">English</button>
+            <button type="button" data-lang-choice="ar" aria-pressed="false" lang="ar">العربية</button>
+          </div>
+        </div>
+        <button id="resetAll" class="btn btn-ghost btn-block" type="button"><svg class="icon"><use href="#i-reset" /></svg><span data-i18n="reset">Reset to lecture examples</span></button>
+      </div>
+    </aside>
+    <div id="navBackdrop" class="backdrop" hidden></div>
+
+    <div class="shell">
+      <header class="topbar">
+        <button id="openNav" class="icon-btn only-drawer" type="button" data-i18n-attr="aria-label:menu.open" aria-controls="sidebar" aria-expanded="false"><svg class="icon"><use href="#i-menu" /></svg></button>
+        <nav class="crumbs" data-i18n-attr="aria-label:crumb.label"><span data-i18n="app.name">Estimate 456</span><span class="sep" aria-hidden="true">/</span><span id="crumbPage" aria-current="page"></span></nav>
+        <div class="search" role="search">
+          <svg class="icon" aria-hidden="true"><use href="#i-search" /></svg>
+          <label class="visually-hidden" for="searchInput" data-i18n="search.label">Search methods and tables</label>
+          <input id="searchInput" type="search" autocomplete="off" data-i18n-attr="placeholder:search.placeholder" aria-controls="searchResults" aria-expanded="false" />
+          <span class="search-keys" aria-hidden="true"><kbd>Ctrl</kbd><kbd>K</kbd></span>
+          <ul id="searchResults" class="search-results" role="listbox" hidden></ul>
+        </div>
+        <button id="themeQuick" class="icon-btn only-drawer" type="button" data-i18n-attr="aria-label:theme.toggle" aria-pressed="false"><svg class="icon"><use href="#i-moon" /></svg></button>
+        <button id="langQuick" class="icon-btn only-drawer lang-quick" type="button" aria-label="العربية / English"><span id="langQuickText">ع</span></button>
+      </header>
+
+      <main id="main" tabindex="-1">
+        <!-- Overview -->
+        <section id="page-home" class="page" data-page="home" data-title="nav.overview" aria-labelledby="home-title">
+          <header class="home-hero">
+            <span class="eyebrow" data-i18n="home.eyebrow">CPIT 456 course companion</span>
+            <h1 id="home-title" tabindex="-1" data-i18n="home.title">Software estimation, step by step.</h1>
+            <p id="homeDesc"></p>
+            <div class="actions"><button id="homeLoadLecture" class="btn btn-secondary" type="button" data-i18n="home.loadLecture">Load lecture examples</button><button id="homeLoadSafeHome" class="btn btn-secondary" type="button" data-i18n="home.loadSafeHome">Load SafeHome example</button></div>
+          </header>
+          <section class="part-grid" aria-label="Course parts" data-i18n-attr="aria-label:home.partsLabel">
+            <article class="part-card part-one">
+              <div class="part-kicker"><span>01</span><span data-i18n="home.part1.label">Part 1 · Chapter 1</span></div>
+              <h2 data-i18n="home.part1.title">Build the project size estimate</h2>
+              <p data-i18n="home.part1.desc">Start with lines of code or calculate Function Points from the five measurement parameters and fourteen influence factors.</p>
+              <ul>
+                <li><a href="#sloc"><svg class="icon"><use href="#i-code" /></svg><span><strong data-i18n="nav.sloc">SLOC</strong><small data-i18n="home.d.sloc">Effort, duration, and cost from lines of code</small></span><svg class="icon flip"><use href="#i-arrow-right" /></svg></a></li>
+                <li><a href="#fp"><svg class="icon"><use href="#i-sigma" /></svg><span><strong data-i18n="nav.fp">Function Points</strong><small data-i18n="home.d.fp">CT, Sum Fi, FP, and LOC</small></span><svg class="icon flip"><use href="#i-arrow-right" /></svg></a></li>
+              </ul>
+            </article>
+            <article class="part-card part-two">
+              <div class="part-kicker"><span>02</span><span data-i18n="home.part2.label">Part 2 · Chapter 4</span></div>
+              <h2 data-i18n="home.part2.title">Turn size into effort and decisions</h2>
+              <p data-i18n="home.part2.desc">Use the calculated size for planning, quality review, COCOMO, and expert estimation.</p>
+              <ul>
+                <li><a href="#planning"><svg class="icon"><use href="#i-calendar" /></svg><span><strong data-i18n="nav.planning">FP planning</strong><small data-i18n="home.d.planning">Hours, months, and cost from Function Points</small></span><svg class="icon flip"><use href="#i-arrow-right" /></svg></a></li>
+                <li><a href="#defects"><svg class="icon"><use href="#i-bug" /></svg><span><strong data-i18n="nav.defects">Defect density</strong><small data-i18n="home.d.defects">Compare software quality by defects per FP</small></span><svg class="icon flip"><use href="#i-arrow-right" /></svg></a></li>
+                <li><a href="#cocomo"><svg class="icon"><use href="#i-tree" /></svg><span><strong data-i18n="nav.cocomo">COCOMO</strong><small data-i18n="home.d.cocomo">Basic and Intermediate effort models</small></span><svg class="icon flip"><use href="#i-arrow-right" /></svg></a></li>
+                <li><a href="#delphi"><svg class="icon"><use href="#i-users" /></svg><span><strong data-i18n="nav.delphi">Delphi</strong><small data-i18n="home.d.delphi">Check expert estimates against variance</small></span><svg class="icon flip"><use href="#i-arrow-right" /></svg></a></li>
+              </ul>
+            </article>
+          </section>
+          <section class="panel home-guide" aria-labelledby="home-guide-title">
+            <div><span class="eyebrow" data-i18n="home.guide.kicker">Simple workflow</span><h2 id="home-guide-title" class="panel-title" data-i18n="home.guide.title">Use every calculator the same way</h2></div>
+            <ol>
+              <li><b>1</b><span><strong data-i18n="home.guide.one.title">Choose the matching lecture section</strong><small data-i18n="home.guide.one.desc">The navigation follows Chapter 1 and Chapter 4.</small></span></li>
+              <li><b>2</b><span><strong data-i18n="home.guide.two.title">Enter or load the values</strong><small data-i18n="home.guide.two.desc">Every input shows its unit and validates mistakes.</small></span></li>
+              <li><b>3</b><span><strong data-i18n="home.guide.three.title">Audit the result</strong><small data-i18n="home.guide.three.desc">The worked solution shows the formula with your numbers.</small></span></li>
+            </ol>
+          </section>
+          <section class="home-links" aria-label="Supporting tools" data-i18n-attr="aria-label:home.supportLabel">
+            <a href="#tables"><svg class="icon"><use href="#i-book" /></svg><span><strong data-i18n="home.tables">Course tables</strong><small data-i18n="home.tablesDesc">All 11 source tables in one place</small></span><svg class="icon flip"><use href="#i-arrow-right" /></svg></a>
+            <a href="#summary"><svg class="icon"><use href="#i-trend" /></svg><span><strong data-i18n="nav.summary">Compare results</strong><small data-i18n="home.summaryDesc">Review valid estimates side by side</small></span><svg class="icon flip"><use href="#i-arrow-right" /></svg></a>
+          </section>
+          <div id="homeMethods" hidden></div><ol id="homeTables" hidden></ol>
+        </section>
+
+        <!-- SLOC -->
+        <section id="page-sloc" class="page" data-page="sloc" data-title="nav.sloc" aria-labelledby="sloc-title" hidden>
+          <header class="page-head">
+            <div><h1 id="sloc-title" tabindex="-1" data-i18n="sloc.title">SLOC estimate</h1><p data-i18n="sloc.desc"></p></div>
+            <div class="actions"><button id="loadSlocExample" class="btn btn-secondary" type="button"><svg class="icon"><use href="#i-flask" /></svg><span data-i18n="common.loadExample">Load lecture example</span></button></div>
+          </header>
+          <div class="calc">
+            <section class="panel inputs" aria-labelledby="sloc-inputs">
+              <h2 id="sloc-inputs" class="panel-title" data-i18n="common.inputs">Inputs</h2>
+              <div class="field"><label for="slocLoc" data-i18n="field.slocLoc">Estimated size</label><div class="control"><input id="slocLoc" type="number" inputmode="decimal" min="0" step="any" value="33200" aria-describedby="slocLoc-error" /><span class="unit" data-i18n="unit.loc">LOC</span></div><p id="slocLoc-error" class="error" aria-live="polite"></p></div>
+              <div class="field"><label for="slocProductivity" data-i18n="field.slocProductivity">Average productivity</label><div class="control"><input id="slocProductivity" type="number" inputmode="decimal" min="0" step="any" value="620" aria-describedby="slocProductivity-error" /><span class="unit" data-i18n="unit.locPm">LOC/PM</span></div><p id="slocProductivity-error" class="error" aria-live="polite"></p></div>
+              <div class="field"><label for="slocDevelopers" data-i18n="field.developers">Developers</label><div class="control"><input id="slocDevelopers" type="number" inputmode="numeric" min="1" step="1" value="6" aria-describedby="slocDevelopers-error" /><span class="unit" data-i18n="unit.people">people</span></div><p id="slocDevelopers-error" class="error" aria-live="polite"></p></div>
+              <div class="field"><label for="slocRate" data-i18n="field.laborRate">Labor rate</label><div class="control"><input id="slocRate" type="number" inputmode="decimal" min="0" step="any" value="800" aria-describedby="slocRate-error" /><span class="unit" data-i18n="unit.usdPm">USD/PM</span></div><p id="slocRate-error" class="error" aria-live="polite"></p></div>
+            </section>
+            <div class="outputs">
+              <section id="slocResult" class="panel result" aria-live="polite"></section>
+              <section id="slocTrace" class="panel trace-panel"></section>
+            </div>
+          </div>
+        </section>
+
+        <!-- Function Points -->
+        <section id="page-fp" class="page" data-page="fp" data-title="nav.fp" aria-labelledby="fp-title" hidden>
+          <header class="page-head">
+            <div><h1 id="fp-title" tabindex="-1" data-i18n="fp.title">Function Points estimate</h1><p data-i18n="fp.desc"></p></div>
+            <div class="actions"><button id="loadFpExample" class="btn btn-secondary" type="button"><svg class="icon"><use href="#i-flask" /></svg><span data-i18n="fp.loadExample1">Load Example 1</span></button><button id="loadSafeHome" class="btn btn-secondary" type="button" data-i18n="fp.loadSafeHome">Load SafeHome</button></div>
+          </header>
+          <ol class="stepper" data-i18n-attr="aria-label:fp.stepsLabel">
+            <li><button type="button" data-scroll="fpCountCard"><span class="num">1</span><span><strong data-i18n="fp.step.count">Count</strong><small id="stepCount"></small></span></button></li>
+            <li><button type="button" data-scroll="fpAdjustCard"><span class="num">2</span><span><strong data-i18n="fp.step.adjust">Adjust</strong><small id="stepAdjust"></small></span></button></li>
+            <li><button type="button" data-scroll="fpConvertCard"><span class="num">3</span><span><strong data-i18n="fp.step.convert">Convert</strong><small id="stepConvert"></small></span></button></li>
+          </ol>
+          <div class="calc wide-left">
+            <div class="stack">
+              <section id="fpCountCard" class="panel" aria-labelledby="t2-title">
+                <h2 id="t2-title" class="panel-title"><span class="ref" data-table-ref="2"></span><span data-course-title="2"></span></h2>
+                <p class="concept-copy" data-i18n="fp.ctExplain">Each row total equals the count multiplied by its selected complexity weight. CT is the sum of the five row totals.</p>
+                <div id="fpRows" class="param-list"></div>
+                <div class="total-row"><span data-i18n="fp.ct">Count Total (CT)</span><strong id="fpCountTotal"></strong></div>
+              </section>
+              <section id="fpAdjustCard" class="panel" aria-labelledby="t3-title">
+                <h2 id="t3-title" class="panel-title"><span class="ref" data-table-ref="3"></span><span data-course-title="3"></span></h2>
+                <div class="concept-note">
+                  <strong data-i18n="fp.fiExplainTitle">Where does Sum Fi come from?</strong>
+                  <p data-i18n="fp.fiExplain">F1 through F14 are the selected influence scores for the fourteen questions. Each score is from 0 to 5. Sum Fi is their total.</p>
+                  <p id="fiEquation" class="fi-equation" dir="ltr"></p>
+                </div>
+                <ul id="ratingLegend" class="legend"></ul>
+                <div id="gscRows" class="rating-list"></div>
+                <div class="total-row"><span data-i18n="fp.sumFi">Sum of factors (Sum Fi)</span><strong id="gscTotal"></strong></div>
+              </section>
+              <section id="fpConvertCard" class="panel" aria-labelledby="t1-title">
+                <h2 id="t1-title" class="panel-title"><span class="ref" data-table-ref="1"></span><span data-course-title="1"></span></h2>
+                <div id="languageTiles" class="lang-grid" role="radiogroup" aria-labelledby="t1-title"></div>
+              </section>
+              <p class="muted small"><span data-i18n="fp.libraryNote"></span> <a href="#tables/4" data-i18n="fp.libraryLink">Open Tables 4 to 6</a></p>
+            </div>
+            <div class="outputs sticky">
+              <section id="fpResult" class="panel result" aria-live="polite"></section>
+              <section id="fpTrace" class="panel trace-panel"></section>
+            </div>
+          </div>
+        </section>
+
+        <!-- FP planning -->
+        <section id="page-planning" class="page" data-page="planning" data-title="nav.planning" aria-labelledby="planning-title" hidden>
+          <header class="page-head">
+            <div><h1 id="planning-title" tabindex="-1" data-i18n="planning.title">FP planning</h1><p data-i18n="planning.desc"></p></div>
+          </header>
+          <div class="tabs" role="tablist" data-i18n-attr="aria-label:planning.tabs">
+            <button id="tab-hours" role="tab" type="button" aria-selected="true" aria-controls="panel-hours" data-i18n="planning.hours">Hours per FP</button>
+            <button id="tab-productivity" role="tab" type="button" aria-selected="false" aria-controls="panel-productivity" tabindex="-1" data-i18n="planning.productivity">Productivity and cost</button>
+          </div>
+          <div id="panel-hours" class="calc" role="tabpanel" aria-labelledby="tab-hours">
+            <section class="panel inputs" aria-labelledby="hours-inputs">
+              <h2 id="hours-inputs" class="panel-title" data-i18n="common.inputs">Inputs</h2>
+              <div class="field"><label for="hoursFp" data-i18n="field.totalFp">Total FP</label><div class="control"><input id="hoursFp" type="number" inputmode="decimal" min="0" step="any" value="200" aria-describedby="hoursFp-error" /><span class="unit" data-i18n="unit.fp">FP</span></div><p id="hoursFp-error" class="error" aria-live="polite"></p></div>
+              <div class="field"><label for="hoursPerFp" data-i18n="field.hoursPerFp">Hours per FP</label><div class="control"><input id="hoursPerFp" type="number" inputmode="decimal" min="0" step="any" value="10" aria-describedby="hoursPerFp-error" /><span class="unit" data-i18n="unit.hours">hours</span></div><p id="hoursPerFp-error" class="error" aria-live="polite"></p></div>
+              <div class="field"><label for="hoursPerDay" data-i18n="field.hoursPerDay">Hours per working day</label><div class="control"><input id="hoursPerDay" type="number" inputmode="decimal" min="0" step="any" value="8" aria-describedby="hoursPerDay-error" /><span class="unit" data-i18n="unit.hours">hours</span></div><p id="hoursPerDay-error" class="error" aria-live="polite"></p></div>
+              <div class="field"><label for="daysPerMonth" data-i18n="field.daysPerMonth">Working days per month</label><div class="control"><input id="daysPerMonth" type="number" inputmode="decimal" min="0" step="any" value="20" aria-describedby="daysPerMonth-error" /><span class="unit" data-i18n="unit.days">days</span></div><p id="daysPerMonth-error" class="error" aria-live="polite"></p></div>
+              <div class="field"><label for="planDevelopers" data-i18n="field.developers">Developers</label><div class="control"><input id="planDevelopers" type="number" inputmode="numeric" min="1" step="1" value="2" aria-describedby="planDevelopers-error" /><span class="unit" data-i18n="unit.people">people</span></div><p id="planDevelopers-error" class="error" aria-live="polite"></p></div>
+            </section>
+            <div class="outputs">
+              <section id="hoursResult" class="panel result" aria-live="polite"></section>
+              <section id="hoursTrace" class="panel trace-panel"></section>
+            </div>
+          </div>
+          <div id="panel-productivity" class="calc" role="tabpanel" aria-labelledby="tab-productivity" hidden>
+            <section class="panel inputs" aria-labelledby="productivity-inputs">
+              <h2 id="productivity-inputs" class="panel-title" data-i18n="common.inputs">Inputs</h2>
+              <div class="field"><label for="productivityFp" data-i18n="field.totalFp">Total FP</label><div class="control"><input id="productivityFp" type="number" inputmode="decimal" min="0" step="any" value="375" aria-describedby="productivityFp-error" /><span class="unit" data-i18n="unit.fp">FP</span></div><p id="productivityFp-error" class="error" aria-live="polite"></p></div>
+              <div class="field"><label for="fpPerPm" data-i18n="field.productivity">Productivity</label><div class="control"><input id="fpPerPm" type="number" inputmode="decimal" min="0" step="any" value="6.5" aria-describedby="fpPerPm-error" /><span class="unit" data-i18n="unit.fpPm">FP/PM</span></div><p id="fpPerPm-error" class="error" aria-live="polite"></p></div>
+              <div class="field"><label for="productivityRate" data-i18n="field.laborRate">Labor rate</label><div class="control"><input id="productivityRate" type="number" inputmode="decimal" min="0" step="any" value="800" aria-describedby="productivityRate-error" /><span class="unit" data-i18n="unit.usdPm">USD/PM</span></div><p id="productivityRate-error" class="error" aria-live="polite"></p></div>
+            </section>
+            <div class="outputs">
+              <section id="productivityResult" class="panel result" aria-live="polite"></section>
+              <section id="productivityTrace" class="panel trace-panel"></section>
+            </div>
+          </div>
+        </section>
+
+        <!-- COCOMO -->
+        <section id="page-cocomo" class="page" data-page="cocomo" data-title="nav.cocomo" aria-labelledby="cocomo-title" hidden>
+          <header class="page-head">
+            <div><h1 id="cocomo-title" tabindex="-1" data-i18n="cocomo.title">COCOMO estimate</h1><p data-i18n="cocomo.desc"></p></div>
+          </header>
+          <div class="tabs" role="tablist" data-i18n-attr="aria-label:cocomo.tabs">
+            <button id="tab-basic" role="tab" type="button" aria-selected="true" aria-controls="panel-basic" data-i18n="cocomo.basic">Basic COCOMO</button>
+            <button id="tab-intermediate" role="tab" type="button" aria-selected="false" aria-controls="panel-intermediate" tabindex="-1" data-i18n="cocomo.intermediate">Intermediate COCOMO</button>
+          </div>
+          <div id="panel-basic" class="calc" role="tabpanel" aria-labelledby="tab-basic">
+            <section class="panel inputs" aria-labelledby="t8-title">
+              <div class="panel-head"><h2 id="t8-title" class="panel-title"><span class="ref" data-table-ref="8"></span><span data-course-title="8"></span></h2><button id="loadBasicExample" class="btn btn-secondary btn-sm" type="button" data-i18n="common.loadExample">Load lecture example</button></div>
+              <div id="modeCards" class="mode-list" role="radiogroup" aria-labelledby="t8-title"></div>
+              <div class="field"><label for="cocomoKloc" data-i18n="field.projectSize">Project size</label><div class="control"><input id="cocomoKloc" type="number" inputmode="decimal" min="0" step="any" value="4" aria-describedby="cocomoKloc-error" /><span class="unit" data-i18n="unit.kloc">KLOC</span></div><p id="cocomoKloc-error" class="error" aria-live="polite"></p></div>
+              <div class="field"><label for="cocomoRate" data-i18n="field.laborRate">Labor rate</label><div class="control"><input id="cocomoRate" type="number" inputmode="decimal" min="0" step="any" value="800" aria-describedby="cocomoRate-error" /><span class="unit" data-i18n="unit.usdPm">USD/PM</span></div><p id="cocomoRate-error" class="error" aria-live="polite"></p></div>
+            </section>
+            <div class="outputs">
+              <section id="basicResult" class="panel result" aria-live="polite"></section>
+              <section id="basicTrace" class="panel trace-panel"></section>
+              <p class="note"><svg class="icon"><use href="#i-info" /></svg><span data-i18n="cocomo.duration"></span></p>
+            </div>
+          </div>
+          <div id="panel-intermediate" role="tabpanel" aria-labelledby="tab-intermediate" hidden>
+            <div class="calc">
+              <section class="panel inputs" aria-labelledby="int-inputs">
+                <div class="panel-head"><h2 id="int-inputs" class="panel-title" data-i18n="cocomo.project">Project</h2><button id="loadCocomoExample" class="btn btn-secondary btn-sm" type="button" data-i18n="cocomo.insurance">Insurance example</button></div>
+                <div class="field"><label for="intermediateKloc" data-i18n="field.projectSize">Project size</label><div class="control"><input id="intermediateKloc" type="number" inputmode="decimal" min="0" step="any" value="3" aria-describedby="intermediateKloc-error" /><span class="unit" data-i18n="unit.kloc">KLOC</span></div><p id="intermediateKloc-error" class="error" aria-live="polite"></p></div>
+                <div class="field"><span class="label" id="intermediateModeLabel" data-i18n="field.projectType">Project type</span><div id="intermediateMode" class="seg seg-block" role="radiogroup" aria-labelledby="intermediateModeLabel"></div></div>
+                <div class="field"><label for="intermediateRate" data-i18n="field.laborRate">Labor rate</label><div class="control"><input id="intermediateRate" type="number" inputmode="decimal" min="0" step="any" value="800" aria-describedby="intermediateRate-error" /><span class="unit" data-i18n="unit.usdPm">USD/PM</span></div><p id="intermediateRate-error" class="error" aria-live="polite"></p></div>
+              </section>
+              <div class="outputs">
+                <section id="intermediateResult" class="panel result" aria-live="polite"></section>
+                <section id="intermediateTrace" class="panel trace-panel"></section>
+              </div>
+            </div>
+            <section class="panel" aria-labelledby="t9-title">
+              <div class="panel-head"><h2 id="t9-title" class="panel-title"><span class="ref" data-table-ref="9"></span><span data-course-title="9"></span></h2><button id="resetDrivers" class="btn btn-secondary btn-sm" type="button" data-i18n="cocomo.setAverage">Set all to Average</button></div>
+              <p class="note"><svg class="icon"><use href="#i-info" /></svg><span data-i18n="cocomo.driversNote"></span></p>
+              <div id="driverGroups" class="driver-groups"></div>
+            </section>
+            <section class="panel" aria-labelledby="t10-title">
+              <h2 id="t10-title" class="panel-title"><span class="ref" data-table-ref="10"></span><span data-course-title="10"></span></h2>
+              <p class="muted" data-i18n="cocomo.t10.caption"></p>
+              <div id="table10" class="table-wrap"></div>
+            </section>
+          </div>
+        </section>
+
+        <!-- Delphi -->
+        <section id="page-delphi" class="page" data-page="delphi" data-title="nav.delphi" aria-labelledby="delphi-title" hidden>
+          <header class="page-head">
+            <div><h1 id="delphi-title" tabindex="-1" data-i18n="delphi.title">Delphi estimation</h1><p data-i18n="delphi.desc"></p></div>
+            <div class="actions"><button id="loadDelphiExample" class="btn btn-secondary" type="button"><svg class="icon"><use href="#i-flask" /></svg><span data-i18n="common.loadExample">Load lecture example</span></button></div>
+          </header>
+          <section class="panel" aria-labelledby="t11-title">
+            <div class="panel-head"><h2 id="t11-title" class="panel-title"><span class="ref" data-table-ref="11"></span><span data-course-title="11"></span></h2><button id="addDelphiTask" class="btn btn-primary btn-sm" type="button"><svg class="icon"><use href="#i-plus" /></svg><span data-i18n="delphi.add">Add task</span></button></div>
+            <div class="field inline-field"><label for="delphiThreshold" data-i18n="field.threshold">Acceptable variance</label><div class="control narrow"><input id="delphiThreshold" type="number" inputmode="decimal" min="0" max="100" step="any" value="25" aria-describedby="delphiThreshold-error" /><span class="unit">%</span></div><p id="delphiThreshold-error" class="error" aria-live="polite"></p></div>
+            <div id="delphiBanner" aria-live="polite"></div>
+            <div class="table-wrap"><table class="table delphi-table"><thead><tr><th scope="col" data-i18n="delphi.col.task">Task</th><th scope="col" class="num" data-i18n="delphi.col.max">Maximum (hours)</th><th scope="col" class="num" data-i18n="delphi.col.min">Minimum (hours)</th><th scope="col" data-i18n="delphi.col.range">Range</th><th scope="col" class="num" data-i18n="delphi.col.variance">Variance</th><th scope="col" data-i18n="delphi.col.status">Status</th><th scope="col"><span class="visually-hidden" data-i18n="common.actions">Actions</span></th></tr></thead><tbody id="delphiRows"></tbody></table></div>
+          </section>
+          <div class="calc delphi-layout">
+            <section class="panel" aria-labelledby="steps-title">
+              <h2 id="steps-title" class="panel-title" data-i18n="delphi.steps">The eight basic steps</h2>
+              <ol id="delphiSteps" class="steps"></ol>
+            </section>
+            <section id="delphiTrace" class="panel trace-panel"></section>
+          </div>
+        </section>
+
+        <!-- Defect density -->
+        <section id="page-defects" class="page" data-page="defects" data-title="nav.defects" aria-labelledby="defects-title" hidden>
+          <header class="page-head">
+            <div><h1 id="defects-title" tabindex="-1" data-i18n="defects.title">Defect density</h1><p data-i18n="defects.desc"></p></div>
+          </header>
+          <div class="calc wide-left">
+            <section class="panel" aria-labelledby="t7-title">
+              <div class="panel-head"><h2 id="t7-title" class="panel-title"><span class="ref" data-table-ref="7"></span><span data-course-title="7"></span></h2><button id="addDefectProject" class="btn btn-primary btn-sm" type="button"><svg class="icon"><use href="#i-plus" /></svg><span data-i18n="defects.add">Add project</span></button></div>
+              <div class="table-wrap"><table class="table"><thead><tr><th scope="col" data-i18n="defects.col.project">Project</th><th scope="col" class="num" data-i18n="defects.col.defects">Defects</th><th scope="col" class="num" data-i18n="defects.col.size">Size (FP)</th><th scope="col" class="num" data-i18n="defects.col.density">Density</th><th scope="col"><span class="visually-hidden" data-i18n="common.actions">Actions</span></th></tr></thead><tbody id="defectRows"></tbody></table></div>
+              <h3 class="sub-title" data-i18n="defects.chart">Defect density by project</h3>
+              <div id="defectChart" class="bars"></div>
+            </section>
+            <div class="outputs">
+              <section id="defectResult" class="panel result" aria-live="polite"></section>
+              <section id="defectTrace" class="panel trace-panel"></section>
+            </div>
+          </div>
+        </section>
+
+        <!-- Project summary -->
+        <section id="page-summary" class="page" data-page="summary" data-title="nav.summary" aria-labelledby="summary-title" hidden>
+          <header class="page-head">
+            <div><h1 id="summary-title" tabindex="-1" data-i18n="summary.title">Project summary</h1><p id="summaryDesc"></p></div>
+            <div class="actions no-print"><button id="copySummary" class="btn btn-secondary" type="button" data-i18n="summary.copy">Copy summary</button><button id="downloadCsv" class="btn btn-secondary" type="button" data-i18n="summary.csv">Download CSV</button><button id="printSummary" class="btn btn-secondary" type="button" data-i18n="summary.print">Print</button></div>
+          </header>
+          <section class="panel" aria-labelledby="effort-chart-title">
+            <h2 id="effort-chart-title" class="panel-title" data-i18n="summary.chart">Effort by method (person-months)</h2>
+            <p class="note"><svg class="icon"><use href="#i-info" /></svg><span data-i18n="summary.note"></span></p>
+            <div id="summaryChart" class="bars"></div>
+          </section>
+          <section class="panel" aria-labelledby="results-table-title">
+            <h2 id="results-table-title" class="panel-title" data-i18n="summary.table">Results by method</h2>
+            <div class="table-wrap"><table class="table"><thead><tr><th scope="col" data-i18n="summary.col.method">Method</th><th scope="col" data-i18n="summary.col.inputs">Inputs used</th><th scope="col" class="num" data-i18n="summary.col.effort">Effort</th><th scope="col" class="num" data-i18n="summary.col.cost">Cost</th><th scope="col" class="num" data-i18n="summary.col.duration">Duration</th><th scope="col" class="no-print"><span class="visually-hidden" data-i18n="common.open">Open</span></th></tr></thead><tbody id="summaryRows"></tbody></table></div>
+          </section>
+        </section>
+
+        <!-- Course tables -->
+        <section id="page-tables" class="page" data-page="tables" data-title="nav.tables" aria-labelledby="tables-title" hidden>
+          <header class="page-head">
+            <div><h1 id="tables-title" tabindex="-1" data-i18n="tables.title">Course table library</h1><p data-i18n="tables.desc"></p></div>
+          </header>
+          <div class="filter-bar">
+            <div class="search inline"><svg class="icon" aria-hidden="true"><use href="#i-search" /></svg><label class="visually-hidden" for="tableSearch" data-i18n="tables.filter">Filter tables</label><input id="tableSearch" type="search" autocomplete="off" data-i18n-attr="placeholder:tables.filter" /></div>
+            <div class="seg filters" role="group" data-i18n-attr="aria-label:tables.filterBy">
+              <button type="button" data-filter="all" aria-pressed="true" data-i18n="common.all">All</button>
+              <button type="button" data-filter="fp" aria-pressed="false" data-i18n="tables.g.fp">Function Points</button>
+              <button type="button" data-filter="planning" aria-pressed="false" data-i18n="tables.g.planning">Planning and quality</button>
+              <button type="button" data-filter="cocomo" aria-pressed="false" data-i18n="tables.g.cocomo">COCOMO</button>
+              <button type="button" data-filter="delphi" aria-pressed="false" data-i18n="tables.g.delphi">Delphi</button>
+            </div>
+          </div>
+          <div class="library">
+            <div id="tableCards" class="table-index" role="list"></div>
+            <section id="tablePanel" class="panel table-panel" aria-live="polite"></section>
+          </div>
+        </section>
+      </main>
+      <footer class="site-foot">
+        <p><strong data-i18n="foot.product">Estimate 456</strong><span data-i18n="foot.course">CPIT 456 Software Project Estimation</span><span class="made-by"><span data-i18n="foot.madeBy">Made by Hassan Asiri</span><a id="repoLink" href="https://github.com/HsnAQA/estimate-456" target="_blank" rel="noreferrer" data-i18n="foot.repository">Project repository</a></span></p>
+        <p><span data-i18n="foot.source">Formulas and tables follow the course lectures.</span><span data-i18n="foot.saved">Your inputs are saved in this browser only.</span><span class="foot-keys"><kbd>Ctrl</kbd> <kbd>K</kbd> <span data-i18n="foot.search">Search</span></span></p>
+      </footer>
+    </div>
+
+    <div class="toast-region" role="status" aria-live="polite" aria-atomic="true">
+      <div id="toast" class="toast" hidden>
+        <span id="toastText"></span>
+        <button id="toastAction" class="toast-action" type="button" hidden></button>
+        <button id="toastClose" class="toast-close" type="button" data-i18n-attr="aria-label:toast.close"><svg class="icon" aria-hidden="true"><use href="#i-close" /></svg></button>
+      </div>
+    </div>
+
+    <script src="logic.js"></script>
+    <script src="data.js"></script>
+    <script src="i18n.js"></script>
+    <script src="ui.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

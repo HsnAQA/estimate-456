@@ -1,0 +1,869 @@
+{
+  "description": "Shared calculation fixtures for the CPIT 456 web and Streamlit implementations. Expected values were computed from the lecture formulas at full double precision. Lecture strings record the rounded values printed in 456-solution-Lect1-2.pdf and are display references only.",
+  "tolerance": {
+    "relative": 1e-09,
+    "absolute": 1e-09
+  },
+  "cases": [
+    {
+      "id": "sloc-lecture",
+      "calc": "sloc",
+      "source": "Lecture 4.1 SLOC example",
+      "input": {
+        "loc": 33200,
+        "productivity": 620,
+        "developers": 6,
+        "laborRate": 800
+      },
+      "expected": {
+        "effort": 53.54838709677419,
+        "duration": 8.924731182795698,
+        "totalCost": 42838.709677419356,
+        "costPerLoc": 1.2903225806451613,
+        "roundedEffort": 54,
+        "roundedDuration": 9.0,
+        "roundedTotalCost": 43200
+      },
+      "lecture": {
+        "effort": "53.54 = 54 person-months",
+        "duration": "54 / 6 = 9 months",
+        "totalCost": "54 x 800 = $43,200"
+      }
+    },
+    {
+      "id": "sloc-half-up",
+      "calc": "sloc",
+      "source": "Edge case: effort of exactly 2.5 must round up to 3 in both implementations",
+      "input": {
+        "loc": 1550,
+        "productivity": 620,
+        "developers": 1,
+        "laborRate": 800
+      },
+      "expected": {
+        "effort": 2.5,
+        "duration": 2.5,
+        "totalCost": 2000.0,
+        "costPerLoc": 1.2903225806451613,
+        "roundedEffort": 3,
+        "roundedDuration": 3.0,
+        "roundedTotalCost": 2400
+      }
+    },
+    {
+      "id": "sloc-zero-size",
+      "calc": "sloc",
+      "source": "Edge case: zero LOC is valid and yields zero effort",
+      "input": {
+        "loc": 0,
+        "productivity": 620,
+        "developers": 6,
+        "laborRate": 800
+      },
+      "expected": {
+        "effort": 0.0,
+        "duration": 0.0,
+        "totalCost": 0.0,
+        "costPerLoc": 1.2903225806451613,
+        "roundedEffort": 0,
+        "roundedDuration": 0.0,
+        "roundedTotalCost": 0
+      }
+    },
+    {
+      "id": "fp-example1",
+      "calc": "functionPoints",
+      "source": "Lecture Example 1, Tables 5 and 6",
+      "input": {
+        "counts": {
+          "inputs": 13,
+          "outputs": 10,
+          "inquiries": 3,
+          "files": 4,
+          "interfaces": 2
+        },
+        "complexities": {
+          "inputs": "average",
+          "outputs": "average",
+          "inquiries": "average",
+          "files": "average",
+          "interfaces": "average"
+        },
+        "influences": [
+          2,
+          5,
+          4,
+          5,
+          2,
+          3,
+          4,
+          2,
+          3,
+          4,
+          5,
+          2,
+          3,
+          4
+        ],
+        "locPerFp": 12
+      },
+      "expected": {
+        "rowTotals": {
+          "inputs": 52,
+          "outputs": 50,
+          "inquiries": 12,
+          "files": 40,
+          "interfaces": 14
+        },
+        "ufp": 168,
+        "tdi": 48,
+        "vaf": 1.13,
+        "fp": 189.83999999999997,
+        "roundedFp": 190,
+        "locExact": 2278.08,
+        "locPlanning": 2280
+      },
+      "lecture": {
+        "ufp": "168",
+        "fp": "189.84, rounded to 190 FP",
+        "locPlanning": "2,280 LOC using SQL/Oracle"
+      }
+    },
+    {
+      "id": "fp-safehome",
+      "calc": "functionPoints",
+      "source": "Lecture SafeHome example",
+      "input": {
+        "counts": {
+          "inputs": 3,
+          "outputs": 2,
+          "inquiries": 2,
+          "files": 1,
+          "interfaces": 4
+        },
+        "complexities": {
+          "inputs": "simple",
+          "outputs": "simple",
+          "inquiries": "simple",
+          "files": "simple",
+          "interfaces": "simple"
+        },
+        "influences": [
+          4,
+          4,
+          3,
+          4,
+          3,
+          3,
+          3,
+          3,
+          4,
+          4,
+          4,
+          3,
+          3,
+          1
+        ],
+        "locPerFp": 30
+      },
+      "expected": {
+        "rowTotals": {
+          "inputs": 9,
+          "outputs": 8,
+          "inquiries": 6,
+          "files": 7,
+          "interfaces": 20
+        },
+        "ufp": 50,
+        "tdi": 46,
+        "vaf": 1.11,
+        "fp": 55.50000000000001,
+        "roundedFp": 56,
+        "locExact": 1665.0000000000002,
+        "locPlanning": 1680
+      },
+      "lecture": {
+        "ufp": "50"
+      }
+    },
+    {
+      "id": "fp-mixed",
+      "calc": "functionPoints",
+      "source": "Edge case: mixed complexity levels and all influences at 5",
+      "input": {
+        "counts": {
+          "inputs": 1,
+          "outputs": 2,
+          "inquiries": 3,
+          "files": 4,
+          "interfaces": 5
+        },
+        "complexities": {
+          "inputs": "simple",
+          "outputs": "average",
+          "inquiries": "complex",
+          "files": "simple",
+          "interfaces": "complex"
+        },
+        "influences": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "locPerFp": 64
+      },
+      "expected": {
+        "rowTotals": {
+          "inputs": 3,
+          "outputs": 10,
+          "inquiries": 18,
+          "files": 28,
+          "interfaces": 50
+        },
+        "ufp": 109,
+        "tdi": 70,
+        "vaf": 1.35,
+        "fp": 147.15,
+        "roundedFp": 147,
+        "locExact": 9417.6,
+        "locPlanning": 9408
+      }
+    },
+    {
+      "id": "fp-zero-influence",
+      "calc": "functionPoints",
+      "source": "Edge case: all influences at 0 gives VAF 0.65",
+      "input": {
+        "counts": {
+          "inputs": 10,
+          "outputs": 0,
+          "inquiries": 0,
+          "files": 0,
+          "interfaces": 0
+        },
+        "complexities": {
+          "inputs": "average",
+          "outputs": "average",
+          "inquiries": "average",
+          "files": "average",
+          "interfaces": "average"
+        },
+        "influences": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "locPerFp": 128
+      },
+      "expected": {
+        "rowTotals": {
+          "inputs": 40,
+          "outputs": 0,
+          "inquiries": 0,
+          "files": 0,
+          "interfaces": 0
+        },
+        "ufp": 40,
+        "tdi": 0,
+        "vaf": 0.65,
+        "fp": 26.0,
+        "roundedFp": 26,
+        "locExact": 3328.0,
+        "locPlanning": 3328
+      }
+    },
+    {
+      "id": "hours-lecture",
+      "calc": "fpHoursPlan",
+      "source": "Lecture 4.2.3 initial estimation example",
+      "input": {
+        "fp": 200,
+        "hoursPerFp": 10,
+        "hoursPerDay": 8,
+        "workDays": 20,
+        "developers": 2,
+        "laborRate": 800
+      },
+      "expected": {
+        "personHours": 2000,
+        "personDays": 250.0,
+        "personMonths": 12.5,
+        "calendarMonths": 6.25,
+        "totalCost": 10000.0
+      },
+      "lecture": {
+        "personHours": "2000 person-hours",
+        "personDays": "250 person-days",
+        "personMonths": "12.5 person-months"
+      }
+    },
+    {
+      "id": "productivity-lecture",
+      "calc": "fpProductivityPlan",
+      "source": "Lecture 4.2.4 FP-based estimation example",
+      "input": {
+        "fp": 375,
+        "productivity": 6.5,
+        "developers": 1,
+        "laborRate": 800
+      },
+      "expected": {
+        "effort": 57.69230769230769,
+        "calendarMonths": 57.69230769230769,
+        "costPerFp": 123.07692307692308,
+        "totalCost": 46153.846153846156
+      },
+      "lecture": {
+        "costPerFp": "$123 per FP",
+        "totalCost": "about $46,100",
+        "effort": "about 58 person-months"
+      }
+    },
+    {
+      "id": "defect-project1",
+      "calc": "defectDensity",
+      "source": "Lecture Table 7",
+      "input": {
+        "defects": 10,
+        "fp": 150
+      },
+      "expected": {
+        "density": 0.06666666666666667
+      }
+    },
+    {
+      "id": "defect-project2",
+      "calc": "defectDensity",
+      "source": "Lecture Table 7",
+      "input": {
+        "defects": 20,
+        "fp": 200
+      },
+      "expected": {
+        "density": 0.1
+      }
+    },
+    {
+      "id": "defect-project3",
+      "calc": "defectDensity",
+      "source": "Lecture Table 7",
+      "input": {
+        "defects": 40,
+        "fp": 1000
+      },
+      "expected": {
+        "density": 0.04
+      }
+    },
+    {
+      "id": "cocomo-basic-lecture",
+      "calc": "cocomo",
+      "source": "Lecture 4.3.1 Basic COCOMO example, Table 8",
+      "input": {
+        "kloc": 4,
+        "mode": "organic",
+        "multipliers": [],
+        "laborRate": 800
+      },
+      "expected": {
+        "c": 3.2,
+        "k": 1.05,
+        "initialEffort": 13.718700320464553,
+        "eaf": 1.0,
+        "adjustedEffort": 13.718700320464553,
+        "totalCost": 10974.960256371642
+      },
+      "lecture": {
+        "initialEffort": "3.2 x 4.28 = about 14 person-months"
+      }
+    },
+    {
+      "id": "cocomo-basic-embedded",
+      "calc": "cocomo",
+      "source": "Table 8 embedded constants",
+      "input": {
+        "kloc": 10,
+        "mode": "embedded",
+        "multipliers": [],
+        "laborRate": 0
+      },
+      "expected": {
+        "c": 2.8,
+        "k": 1.2,
+        "initialEffort": 44.37700938891117,
+        "eaf": 1.0,
+        "adjustedEffort": 44.37700938891117,
+        "totalCost": 0.0
+      }
+    },
+    {
+      "id": "cocomo-basic-semidetached",
+      "calc": "cocomo",
+      "source": "Table 8 semi-detached constants",
+      "input": {
+        "kloc": 25.5,
+        "mode": "semi-detached",
+        "multipliers": [],
+        "laborRate": 1000
+      },
+      "expected": {
+        "c": 3.0,
+        "k": 1.12,
+        "initialEffort": 112.83562967390236,
+        "eaf": 1.0,
+        "adjustedEffort": 112.83562967390236,
+        "totalCost": 112835.62967390237
+      }
+    },
+    {
+      "id": "cocomo-intermediate-lecture",
+      "calc": "cocomo",
+      "source": "Lecture 4.3.2 insurance example, Table 10",
+      "input": {
+        "kloc": 3,
+        "mode": "organic",
+        "multipliers": [
+          1.2,
+          1.35,
+          0.95,
+          1.0
+        ],
+        "laborRate": 800
+      },
+      "expected": {
+        "c": 3.2,
+        "k": 1.05,
+        "initialEffort": 10.142086162075564,
+        "eaf": 1.539,
+        "adjustedEffort": 15.608670603434293,
+        "totalCost": 12486.936482747435
+      },
+      "lecture": {
+        "initialEffort": "3.2 x 3.16 = 10.11",
+        "eaf": "1.2 x 1.35 x 0.95 x 1.0 = 1.53",
+        "adjustedEffort": "1.53 x 10.11 = 15.5 person-months"
+      }
+    },
+    {
+      "id": "delphi-cost-benefit",
+      "calc": "delphi",
+      "source": "Lecture Table 11, cost and benefit analysis",
+      "input": {
+        "maximum": 20,
+        "minimum": 15,
+        "threshold": 25
+      },
+      "expected": {
+        "variance": 25.0,
+        "accepted": true
+      },
+      "lecture": {
+        "variance": "25",
+        "accepted": "A"
+      }
+    },
+    {
+      "id": "delphi-high-level-design",
+      "calc": "delphi",
+      "source": "Lecture Table 11, high level design",
+      "input": {
+        "maximum": 50,
+        "minimum": 30,
+        "threshold": 25
+      },
+      "expected": {
+        "variance": 40.0,
+        "accepted": false
+      },
+      "lecture": {
+        "variance": "40",
+        "accepted": "NA"
+      }
+    },
+    {
+      "id": "delphi-equal-estimates",
+      "calc": "delphi",
+      "source": "Edge case: equal estimates give 0% variance",
+      "input": {
+        "maximum": 12,
+        "minimum": 12,
+        "threshold": 0
+      },
+      "expected": {
+        "variance": 0.0,
+        "accepted": true
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "id": "sloc-zero-productivity",
+      "calc": "sloc",
+      "input": {
+        "loc": 100,
+        "productivity": 0,
+        "developers": 1,
+        "laborRate": 800
+      },
+      "error": "Average productivity must be greater than 0."
+    },
+    {
+      "id": "sloc-negative-size",
+      "calc": "sloc",
+      "input": {
+        "loc": -1,
+        "productivity": 620,
+        "developers": 1,
+        "laborRate": 800
+      },
+      "error": "Estimated size cannot be negative. Enter 0 or more."
+    },
+    {
+      "id": "sloc-empty-size",
+      "calc": "sloc",
+      "input": {
+        "loc": "",
+        "productivity": 620,
+        "developers": 1,
+        "laborRate": 800
+      },
+      "error": "Estimated size must be a number."
+    },
+    {
+      "id": "sloc-fractional-developers",
+      "calc": "sloc",
+      "input": {
+        "loc": 100,
+        "productivity": 620,
+        "developers": 1.5,
+        "laborRate": 800
+      },
+      "error": "Developers must be a whole number."
+    },
+    {
+      "id": "fp-influence-too-high",
+      "calc": "functionPoints",
+      "input": {
+        "counts": {
+          "inputs": 1,
+          "outputs": 1,
+          "inquiries": 1,
+          "files": 1,
+          "interfaces": 1
+        },
+        "complexities": {
+          "inputs": "average",
+          "outputs": "average",
+          "inquiries": "average",
+          "files": "average",
+          "interfaces": "average"
+        },
+        "influences": [
+          6,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "locPerFp": 12
+      },
+      "error": "Each degree of influence must be a whole number from 0 to 5."
+    },
+    {
+      "id": "fp-short-influences",
+      "calc": "functionPoints",
+      "input": {
+        "counts": {
+          "inputs": 1,
+          "outputs": 1,
+          "inquiries": 1,
+          "files": 1,
+          "interfaces": 1
+        },
+        "complexities": {
+          "inputs": "average",
+          "outputs": "average",
+          "inquiries": "average",
+          "files": "average",
+          "interfaces": "average"
+        },
+        "influences": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "locPerFp": 12
+      },
+      "error": "Exactly 14 degree of influence values are required."
+    },
+    {
+      "id": "fp-negative-count",
+      "calc": "functionPoints",
+      "input": {
+        "counts": {
+          "inputs": 1,
+          "outputs": -2,
+          "inquiries": 1,
+          "files": 1,
+          "interfaces": 1
+        },
+        "complexities": {
+          "inputs": "average",
+          "outputs": "average",
+          "inquiries": "average",
+          "files": "average",
+          "interfaces": "average"
+        },
+        "influences": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "locPerFp": 12
+      },
+      "error": "Number of user outputs cannot be negative. Enter 0 or more."
+    },
+    {
+      "id": "fp-unknown-complexity",
+      "calc": "functionPoints",
+      "input": {
+        "counts": {
+          "inputs": 1,
+          "outputs": 1,
+          "inquiries": 1,
+          "files": 1,
+          "interfaces": 1
+        },
+        "complexities": {
+          "inputs": "average",
+          "outputs": "average",
+          "inquiries": "average",
+          "files": "huge",
+          "interfaces": "average"
+        },
+        "influences": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "locPerFp": 12
+      },
+      "error": "Unknown complexity \"huge\" for Number of files. Use simple, average, or complex."
+    },
+    {
+      "id": "hours-zero-day",
+      "calc": "fpHoursPlan",
+      "input": {
+        "fp": 200,
+        "hoursPerFp": 10,
+        "hoursPerDay": 0,
+        "workDays": 20,
+        "developers": 2,
+        "laborRate": 0
+      },
+      "error": "Hours per working day must be greater than 0."
+    },
+    {
+      "id": "productivity-zero",
+      "calc": "fpProductivityPlan",
+      "input": {
+        "fp": 375,
+        "productivity": 0,
+        "developers": 1,
+        "laborRate": 800
+      },
+      "error": "Productivity must be greater than 0."
+    },
+    {
+      "id": "defect-zero-size",
+      "calc": "defectDensity",
+      "input": {
+        "defects": 10,
+        "fp": 0
+      },
+      "error": "Project size in FP must be greater than 0."
+    },
+    {
+      "id": "cocomo-unknown-mode",
+      "calc": "cocomo",
+      "input": {
+        "kloc": 4,
+        "mode": "hybrid",
+        "multipliers": [],
+        "laborRate": 0
+      },
+      "error": "Unknown COCOMO project type \"hybrid\". Use organic, embedded, or semi-detached."
+    },
+    {
+      "id": "cocomo-zero-multiplier",
+      "calc": "cocomo",
+      "input": {
+        "kloc": 3,
+        "mode": "organic",
+        "multipliers": [
+          1.2,
+          0
+        ],
+        "laborRate": 0
+      },
+      "error": "Cost-driver multiplier must be greater than 0."
+    },
+    {
+      "id": "cocomo-negative-kloc",
+      "calc": "cocomo",
+      "input": {
+        "kloc": -3,
+        "mode": "organic",
+        "multipliers": [],
+        "laborRate": 0
+      },
+      "error": "KLOC cannot be negative. Enter 0 or more."
+    },
+    {
+      "id": "delphi-min-above-max",
+      "calc": "delphi",
+      "input": {
+        "maximum": 10,
+        "minimum": 11,
+        "threshold": 25
+      },
+      "error": "Minimum estimate cannot exceed maximum estimate. Lower the minimum or raise the maximum."
+    },
+    {
+      "id": "delphi-zero-maximum",
+      "calc": "delphi",
+      "input": {
+        "maximum": 0,
+        "minimum": 0,
+        "threshold": 25
+      },
+      "error": "Maximum estimate must be greater than 0."
+    },
+    {
+      "id": "delphi-threshold-above-100",
+      "calc": "delphi",
+      "input": {
+        "maximum": 10,
+        "minimum": 5,
+        "threshold": 101
+      },
+      "error": "Acceptable variance must be 100 or less."
+    }
+  ],
+  "formatting": [
+    {
+      "kind": "number",
+      "value": 53.54838709677419,
+      "digits": 2,
+      "expected": "53.55"
+    },
+    {
+      "kind": "number",
+      "value": 12.5,
+      "digits": 2,
+      "expected": "12.5"
+    },
+    {
+      "kind": "number",
+      "value": 2280,
+      "digits": 0,
+      "expected": "2,280"
+    },
+    {
+      "kind": "number",
+      "value": 2280,
+      "digits": 2,
+      "expected": "2,280"
+    },
+    {
+      "kind": "number",
+      "value": 1.539,
+      "digits": 4,
+      "expected": "1.539"
+    },
+    {
+      "kind": "number",
+      "value": 0.06666666666666667,
+      "digits": 4,
+      "expected": "0.0667"
+    },
+    {
+      "kind": "money",
+      "value": 42838.709677419356,
+      "expected": "$42,838.71"
+    },
+    {
+      "kind": "money",
+      "value": 800,
+      "expected": "$800.00"
+    },
+    {
+      "kind": "money",
+      "value": 123.07692307692308,
+      "expected": "$123.08"
+    }
+  ]
+}
