@@ -10,7 +10,7 @@
 
 | Asset | Source | License | Notes |
 |---|---|---|---|
-| `brand/estimate-456-mark.svg` and PNGs | Drawn for this project | Project-owned | Ink navy tile `#14213d` with a paper E and one signal orange point `#e4572e` |
+| `brand/estimate-456-mark.svg` and PNGs | Drawn for this project | Project-owned | Ink navy tile `#14213d` with a snow E and one cobalt point `#5b85f5` |
 | `icons/*.svg` | Drawn for this project | Project-owned | 24 px grid, 1.75 stroke |
 | GitHub mark in the footer | `mark-github` from GitHub Octicons | MIT; GitHub logo used only to link to the repository | Inline SVG path in `web-app/index.html` |
 | `fonts/Alexandria-Variable-arabic.woff2` | npm `@fontsource-variable/alexandria` 5.3.0, same family as the user's `Desktop\Random\Assets\Fontss\Alexandria` | SIL OFL 1.1, `fonts/licenses/Alexandria-OFL.txt` | Arabic fallback |

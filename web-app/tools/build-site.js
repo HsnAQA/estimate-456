@@ -54,6 +54,11 @@ const VERCEL = {
       source: "/assets/fonts/private/(.*)",
       headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
     },
+    {
+      // KaTeX and anime.js change only when their pinned version is updated.
+      source: "/vendor/(.*)",
+      headers: [{ key: "Cache-Control", value: "public, max-age=604800" }],
+    },
   ],
 };
 

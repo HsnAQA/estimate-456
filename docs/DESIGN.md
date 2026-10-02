@@ -27,16 +27,16 @@ spacing:
 Concept generated in Google Stitch (project "Estimate 456 - CPIT 456 estimation"), then adapted to the app. Only real lecture content is shown; none of the labels Stitch invented were used. Where older notes below disagree, this section wins.
 
 - Feel: an engineering drafting notebook. Paper page with a faint 24 px grid, sheets with 1 px rules, sharp corners (0 radius), no shadows except a flat 4 px offset on hovered cards.
-- Colors. Light (default): paper `#f7f6f2`, sheets `#fdfcf9`, ink navy text and primary buttons `#14213d`, signal orange `#b83c15` for labels, step numbers, the active link, and linked values. Dark: page `#0f141d`, sheets `#141b26`, text `#e9edf4`, orange `#ff7d55`.
+- Colors. Light (default): cool snow paper `#f5f7fa`, sheets `#fbfcfd`, ink navy text and primary buttons `#14213d`, cobalt `#2c56c9` for labels, step numbers, the active link, and linked values. Dark: page `#0d1320`, sheets `#141b26`, text `#e9edf4`, cobalt `#86a4ff`. No beige and no orange: the owner found them generic.
 - Type: Fira Code for all English text and numbers. Arabic: the Saudi font for text and The Year of Handicrafts for page headings (both Ministry of Culture, on the published site only), Alexandria as fallback.
-- Layout: one top bar with the logo, Part 1 and Part 2 links (the part labels in orange), and buttons for search, theme (moon in light, sun in dark), and language. Page title with a ruled line under it. Inputs sheet beside the result.
+- Layout: one top bar with the logo, Part 1 and Part 2 links (the part labels in cobalt), and buttons for search, theme (moon in light, sun in dark), and language. Page title with a ruled line under it. Inputs sheet beside the result.
 - Inputs: label above, value on the left, unit in a tinted slot on the right.
 - Result: a double ruled frame, the answer in a tinted box, then a ledger with dotted leaders and striped rows.
 - Worked solution: each step is an index card: STEP n, the title, the lecture value, the formula in a tinted box, then the substituted values.
 - Choices and tabs: contiguous bordered segments; the chosen one is filled with ink.
-- Home: an orange section tag, a large headline, two part panels joined in one frame with big 01 and 02 numerals, then the chosen part's method cards.
+- Home: a cobalt section tag, a large headline, two part panels joined in one frame with big 01 and 02 numerals, then the chosen part's method cards.
 - No tap highlight, no focus frame on the page area, no flash on changed results.
-- Motion: the home heading sits on a live blueprint particle network (own canvas code inspired by particles.js, in the page colors, reacting to the pointer). Pages, cards, and worked-solution steps enter with short staggered motion from anime.js. Results never animate their numbers. All motion stops under prefers-reduced-motion and the network pauses when the tab is hidden. Three.js was considered and left out: it is heavy and a 3D scene does not help a calculator.
+- Motion: the home heading sits on a live blueprint particle network (own canvas code inspired by particles.js, in the page colors, reacting to the pointer). Pages, cards, and worked-solution steps enter with short staggered motion from anime.js. Results never animate their numbers. Motion stays on even when the system turns animation effects off (the owner's choice); the network pauses only while the tab is hidden. Three.js was considered and left out: it is heavy and a 3D scene does not help a calculator.
 - Formulas: typeset with KaTeX (vendored) in a tinted box; powers in the substituted values are superscripts. The same symbolic TeX serves both languages and the Glossary defines the symbols.
 - Learn pages: Course notes (table of contents beside sections, each with its source and a link to its calculator) and Glossary (filterable cards with the term, its formula, a definition, and where it is used). The top bar lists them after Part 2.
 
@@ -216,7 +216,6 @@ Use native Streamlit theme variants in `.streamlit/config.toml`. Define complete
 - Default interaction transition: 120 to 180 milliseconds.
 - Animate opacity, color, border color, or transform only when the change communicates state.
 - Do not animate table layout, width, height, or calculation output positions.
-- Respect `prefers-reduced-motion` and disable nonessential transitions.
 - No decorative entrance animation is required.
 
 # Icons and visual assets
@@ -243,7 +242,7 @@ When complete, Chapter 4 should use the same surface, table, input, validation, 
 - Color never communicates meaning alone.
 - Minimum 44 by 44 pixel touch targets where practical.
 - Verify at 375, 768, 1024, and 1440 pixels.
-- Verify light, dark, keyboard-only, and reduced-motion behavior.
+- Verify light, dark, and keyboard-only behavior.
 - Verify browser console output and Streamlit AppTest results.
 
 # Anti-patterns

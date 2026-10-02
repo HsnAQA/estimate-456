@@ -23,8 +23,8 @@ function check(name, actual, expected) {
   results.push({ name, ok, actual, expected: String(expected) });
 }
 
-const b = await launch(Number(process.env.E2E_PORT || 9451));
-const run = (expr) => b.eval(H + expr);
+const b = await launch();
+const run = (expr) => { if (process.env.E2E_TRACE) console.error("run", expr.slice(0, 90)); return b.eval(H + expr); };
 const url = (hash) => `${PAGE}${hash ? `#${hash}` : ""}`;
 // openKeep loads the page with whatever the browser saved. open starts from the lecture
 // examples by clearing the saved workspace first, so each check sees known inputs.
@@ -45,7 +45,7 @@ async function functional(lang) {
   check(`${tag} lang and dir`, await run(`document.documentElement.lang + " " + document.documentElement.dir`), lang === "ar" ? "ar rtl" : "en ltr");
   check(`${tag} light theme is the default`, await run(`document.documentElement.dataset.theme`), "light");
   check(`${tag} panels are not pure white`, await run(`getComputedStyle($(".panel")).backgroundColor`), (v) => v !== "rgb(255, 255, 255)");
-  check(`${tag} page background is snow`, await run(`getComputedStyle(document.body).backgroundColor`), "rgb(247, 246, 242)");
+  check(`${tag} page background is snow`, await run(`getComputedStyle(document.body).backgroundColor`), "rgb(245, 247, 250)");
   // Home: logo and name, one question, two parts, and only the chosen part's methods.
   const visibleCards = `$$(".method-card").filter((e) => e.getClientRects().length).length`;
   check(`${tag} logo appears once at the top, not repeated on the home page`, await run(`$$("#page-home img").length + " " + ($(".topbar-brand img").naturalWidth > 0) + " " + txt(".topbar-brand")`), lang === "ar" ? "0 true تقدير 456" : "0 true Estimate 456");
@@ -274,7 +274,7 @@ async function functional(lang) {
   check(`${tag} undo confirms`, await toast(), (v) => v.length > 3);
   await run(`click('[data-theme-choice="dark"]')`);
   await open("sloc");
-  check(`${tag} dark theme persists`, await run(`document.documentElement.dataset.theme + " " + getComputedStyle(document.body).backgroundColor`), "dark rgb(15, 20, 29)");
+  check(`${tag} dark theme persists`, await run(`document.documentElement.dataset.theme + " " + getComputedStyle(document.body).backgroundColor`), "dark rgb(13, 19, 32)");
   await run(`click('[data-theme-choice="light"]')`);
   await open("sloc");
   check(`${tag} language persists after reload`, await run(`document.documentElement.lang`), lang);
@@ -334,7 +334,7 @@ async function productFeatures() {
   check("[product] toast closes", await run(`$("#toast").hidden`), true);
 
   // Browser toolbar color follows the theme.
-  check("[product] theme-color light", await run(`$('meta[name="theme-color"]').content`), "#fdfcf9");
+  check("[product] theme-color light", await run(`$('meta[name="theme-color"]').content`), "#fbfcfd");
   await run(`click('[data-theme-choice="dark"]')`);
   check("[product] theme-color dark", await run(`$('meta[name="theme-color"]').content`), "#141b26");
   await run(`click('[data-theme-choice="light"]')`);
@@ -419,6 +419,8 @@ try {
 
 const failed = results.filter((r) => !r.ok);
 failed.forEach((r) => console.log(`FAIL ${r.name}\n  expected: ${r.expected}\n  actual:   ${r.actual}`));
+// On GitHub Actions, failures also become annotations, which show on the run page without signing in.
+if (process.env.GITHUB_ACTIONS) failed.slice(0, 10).forEach((r) => console.log(`::error title=${r.name.replace(/[:,]/g, " ")}::expected ${r.expected}, got ${String(r.actual).slice(0, 200)}`));
 if (b.logs.length) console.log(`Console:\n  ${b.logs.join("\n  ")}`);
 console.log(`\n${results.length - failed.length} of ${results.length} checks passed.`);
 process.exit(failed.length ? 1 : 0);

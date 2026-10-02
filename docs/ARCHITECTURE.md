@@ -23,7 +23,7 @@ Scripts load in this order, each adding one global object:
 | `js/ui.js` | `UI` | shared rendering: worked-solution steps, tables, number format |
 | `js/app.js` | none | binds each page's inputs to `LOGIC` and renders the result |
 | `vendor/anime/anime.umd.min.js` | `anime` | motion (MIT, vendored) |
-| `js/motion.js` | none | home network canvas and entrance motion; respects reduced motion |
+| `js/motion.js` | none | home network canvas and entrance motion; always on, pauses in a hidden tab |
 
 Data flows one way: an input changes, `app.js` reads every input on that page,
 calls one `LOGIC` function, and redraws the result and its worked solution.

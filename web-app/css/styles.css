@@ -524,36 +524,36 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
 /* ==========================================================================
    Interface layer (2026-10-02, round 5): drafting notebook. Concept generated in
    Google Stitch (project "Estimate 456 - CPIT 456 estimation"), then adapted.
-   Paper with a faint grid, ink navy, one signal orange, sharp corners, ledger
+   Paper with a faint grid, ink navy, one cobalt accent, sharp corners, ledger
    results with dotted leaders, and worked-solution steps as index cards.
    Fira Code for English and numbers. Arabic: Saudi for text and The Year of
    Handicrafts for headings on the published site, Alexandria as fallback.
    ========================================================================== */
 :root,
 :root[data-theme="light"] {
-  --bg: #f7f6f2;
-  --grid: #ebe8e0;
-  --surface: #fdfcf9;
-  --surface-2: #efece6;
-  --field: #fdfdfb;
-  --border: #d9d5cc;
-  --border-strong: #aaa59a;
+  --bg: #f5f7fa;
+  --grid: #e6eaf0;
+  --surface: #fbfcfd;
+  --surface-2: #edf0f5;
+  --field: #fdfeff;
+  --border: #d5dbe4;
+  --border-strong: #a2acbb;
   --text: #14213d;
-  --text-2: #475266;
-  --text-3: #5b6578;
-  --accent: #b83c15;
-  --accent-hover: #9c3110;
-  --accent-soft: #f7e1d8;
-  --accent-tint: #fbf0eb;
+  --text-2: #465168;
+  --text-3: #5a6479;
+  --accent: #2c56c9;
+  --accent-hover: #2246a8;
+  --accent-soft: #dde5f8;
+  --accent-tint: #eef2fb;
   --ink: #14213d;
-  --on-ink: #fdfcf9;
-  --on-accent: #fdfcf9;
+  --on-ink: #fbfcfd;
+  --on-accent: #fbfcfd;
   --focus: #14213d;
   --shadow-card: none;
 }
 :root[data-theme="dark"] {
-  --bg: #0f141d;
-  --grid: #161d29;
+  --bg: #0d1320;
+  --grid: #151d2c;
   --surface: #141b26;
   --surface-2: #1b2433;
   --field: #111823;
@@ -562,13 +562,13 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
   --text: #e9edf4;
   --text-2: #a9b3c4;
   --text-3: #8e99ad;
-  --accent: #ff7d55;
-  --accent-hover: #ff9a7a;
-  --accent-soft: #3a2119;
-  --accent-tint: #221a19;
+  --accent: #86a4ff;
+  --accent-hover: #a9bfff;
+  --accent-soft: #1c2a4c;
+  --accent-tint: #151e33;
   --ink: #e9edf4;
-  --on-ink: #0f141d;
-  --on-accent: #0f141d;
+  --on-ink: #0d1320;
+  --on-accent: #0d1320;
   --focus: #e9edf4;
   --shadow-card: none;
 }
@@ -911,10 +911,6 @@ main { padding-top: 40px; }
   .page-icon { display: none; }
   .page-head > div:first-child { grid-template-columns: minmax(0, 1fr); }
   .page-head > div:first-child > :not(.page-icon) { grid-column: 1; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition-duration: 0s !important; animation: none !important; scroll-behavior: auto !important; }
 }
 
 @media print {

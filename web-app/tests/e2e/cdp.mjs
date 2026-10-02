@@ -1,7 +1,7 @@
 // Minimal Chrome DevTools Protocol driver for headless Microsoft Edge or Google Chrome.
 // Used only by run-e2e.mjs. It needs no npm packages.
 import { spawn } from "node:child_process";
-import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
@@ -22,17 +22,23 @@ export function findBrowser() {
   return CANDIDATES.find((file) => existsSync(file)) || null;
 }
 
-export async function launch(port = 9451) {
+export async function launch() {
   const exe = findBrowser();
   if (!exe) throw new Error("No Edge or Chrome found. Set BROWSER_PATH to the browser executable.");
   const profile = mkdtempSync(path.join(tmpdir(), "cpit456-e2e-"));
+  // Port 0 lets the browser pick a free port, so two runs never share a browser.
   const proc = spawn(exe, [
-    "--headless=new", `--remote-debugging-port=${port}`, `--user-data-dir=${profile}`,
+    "--headless=new", "--remote-debugging-port=0", `--user-data-dir=${profile}`,
     "--no-first-run", "--no-default-browser-check", "--disable-extensions", "about:blank",
   ], { stdio: "ignore" });
+  let port = 0;
   let targets = [];
-  for (let i = 0; i < 60 && !targets.length; i++) {
-    try { targets = (await (await fetch(`http://127.0.0.1:${port}/json/list`)).json()).filter((x) => x.type === "page"); } catch { /* retry */ }
+  for (let i = 0; i < 100 && !targets.length; i++) {
+    try {
+      port ||= Number(readFileSync(path.join(profile, "DevToolsActivePort"), "utf8").split("\n")[0]);
+      // Edge can open internal pages of its own, so use the about:blank page this run asked for.
+      targets = (await (await fetch(`http://127.0.0.1:${port}/json/list`)).json()).filter((x) => x.type === "page" && x.url === "about:blank");
+    } catch { /* not ready yet */ }
     if (!targets.length) await sleep(200);
   }
   if (!targets.length) throw new Error("The browser did not open a debugging page.");

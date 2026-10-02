@@ -7,8 +7,10 @@
   (31 terms with symbols and definitions).
 - COCOMO now gives development time and staff on every level, from the COCOMO
   article read in class: Tdev = 2.5 x E^d, staff = E / Tdev.
+- New palette: cool snow paper, ink navy, and a cobalt accent replace the
+  beige and orange. The logo point is cobalt too.
 - A moving blueprint network on the home page and quiet entrance motion, with
-  anime.js. Both stop when the system asks for reduced motion.
+  anime.js.
 - The web app is split into `css/`, `js/`, and `vendor/`. Documentation moved
   into `docs/`. Added contributing, security, issue and pull request
   templates, and a GitHub Actions test workflow.

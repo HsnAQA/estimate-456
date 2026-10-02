@@ -36,7 +36,7 @@
   for it and says why. [docs/TRACEABILITY.md](docs/TRACEABILITY.md) maps each
   formula to its lecture page and its test.
 - **Bilingual and accessible.** Full RTL Arabic, light and dark themes,
-  keyboard support, and reduced-motion support.
+  and keyboard support.
 
 | Worked solution | Dark theme |
 |---|---|

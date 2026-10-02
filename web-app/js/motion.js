@@ -7,9 +7,9 @@
   // 2. Entrance motion for sheets, cards, and worked-solution steps, using anime.js
   //    (vendor/anime, MIT). Numbers are never animated, so every result is correct
   //    the moment it appears.
-  // Everything is skipped when the viewer asks for reduced motion.
+  // Motion stays on even when the system turns animation effects off, as the owner asked.
+  // The network only pauses while the tab is hidden.
 
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
   const A = window.anime;
   const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
@@ -46,9 +46,9 @@
     }
 
     function draw(step) {
-      const line = css("--border-strong") || "#aaa59a";
+      const line = css("--border-strong") || "#a2acbb";
       const dot = css("--text-3") || "#5b6578";
-      const hot = css("--accent") || "#b83c15";
+      const hot = css("--accent") || "#2c56c9";
       ctx.clearRect(0, 0, width, height);
       const reach = Math.min(150, Math.max(90, width / 9));
       for (const p of points) {
@@ -101,7 +101,7 @@
     function play() {
       cancelAnimationFrame(frame);
       const visible = !document.hidden && !canvas.closest("[hidden]");
-      if (reduced.matches || !visible) { draw(false); return; }
+      if (!visible) { draw(false); return; }
       frame = requestAnimationFrame(loop);
     }
 
@@ -110,7 +110,6 @@
     window.addEventListener("resize", () => { size(); play(); });
     document.addEventListener("visibilitychange", play);
     window.addEventListener("hashchange", play);
-    reduced.addEventListener("change", play);
     host.addEventListener("pointermove", (e) => { const r = canvas.getBoundingClientRect(); mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; });
     host.addEventListener("pointerleave", () => { mouse.x = -9999; mouse.y = -9999; });
     // Redraw in the new colors when the theme changes.
@@ -120,7 +119,7 @@
   /* 2. Entrance motion */
 
   function enter(targets) {
-    if (!A || reduced.matches || !targets.length) return;
+    if (!A || !targets.length) return;
     A.animate(targets, {
       opacity: [0, 1],
       translateY: [14, 0],
@@ -144,7 +143,6 @@
     if (!A) return;
     document.querySelectorAll(".trace-panel").forEach((panel) => {
       new MutationObserver(() => {
-        if (reduced.matches) return;
         const steps = [...panel.querySelectorAll(".trace > li")];
         if (!steps.length || panel.dataset.seen === String(steps.length) + panel.querySelector(".trace").className) return;
         panel.dataset.seen = String(steps.length) + panel.querySelector(".trace").className;
