@@ -11,17 +11,35 @@ from PIL import Image, ImageDraw
 HERE = Path(__file__).resolve().parent
 SCALE = 16  # draw at 1024 px, then downsample for clean edges
 TILE, MARK = "#2c56c9", "#f5f7fa"
-# Three rising bars: size grows into effort, the idea behind every calculator.
-BARS = ((13, 36, 23, 50), (27, 26, 37, 50), (41, 14, 51, 50))
+STROKE = 6.5
+# The mark is the "approximately equal" sign: an estimate is a careful approximation.
+# Each wave is two cubic curves, the same points as the SVG path.
+WAVES = (
+    ((14, 26), (20, 18), (26, 18), (32, 26), (38, 34), (44, 34), (50, 26)),
+    ((14, 42), (20, 34), (26, 34), (32, 42), (38, 50), (44, 50), (50, 42)),
+)
+
+
+def cubic(p0, p1, p2, p3, steps=80):
+    for i in range(steps + 1):
+        t = i / steps
+        u = 1 - t
+        yield (
+            u**3 * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * t * p2[0] + t**3 * p3[0],
+            u**3 * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * t * p2[1] + t**3 * p3[1],
+        )
 
 
 def draw() -> Image.Image:
     s = SCALE
     image = Image.new("RGBA", (64 * s, 64 * s), (0, 0, 0, 0))
     d = ImageDraw.Draw(image)
-    d.rounded_rectangle((0, 0, 64 * s - 1, 64 * s - 1), radius=12 * s, fill=TILE)
-    for x1, y1, x2, y2 in BARS:
-        d.rounded_rectangle((x1 * s, y1 * s, x2 * s - 1, y2 * s - 1), radius=2 * s, fill=MARK)
+    d.rounded_rectangle((0, 0, 64 * s - 1, 64 * s - 1), radius=14 * s, fill=TILE)
+    r = STROKE / 2 * s
+    for p in WAVES:
+        points = list(cubic(p[0], p[1], p[2], p[3])) + list(cubic(p[3], p[4], p[5], p[6]))
+        for x, y in points:
+            d.ellipse((x * s - r, y * s - r, x * s + r, y * s + r), fill=MARK)
     return image
 
 

@@ -8,9 +8,10 @@
 - COCOMO now gives development time and staff on every level, from the COCOMO
   article read in class: Tdev = 2.5 x E^d, staff = E / Tdev.
 - New palette: cool snow paper, ink navy, and a cobalt accent replace the
-  beige and orange. New logo and tab icon: three rising bars on a cobalt tile.
+  beige and orange. New logo and tab icon: the approximately equal sign on a cobalt tile.
 - A moving blueprint network on the home page and quiet entrance motion, with
   anime.js.
+- The Streamlit version is removed; the web app is the only version.
 - The web app is split into `css/`, `js/`, and `vendor/`. Documentation moved
   into `docs/`. Added contributing, security, issue and pull request
   templates, and a GitHub Actions test workflow.

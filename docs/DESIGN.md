@@ -143,7 +143,6 @@ The navigation exists to show course structure, not product marketing.
 - Highlight the active destination with blue text, a subtle blue background, and a left or logical-start indicator.
 - Use a visible text label for every destination.
 - Preserve URL hash navigation in the web app.
-- Preserve Streamlit page state when moving between related calculators.
 - The theme control belongs in the application chrome, not inside a calculator card.
 
 # Components
@@ -207,10 +206,6 @@ Use `data-theme="light"` or `data-theme="dark"` on `<html>`. Default to light wh
 
 The control must include an accessible label that describes the action or current state. Theme switching must not reload the page or clear any calculator state.
 
-## Streamlit application
-
-Use native Streamlit theme variants in `.streamlit/config.toml`. Define complete light, dark, light sidebar, and dark sidebar sections. Keep light as the base. Use `st.context.theme.type` for custom Chapter 4 HTML, theme-sensitive images, or charts only when native theming cannot handle the difference.
-
 # Motion
 
 - Default interaction transition: 120 to 180 milliseconds.
@@ -220,7 +215,6 @@ Use native Streamlit theme variants in `.streamlit/config.toml`. Define complete
 
 # Icons and visual assets
 
-- Streamlit uses Material Symbols.
 - The web app uses a small local SVG set with one stroke style.
 - Do not use emoji as functional icons.
 - Decorative illustration is optional and should not compete with data tables.
@@ -243,7 +237,7 @@ When complete, Chapter 4 should use the same surface, table, input, validation, 
 - Minimum 44 by 44 pixel touch targets where practical.
 - Verify at 375, 768, 1024, and 1440 pixels.
 - Verify light, dark, and keyboard-only behavior.
-- Verify browser console output and Streamlit AppTest results.
+- Verify browser console output.
 
 # Anti-patterns
 

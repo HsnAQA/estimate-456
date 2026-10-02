@@ -3,14 +3,14 @@ setlocal EnableExtensions EnableDelayedExpansion
 title Stop CPIT 456 applications
 
 if /I "%~1"=="--check" (
-    echo Stop launcher is ready for ports 8501-8510 and 8765.
+    echo Stop launcher is ready for port 8765.
     exit /b 0
 )
 
 echo Closing CPIT 456 application ports...
 set "FOUND=0"
 
-for %%P in (8501 8502 8503 8504 8505 8506 8507 8508 8509 8510 8765) do (
+for %%P in (8765) do (
     for /f "tokens=5" %%A in ('netstat -ano ^| findstr /R /C:":%%P .*LISTENING"') do (
         if not "%%A"=="0" (
             echo Stopping process %%A on port %%P...

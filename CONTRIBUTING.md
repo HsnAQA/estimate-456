@@ -8,8 +8,8 @@ otherwise.
 
 | You want to change | Look in |
 |---|---|
-| a calculation | `web-app/js/logic.js` and its Python twin `streamlit-app/calculations.py` |
-| course tables and examples | `web-app/js/data.js` and `streamlit-app/ui_data.py` |
+| a calculation | `web-app/js/logic.js` |
+| course tables and examples | `web-app/js/data.js` |
 | English or Arabic text | `web-app/js/i18n.js` |
 | course notes or glossary | `web-app/js/content.js` |
 | a formula's typeset math | `web-app/js/math.js` |
@@ -17,15 +17,15 @@ otherwise.
 | page behavior | `web-app/js/app.js` (pages) and `web-app/js/ui.js` (shared helpers) |
 | styles and theme tokens | `web-app/css/styles.css` |
 | icons | `assets/icons/`, then `node web-app/tools/sync-icons.js` |
-| shared test cases | `shared/fixtures/calculations.json` |
+| test cases | `shared/fixtures/calculations.json` |
 
 Rules that keep the project correct:
 
 - Every constant comes from the course material. Record its source in
   `docs/TRACEABILITY.md`. If the material does not give a value, make it an
   input and say so on screen.
-- Change a calculation in both `logic.js` and `calculations.py`, then add a
-  case to the shared fixtures. The Python suite compares both versions.
+- When you change a calculation in `logic.js`, add a case to
+  `shared/fixtures/calculations.json`, computed from the lecture formula.
 - Every new string needs English and Arabic text in `i18n.js`.
 - Do not use the U+2014 dash. The repository test fails on it.
 
@@ -34,12 +34,10 @@ Rules that keep the project correct:
 ```powershell
 git clone https://github.com/HsnAQA/estimate-456.git
 cd estimate-456
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-python -m pip install -r streamlit-app\requirements.txt
 ```
 
-The web app needs no install. Node.js 20 or newer runs its tests.
+The app needs no install. Node.js 20 or newer runs the tests, and the browser
+suite uses Edge or Chrome.
 
 ## 3. Make a change
 
@@ -47,7 +45,6 @@ The web app needs no install. Node.js 20 or newer runs its tests.
 git checkout -b fix/short-description
 # edit
 cd web-app; node --test "tests/*.test.js"; node tests/e2e/run-e2e.mjs; cd ..
-cd streamlit-app; python -m unittest discover -s tests; cd ..
 git add -A
 git commit -m "Short summary in the imperative"
 git push -u origin fix/short-description

@@ -6,8 +6,7 @@
 
 - [ ] `node --test "tests/*.test.js"` in `web-app`
 - [ ] `node tests/e2e/run-e2e.mjs` in `web-app`
-- [ ] `python -m unittest discover -s tests` in `streamlit-app`
-- [ ] A changed calculation is changed in both apps and has a shared fixture
+- [ ] A changed calculation has a case in `shared/fixtures/calculations.json`
 - [ ] A new constant has its lecture page in `docs/TRACEABILITY.md`
 
 ## Screenshots

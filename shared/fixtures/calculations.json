@@ -1,5 +1,5 @@
 {
-  "description": "Shared calculation fixtures for the CPIT 456 web and Streamlit implementations. Expected values were computed from the lecture formulas at full double precision. Lecture strings record the rounded values printed in 456-solution-Lect1-2.pdf and are display references only.",
+  "description": "Calculation fixtures for the CPIT 456 web app. Expected values were computed from the lecture formulas at full double precision. Lecture strings record the rounded values printed in 456-solution-Lect1-2.pdf and are display references only.",
   "tolerance": {
     "relative": 1e-09,
     "absolute": 1e-09

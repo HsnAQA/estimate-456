@@ -38,4 +38,4 @@ node tools/sync-icons.js
 
 `web-app/tests/icons.test.js` fails when the sprite and these files differ, or when the page uses an icon that is not in the sprite.
 
-Streamlit uses its built-in Material Symbols and does not use these files. Do not use emoji, copied product logos, or Capstone branding.
+Do not use emoji, copied product logos, or Capstone branding.

@@ -17,7 +17,6 @@ body:
         - Delphi
         - Course notes or glossary
         - Home, tables, or summary
-        - Streamlit app
     validations:
       required: true
   - type: textarea

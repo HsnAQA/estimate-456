@@ -2,7 +2,7 @@
 
 // Packages the web app for static hosting (Vercel) in ../../site.
 // The app itself needs no build; this only copies the files a browser loads, so the
-// Streamlit app, course materials, tests, and backups are never uploaded.
+// Course materials, tests, and backups are never uploaded.
 // css/styles.css loads fonts from ../../assets/fonts, which resolves to /assets/fonts at the site root.
 // Run from web-app:  node tools/build-site.js
 const fs = require("node:fs");

@@ -6,7 +6,6 @@
   "use strict";
 
   // Pure calculation engine. Every constant below comes from 456-solution-Lect1-2.pdf.
-  // The Python twin is streamlit-app/calculations.py. Keep names, rules, and messages in step.
 
   const FP_WEIGHTS = Object.freeze({
     inputs: { simple: 3, average: 4, complex: 6 },

@@ -38,9 +38,32 @@
 - **Bilingual and accessible.** Full RTL Arabic, light and dark themes,
   and keyboard support.
 
-| Worked solution | Dark theme |
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/sloc.png" alt="SLOC calculator: each step shows the formula, then the same formula with the entered numbers" /></td>
+    <td width="50%"><img src="docs/images/cocomo-dark.png" alt="Intermediate COCOMO in the dark theme" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>SLOC: every step shows the formula, then your numbers in it</sub></td>
+    <td align="center"><sub>Intermediate COCOMO in the dark theme</sub></td>
+  </tr>
+</table>
+
+## Get the software
+
+You do not need to install anything. Pick the way that suits you:
+
+| You want to | Do this |
 |---|---|
-| ![SLOC calculator with its worked solution](docs/images/sloc.png) | ![Intermediate COCOMO in the dark theme](docs/images/cocomo-dark.png) |
+| use it now | open [estimate-456.vercel.app](https://estimate-456.vercel.app) in any browser, on a computer or a phone |
+| keep a copy that works offline | on this page click **Code**, then **Download ZIP**. Extract the ZIP, then double-click `launch.bat` on Windows, or open `web-app/index.html` in any browser on Windows, macOS, or Linux |
+| follow updates with Git | `git clone https://github.com/HsnAQA/estimate-456.git`, then open `web-app/index.html` |
+
+Your inputs are saved in your own browser only. Nothing is sent to a server.
+
+In the downloaded copy, Arabic text uses the Alexandria font. The published site
+uses the Ministry of Culture fonts, whose license allows websites but not
+sharing the font files.
 
 ## How it is built
 
@@ -54,8 +77,7 @@ web-app/index.html ── js/  logic.js    pure calculations (no DOM)
                       ├── css/styles.css
                       └── vendor/ KaTeX (math), anime.js (motion)
 
-streamlit-app/ ── calculations.py   the same calculations in Python
-shared/fixtures/calculations.json   cases both versions must pass
+shared/fixtures/calculations.json   lecture cases every calculation must pass
 ```
 
 There is no build step and no framework: the web app is plain HTML, CSS, and
@@ -68,22 +90,9 @@ JavaScript and runs straight from disk. More in
 |---|---|
 | Web app | HTML, CSS, vanilla JavaScript |
 | Math and motion | KaTeX 0.19, anime.js 4.5 (both vendored, MIT) |
-| Second version | Python 3, Streamlit |
 | Fonts | Fira Code (English), Saudi and The Year of Handicrafts (Arabic, published site only), Alexandria (Arabic fallback) |
-| Tests | Node test runner, a headless browser suite, Python unittest |
+| Tests | Node test runner and a headless browser suite |
 | Hosting | Vercel (static) |
-
-## Quick start (Windows)
-
-```powershell
-git clone https://github.com/HsnAQA/estimate-456.git
-cd estimate-456
-launch.bat
-```
-
-Choose the web app or the Streamlit app. The web app needs nothing installed.
-The Streamlit launcher creates its own Python environment on first run.
-`stop.bat` closes the ports.
 
 ## Tests
 
@@ -91,9 +100,6 @@ The Streamlit launcher creates its own Python environment on first run.
 cd web-app
 node --test "tests/*.test.js"   # calculations, fixtures, translations, repository checks
 node tests/e2e/run-e2e.mjs      # every page, both languages, both themes, six widths
-
-cd ..\streamlit-app
-python -m unittest discover -s tests   # Streamlit pages and parity with JavaScript
 ```
 
 The same checks run on every push in GitHub Actions. Details in
@@ -103,8 +109,7 @@ The same checks run on every push in GitHub Actions. Details in
 
 ```text
 web-app/          the web app: index.html, css/, js/, vendor/, tests/, tools/
-streamlit-app/    the Streamlit app and its tests
-shared/fixtures/  calculation cases shared by both apps
+shared/fixtures/  calculation cases computed from the lecture
 assets/           logo, fonts with licenses, icons
 docs/             design, architecture, development, deployment, traceability
 .github/          issue and pull request templates, test workflow

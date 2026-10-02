@@ -5,8 +5,7 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
 
-  // Course reference data shown by the web interface. The Python twin is
-  // streamlit-app/ui_data.py, and the parity test compares both files.
+  // Course reference data shown by the web interface.
 
   const FP_PARAMETERS = [
     ["inputs", "Number of user inputs"],

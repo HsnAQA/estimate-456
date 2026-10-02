@@ -1,7 +1,7 @@
 # Architecture
 
-Estimate 456 is two apps that compute the same lecture formulas: a static web
-app (the published one) and a Streamlit app. Shared fixtures keep them equal.
+Estimate 456 is a static web app. It needs no server, no build step, and no
+install.
 
 ## Web app
 
@@ -33,18 +33,11 @@ Inputs are saved in `localStorage` (format v2) and restored on load.
 variables on `:root`, with a dark set under `[data-theme="dark"]`. The visual
 rules are in [DESIGN.md](DESIGN.md).
 
-## Streamlit app
+## Test cases
 
-`streamlit-app/streamlit_app.py` builds the navigation. Each page lives in
-`app_pages/`. `calculations.py` mirrors `logic.js` with dataclass results, and
-`ui_data.py` mirrors the tables in `data.js`.
-
-## Keeping both apps equal
-
-`shared/fixtures/calculations.json` lists input and output cases. The Node
-suite (`fixtures.test.js`) runs them through `logic.js`; the Python suite
-(`test_fixtures.py`, `test_data_parity.py`) runs them through
-`calculations.py` and compares the tables in `data.js` with `ui_data.py`.
+`shared/fixtures/calculations.json` lists input and output cases computed
+from the lecture formulas. `web-app/tests/fixtures.test.js` runs every case
+through `logic.js`.
 
 ## Published site
 
