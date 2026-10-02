@@ -44,7 +44,7 @@ async function functional(lang) {
   check(`${tag} lang and dir`, await run(`document.documentElement.lang + " " + document.documentElement.dir`), lang === "ar" ? "ar rtl" : "en ltr");
   check(`${tag} light theme is the default`, await run(`document.documentElement.dataset.theme`), "light");
   check(`${tag} panels are not pure white`, await run(`getComputedStyle($(".panel")).backgroundColor`), (v) => v !== "rgb(255, 255, 255)");
-  check(`${tag} page background is snow`, await run(`getComputedStyle(document.body).backgroundColor`), "rgb(245, 247, 246)");
+  check(`${tag} page background is snow`, await run(`getComputedStyle(document.body).backgroundColor`), "rgb(245, 246, 248)");
   // Home: logo and name, one question, two parts, and only the chosen part's methods.
   const visibleCards = `$$(".method-card").filter((e) => e.getClientRects().length).length`;
   check(`${tag} logo appears once at the top, not repeated on the home page`, await run(`$$("#page-home img").length + " " + ($(".topbar-brand img").naturalWidth > 0) + " " + txt(".topbar-brand")`), lang === "ar" ? "0 true تقدير 456" : "0 true Estimate 456");
@@ -256,7 +256,7 @@ async function functional(lang) {
   check(`${tag} undo confirms`, await toast(), (v) => v.length > 3);
   await run(`click('[data-theme-choice="dark"]')`);
   await open("sloc");
-  check(`${tag} dark theme persists`, await run(`document.documentElement.dataset.theme + " " + getComputedStyle(document.body).backgroundColor`), "dark rgb(14, 19, 17)");
+  check(`${tag} dark theme persists`, await run(`document.documentElement.dataset.theme + " " + getComputedStyle(document.body).backgroundColor`), "dark rgb(17, 20, 24)");
   await run(`click('[data-theme-choice="light"]')`);
   await open("sloc");
   check(`${tag} language persists after reload`, await run(`document.documentElement.lang`), lang);
@@ -316,9 +316,9 @@ async function productFeatures() {
   check("[product] toast closes", await run(`$("#toast").hidden`), true);
 
   // Browser toolbar color follows the theme.
-  check("[product] theme-color light", await run(`$('meta[name="theme-color"]').content`), "#fcfdfc");
+  check("[product] theme-color light", await run(`$('meta[name="theme-color"]').content`), "#fcfcfd");
   await run(`click('[data-theme-choice="dark"]')`);
-  check("[product] theme-color dark", await run(`$('meta[name="theme-color"]').content`), "#141a17");
+  check("[product] theme-color dark", await run(`$('meta[name="theme-color"]').content`), "#171b21");
   await run(`click('[data-theme-choice="light"]')`);
 
   // Method identity colors: navigation icons, page icons, result edges, and chart bars.
@@ -337,7 +337,7 @@ async function productFeatures() {
   check("[product] footer links to the public repository", await run(`$("#repoLink").href + " " + $("#repoLink").target + " " + $("#repoLink").rel`), "https://github.com/HsnAQA/estimate-456 _blank noopener noreferrer");
   await open("sloc");
   await run(`setVal($("#slocLoc"), "34000")`);
-  check("[product] changed result is highlighted", await run(`$("#slocResult .result-value strong").classList.contains("changed")`), true);
+  check("[product] no flash or tap highlight on click", await run(`getComputedStyle($("#slocResult .result-value strong")).animationName + " " + getComputedStyle($("#loadSlocExample")).webkitTapHighlightColor`), "none rgba(0, 0, 0, 0)");
 
   // Touch targets are at least 44 px tall on a phone.
   await b.viewport(375, 812);

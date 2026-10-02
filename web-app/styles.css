@@ -107,7 +107,10 @@ a:hover { text-decoration: underline; }
 [hidden] { display: none !important; }
 h1, h2, h3, p { margin: 0; }
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-main:focus, h1:focus { outline: none; }
+main:focus, h1:focus, h1:focus-visible, main:focus-visible { outline: none; }
+* { -webkit-tap-highlight-color: transparent; }
+button, .btn, .seg label, .tabs [role="tab"], .nav a, .part-option, .stepper button, .lang, .mode { -webkit-user-select: none; user-select: none; }
+::selection { background: var(--accent-soft); color: var(--text); }
 .visually-hidden, .icon-sprite { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .icon { width: 18px; height: 18px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
 [dir="rtl"] .flip { transform: scaleX(-1); }
@@ -486,8 +489,6 @@ select:focus-visible { border-color: var(--focus); outline: 2px solid var(--focu
 /* Page entry and changed results. Both are removed under reduced motion. */
 .page:not([hidden]) { animation: page-in 180ms ease-out; }
 @keyframes page-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-.result-value strong.changed { animation: value-changed 700ms ease-out; border-radius: 4px; }
-@keyframes value-changed { from { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } to { background: transparent; box-shadow: 0 0 0 4px transparent; } }
 
 /* Footer */
 .site-foot { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 12px 24px; width: calc(100% - 2 * var(--gutter)); max-width: calc(var(--content) - 2 * var(--gutter)); margin: 0 auto; padding: 20px 0 28px; border-top: 1px solid var(--border); color: var(--text-2); font-size: 14px; }
@@ -667,36 +668,36 @@ html[lang="ar"] .facts dt { font-family: var(--font); font-size: 14px; }
    ========================================================================== */
 :root,
 :root[data-theme="light"] {
-  --bg: #f5f7f6;
-  --surface: #fcfdfc;
-  --surface-2: #eef2f0;
-  --field: #fdfefd;
-  --border: #d8dfdb;
-  --border-strong: #b3beb8;
-  --text: #16201b;
-  --text-2: #46534c;
-  --text-3: #5a6760;
-  --accent: #0b6b4f;
-  --accent-hover: #085a42;
-  --accent-soft: #dcebe4;
-  --on-accent: #f6fbf8;
-  --focus: #0b6b4f;
+  --bg: #f5f6f8;
+  --surface: #fcfcfd;
+  --surface-2: #eef0f4;
+  --field: #fdfdfe;
+  --border: #dadfe6;
+  --border-strong: #b7bfca;
+  --text: #1b2230;
+  --text-2: #4a5363;
+  --text-3: #5d6675;
+  --accent: #3e5f8a;
+  --accent-hover: #334f74;
+  --accent-soft: #e3eaf3;
+  --on-accent: #f7f9fc;
+  --focus: #3e5f8a;
 }
 :root[data-theme="dark"] {
-  --bg: #0e1311;
-  --surface: #141a17;
-  --surface-2: #1b2420;
-  --field: #111714;
-  --border: #29332e;
-  --border-strong: #3d4a43;
-  --text: #e6ece9;
-  --text-2: #a9b5ae;
-  --text-3: #8d9a93;
-  --accent: #5ec39a;
-  --accent-hover: #7fd2b0;
-  --accent-soft: #163428;
-  --on-accent: #0c1411;
-  --focus: #5ec39a;
+  --bg: #111418;
+  --surface: #171b21;
+  --surface-2: #1e232b;
+  --field: #13161b;
+  --border: #2b313b;
+  --border-strong: #404855;
+  --text: #e5e9ef;
+  --text-2: #a8b1bf;
+  --text-3: #8b95a4;
+  --accent: #8fb0dc;
+  --accent-hover: #a9c3e6;
+  --accent-soft: #1f2d40;
+  --on-accent: #0f1520;
+  --focus: #8fb0dc;
 }
 :root {
   --font: "Saudi", "Alexandria", "Segoe UI", Tahoma, Arial, sans-serif;
@@ -746,7 +747,7 @@ html[lang="ar"] .facts dt { font-family: var(--font); font-size: 14px; }
 
 .lang-quick { font-size: 19px; font-weight: 700; line-height: 1; }
 
-/* Buttons and choices in green */
+/* Buttons and choices in the accent */
 .btn-primary:hover { background: var(--accent-hover); opacity: 1; }
 .btn-ghost { color: var(--text-2); }
 

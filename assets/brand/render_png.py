@@ -10,7 +10,7 @@ from PIL import Image, ImageDraw
 
 HERE = Path(__file__).resolve().parent
 SCALE = 16  # draw at 1024 px, then downsample for clean edges
-TILE, MARK, POINT = "#0b6b4f", "#f7f9fc", "#8fd3b5"
+TILE, MARK, POINT = "#3e5f8a", "#f7f9fc", "#a9c1e3"
 
 
 def draw() -> Image.Image:
