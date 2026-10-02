@@ -278,6 +278,7 @@ async function functional(lang) {
   await run(`click('[data-theme-choice="dark"]')`);
   await open("sloc");
   check(`${tag} dark theme persists`, await run(`document.documentElement.dataset.theme + " " + getComputedStyle(document.body).backgroundColor`), "dark rgb(13, 19, 32)");
+  check(`${tag} logo has no frame in the dark theme`, await run(`getComputedStyle($(".topbar-brand img")).outlineStyle + " " + getComputedStyle($(".foot-brand img")).outlineStyle`), "none none");
   await run(`click('[data-theme-choice="light"]')`);
   await open("sloc");
   check(`${tag} language persists after reload`, await run(`document.documentElement.lang`), lang);

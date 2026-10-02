@@ -597,7 +597,6 @@ main, main:focus, main:focus-visible, h1:focus, h1:focus-visible, .page:focus { 
 .topbar { gap: 16px; height: var(--topbar); border-bottom: 1px solid var(--border-strong); background: var(--surface); }
 .topbar-brand { gap: 10px; font-size: 15px; font-weight: 700; }
 .topbar-brand img { width: 32px; height: 32px; }
-:root[data-theme="dark"] .topbar-brand img, :root[data-theme="dark"] .foot-brand img { outline: 1px solid var(--border-strong); }
 .crumbs { display: none; }
 .topnav { display: flex; align-items: stretch; align-self: stretch; gap: 0; min-width: 0; height: auto; margin-inline-start: 18px; padding: 0; overflow: visible; }
 .topnav-part { display: flex; align-items: center; margin: 0; padding-inline: 14px 8px; border-inline-start: 1px solid var(--border); color: var(--accent); font-size: 12px; font-weight: 600; white-space: nowrap; }
