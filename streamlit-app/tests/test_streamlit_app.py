@@ -146,8 +146,8 @@ class ChapterFourTests(unittest.TestCase):
         self.assertTrue(any("All 2 tasks are accepted" in success.value for success in self.app.success))
 
     def test_duration_blocker_is_explained(self) -> None:
-        notes = [caption.value for caption in self.app.caption if "Duration (D) is not calculated" in caption.value]
-        self.assertEqual(len(notes), 3, "Basic, Intermediate, and Advanced each explain the missing D equations")
+        notes = [caption.value for caption in self.app.caption if "Tdev = c x E^d" in caption.value]
+        self.assertEqual(len(notes), 3, "Basic, Intermediate, and Advanced each explain the Tdev source")
 
     def test_basic_compares_all_three_modes(self) -> None:
         frames = [frame.value for frame in self.app.dataframe if "Ei (person-months)" in frame.value.columns]

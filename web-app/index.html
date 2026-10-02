@@ -10,8 +10,9 @@
     <link rel="icon" type="image/svg+xml" href="../assets/brand/estimate-456-mark.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/brand/estimate-456-mark-32.png" />
     <link rel="apple-touch-icon" href="../assets/brand/estimate-456-mark-180.png" />
-    <script src="theme.js"></script>
-    <link rel="stylesheet" href="styles.css" />
+    <script src="js/theme.js"></script>
+    <link rel="stylesheet" href="vendor/katex/katex.min.css" />
+    <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
     <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
@@ -58,6 +59,9 @@
         <a href="#defects" data-page="defects"><svg class="icon"><use href="#i-bug" /></svg><span data-i18n="nav.defects"></span></a>
         <a href="#cocomo" data-page="cocomo"><svg class="icon"><use href="#i-tree" /></svg><span data-i18n="nav.cocomo"></span></a>
         <a href="#delphi" data-page="delphi"><svg class="icon"><use href="#i-users" /></svg><span data-i18n="nav.delphi"></span></a>
+        <span class="topnav-part" data-i18n="nav.learn">Learn</span>
+        <a href="#notes" data-page="notes"><svg class="icon"><use href="#i-book" /></svg><span data-i18n="nav.notes"></span></a>
+        <a href="#glossary" data-page="glossary"><svg class="icon"><use href="#i-info" /></svg><span data-i18n="nav.glossary"></span></a>
       </nav>
       <nav class="crumbs" data-i18n-attr="aria-label:crumb.label"><span id="crumbPage" aria-current="page"></span></nav>
       <div class="topbar-actions">
@@ -90,6 +94,8 @@
         <a href="#cocomo" data-page="cocomo"><svg class="icon"><use href="#i-tree" /></svg><span data-i18n="nav.cocomo">COCOMO</span></a>
         <a href="#delphi" data-page="delphi"><svg class="icon"><use href="#i-users" /></svg><span data-i18n="nav.delphi">Delphi</span></a>
         <p class="nav-group" data-i18n="nav.reference">Reference</p>
+        <a href="#notes" data-page="notes"><svg class="icon"><use href="#i-book" /></svg><span data-i18n="nav.notes">Course notes</span></a>
+        <a href="#glossary" data-page="glossary"><svg class="icon"><use href="#i-info" /></svg><span data-i18n="nav.glossary">Glossary</span></a>
         <a href="#tables" data-page="tables"><svg class="icon"><use href="#i-book" /></svg><span data-i18n="nav.tables">Course tables</span></a>
         <a href="#summary" data-page="summary"><svg class="icon"><use href="#i-trend" /></svg><span data-i18n="nav.summary">Compare results</span></a>
       </nav>
@@ -119,6 +125,7 @@
         <!-- Overview -->
         <section id="page-home" class="page home" data-page="home" data-title="nav.overview" aria-labelledby="home-title">
           <header class="home-head">
+            <canvas id="homeNetwork" class="home-network" aria-hidden="true"></canvas>
             <div>
               <span class="home-eyebrow" data-i18n="home.eyebrow">CPIT 456 · Software project estimation</span>
               <h1 id="home-title" tabindex="-1" data-i18n="home.title">Software project estimation</h1>
@@ -189,6 +196,8 @@
             </a>
           </div>
           <nav class="home-secondary" data-i18n-attr="aria-label:home.supportLabel">
+            <a href="#notes"><svg class="icon" aria-hidden="true"><use href="#i-book" /></svg><span data-i18n="nav.notes">Course notes</span></a>
+            <a href="#glossary"><svg class="icon" aria-hidden="true"><use href="#i-info" /></svg><span data-i18n="nav.glossary">Glossary</span></a>
             <a href="#tables"><svg class="icon" aria-hidden="true"><use href="#i-book" /></svg><span data-i18n="home.tables">Course tables</span></a>
             <a href="#summary"><svg class="icon" aria-hidden="true"><use href="#i-trend" /></svg><span data-i18n="nav.summary">Compare results</span></a>
           </nav>
@@ -446,6 +455,26 @@
             <section id="tablePanel" class="panel table-panel" aria-live="polite"></section>
           </div>
         </section>
+        <!-- Course notes -->
+        <section id="page-notes" class="page" data-page="notes" data-title="nav.notes" aria-labelledby="notes-title" hidden>
+          <header class="page-head">
+            <div><h1 id="notes-title" tabindex="-1" data-i18n="notes.title">Course notes</h1><p data-i18n="notes.desc"></p></div>
+          </header>
+          <div class="notes-layout">
+            <nav class="notes-toc" data-i18n-attr="aria-label:notes.toc"><ol id="notesToc"></ol></nav>
+            <div id="notesBody" class="notes-body"></div>
+          </div>
+        </section>
+
+        <!-- Glossary -->
+        <section id="page-glossary" class="page" data-page="glossary" data-title="nav.glossary" aria-labelledby="glossary-title" hidden>
+          <header class="page-head">
+            <div><h1 id="glossary-title" tabindex="-1" data-i18n="glossary.title">Glossary</h1><p data-i18n="glossary.desc"></p></div>
+          </header>
+          <div class="search inline glossary-search"><svg class="icon" aria-hidden="true"><use href="#i-search" /></svg><label class="visually-hidden" for="glossarySearch" data-i18n="glossary.filter">Filter terms</label><input id="glossarySearch" type="search" autocomplete="off" data-i18n-attr="placeholder:glossary.filter" /></div>
+          <dl id="glossaryList" class="glossary"></dl>
+          <p id="glossaryEmpty" class="muted" hidden data-i18n="glossary.none">No term matches.</p>
+        </section>
       </main>
       <footer class="site-foot">
         <div class="foot-brand">
@@ -470,10 +499,15 @@
       </div>
     </div>
 
-    <script src="logic.js"></script>
-    <script src="data.js"></script>
-    <script src="i18n.js"></script>
-    <script src="ui.js"></script>
-    <script src="app.js"></script>
+    <script src="vendor/katex/katex.min.js"></script>
+    <script src="js/math.js"></script>
+    <script src="js/content.js"></script>
+    <script src="js/logic.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+    <script src="vendor/anime/anime.umd.min.js"></script>
+    <script src="js/motion.js"></script>
   </body>
 </html>

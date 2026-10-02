@@ -62,10 +62,20 @@
     return `<span class="answer">${esc(value)}${unit ? ` <small>${esc(unit)}</small>` : ""}</span>`;
   }
 
+  // A plain-text formula is shown as typeset math when math.js knows its TeX.
+  function formulaHtml(text) {
+    const M = window.EstimateMath;
+    const key = M ? M.keyFor(text, I.STRINGS) : null;
+    const math = key ? M.render(M.TEX[key]) : null;
+    if (!math) return `<div class="formula">${text}</div>`;
+    const note = M.WITH_NOTE.has(key) ? `<span class="formula-note">${text}</span>` : "";
+    return `<div class="formula is-math" dir="ltr">${math}</div>${note}`;
+  }
+
   // steps: [{ title, formula, line (html), lecture }]
   function renderTrace(container, steps, subtitle = t("common.workedSub")) {
     container.innerHTML = `<h2 class="panel-title">${t("common.worked")}</h2><p>${subtitle}</p><ol class="trace">${steps
-      .map((s, i) => `<li><span class="num">${i + 1}</span><div class="body"><div class="head"><span class="title">${s.title}</span>${s.lecture ? `<span class="lecture">${esc(s.lecture)}</span>` : ""}</div>${s.formula ? `<div class="formula">${s.formula}</div>` : ""}${s.line ? `<div class="line">${s.line}</div>` : ""}</div></li>`)
+      .map((s, i) => `<li><span class="num">${i + 1}</span><div class="body"><div class="head"><span class="title">${s.title}</span>${s.lecture ? `<span class="lecture">${esc(s.lecture)}</span>` : ""}</div>${s.formula ? formulaHtml(s.formula) : ""}${s.line ? `<div class="line">${s.line}</div>` : ""}</div></li>`)
       .join("")}</ol>`;
   }
 
@@ -134,5 +144,5 @@
     });
   }
 
-  window.EstimateUI = { byId, fmt, money, esc, icon, check, issueMessage, setError, readFields, val, op, answer, renderTrace, renderTraceWaiting, renderResult, renderResultInvalid, initLinking, initTabs };
+  window.EstimateUI = { formulaHtml, byId, fmt, money, esc, icon, check, issueMessage, setError, readFields, val, op, answer, renderTrace, renderTraceWaiting, renderResult, renderResultInvalid, initLinking, initTabs };
 })();

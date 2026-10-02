@@ -403,7 +403,9 @@
         "initialEffort": 13.718700320464553,
         "eaf": 1.0,
         "adjustedEffort": 13.718700320464553,
-        "totalCost": 10974.960256371642
+        "totalCost": 10974.960256371642,
+        "duration": 6.762681545228972,
+        "staff": 2.0285888413809765
       },
       "lecture": {
         "initialEffort": "3.2 x 4.28 = about 14 person-months"
@@ -425,7 +427,9 @@
         "initialEffort": 44.37700938891117,
         "eaf": 1.0,
         "adjustedEffort": 44.37700938891117,
-        "totalCost": 0.0
+        "totalCost": 0.0,
+        "duration": 8.414543864152662,
+        "staff": 5.273846105665277
       }
     },
     {
@@ -444,7 +448,9 @@
         "initialEffort": 112.83562967390236,
         "eaf": 1.0,
         "adjustedEffort": 112.83562967390236,
-        "totalCost": 112835.62967390237
+        "totalCost": 112835.62967390237,
+        "duration": 13.070620297579406,
+        "staff": 8.632767772681667
       }
     },
     {
@@ -468,7 +474,9 @@
         "initialEffort": 10.142086162075564,
         "eaf": 1.539,
         "adjustedEffort": 15.608670603434293,
-        "totalCost": 12486.936482747435
+        "totalCost": 12486.936482747435,
+        "duration": 7.102627795567441,
+        "staff": 2.197590955445426
       },
       "lecture": {
         "initialEffort": "3.2 x 3.16 = 10.11",
@@ -542,7 +550,9 @@
         "initialEffort": 45.384284390880936,
         "eaf": 1.0,
         "adjustedEffort": 45.384284390880936,
-        "totalCost": 0.0
+        "totalCost": 0.0,
+        "duration": 10.655261084035265,
+        "staff": 4.259331050919064
       }
     },
     {
@@ -564,7 +574,9 @@
         "initialEffort": 44.37700938891117,
         "eaf": 1.035,
         "adjustedEffort": 45.930204717523054,
-        "totalCost": 45930.204717523055
+        "totalCost": 45930.204717523055,
+        "duration": 8.50768674370324,
+        "staff": 5.398671354644926
       }
     },
     {
@@ -587,7 +599,9 @@
         "initialEffort": 110.36060291724367,
         "eaf": 1.1181500000000002,
         "adjustedEffort": 123.39970815191603,
-        "totalCost": 61699.854075958014
+        "totalCost": 61699.854075958014,
+        "duration": 13.486521686407,
+        "staff": 9.149854278311805
       }
     },
     {
@@ -646,7 +660,9 @@
         "shareTotal": 100.0,
         "weightedEaf": 1.0,
         "totalEffort": 10.142086162075564,
-        "totalCost": 8113.668929660452
+        "totalCost": 8113.668929660452,
+        "duration": 6.029320650471148,
+        "staff": 1.6821275148607386
       }
     },
     {
@@ -705,7 +721,9 @@
         "shareTotal": 100.0,
         "weightedEaf": 1.0325,
         "totalEffort": 105.26502221896794,
-        "totalCost": 105265.02221896795
+        "totalCost": 105265.02221896795,
+        "duration": 11.093559482167866,
+        "staff": 9.488841015201139
       }
     },
     {
@@ -746,7 +764,9 @@
         "shareTotal": 100.0,
         "weightedEaf": 0.9600000000000001,
         "totalEffort": 29.570132679849323,
-        "totalCost": 0.0
+        "totalCost": 0.0,
+        "duration": 8.179724081390502,
+        "staff": 3.6150525843681742
       }
     }
   ],

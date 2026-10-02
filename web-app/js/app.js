@@ -11,7 +11,7 @@
   const t = I.t;
   const C = I.course;
 
-  const PAGES = ["home", "sloc", "fp", "planning", "cocomo", "delphi", "defects", "summary", "tables"];
+  const PAGES = ["home", "sloc", "fp", "planning", "cocomo", "delphi", "defects", "summary", "tables", "notes", "glossary"];
   // Addresses used by earlier versions of the app keep working.
   const ALIASES = { language: ["fp", "convert"], "fp-count": ["fp", "count"], cwf: ["fp", "adjust"], reference: ["tables", "4"], quality: ["planning", ""], advanced: ["cocomo", "advanced"] };
 
@@ -353,6 +353,16 @@
     }).join("")}</div>`).join("");
   }
 
+  // Development time and staff, from the COCOMO article used in the course.
+  const timeFacts = (r) => [
+    { label: t("cocomo.tdev"), value: `${fmt(r.duration)} ${t("unit.months")}` },
+    { label: t("cocomo.staff"), value: `${fmt(r.staff)} ${t("unit.people")}` },
+  ];
+  const timeSteps = (r, effort) => [
+    { title: t("cocomo.tdev"), formula: t("cocomo.f.tdev"), line: `${val(fmt(r.dc, 1))}${op("×")}${val(fmt(effort))}<sup class="pow">${val(fmt(r.dd))}</sup>${op("=")}${answer(fmt(r.duration), t("unit.months"))}`, lecture: t("cocomo.tdevSource", { mode: "" }) },
+    { title: t("cocomo.staff"), formula: t("cocomo.f.staff"), line: `${val(fmt(effort))}${op("÷")}${val(fmt(r.duration))}${op("=")}${answer(fmt(r.staff), t("unit.people"))}` },
+  ];
+
   const constantsLine = (mode, r) => `${val(t("cocomo.f.constants", { mode: modeLabel(mode), c: r.c.toFixed(1), k: r.k.toFixed(2) }))}`;
 
   // The same KLOC in all three Table 8 modes, so each mode can be checked at once.
@@ -385,16 +395,18 @@
       facts: [
         { label: t("field.projectType"), value: `${modeLabel(mode)} (C = ${r.c.toFixed(1)}, K = ${r.k.toFixed(2)})` },
         { label: t("cocomo.cost"), value: money(r.totalCost) },
+        ...timeFacts(r),
       ],
       extra: compareModes(v.cocomoKloc, mode),
     });
     U.renderTrace(byId("basicTrace"), [
       { title: titles[0], formula: t("cocomo.f.ei"), line: constantsLine(mode, r) },
-      { title: titles[1], formula: t("cocomo.f.power"), line: `${val(fmt(v.cocomoKloc), "cocomoKloc")}${op("^")}${val(r.k.toFixed(2))}${op("=")}${answer(fmt(power, 3))}`, lecture: isLecture ? t("common.lecture", { v: "4.28" }) : "" },
+      { title: titles[1], formula: t("cocomo.f.power"), line: `${val(fmt(v.cocomoKloc), "cocomoKloc")}<sup class="pow">${val(r.k.toFixed(2))}</sup>${op("=")}${answer(fmt(power, 3))}`, lecture: isLecture ? t("common.lecture", { v: "4.28" }) : "" },
       { title: titles[2], formula: t("cocomo.f.eiPower"), line: `${val(r.c.toFixed(1))}${op("×")}${val(fmt(power, 3))}${op("=")}${answer(fmt(r.initialEffort), t("unit.pm"))}` },
       { title: titles[3], formula: t("cocomo.f.cost"), line: `${val(fmt(r.initialEffort))}${op("×")}${val(money(v.cocomoRate), "cocomoRate")}${op("=")}${answer(money(r.totalCost))}` },
+      ...timeSteps(r, r.initialEffort),
     ]);
-    latest.basic = { effort: r.initialEffort, cost: r.totalCost, inputs: t("cocomo.basicInputs", { kloc: fmt(v.cocomoKloc), mode: modeLabel(mode) }) };
+    latest.basic = { effort: r.initialEffort, cost: r.totalCost, duration: r.duration, inputs: t("cocomo.basicInputs", { kloc: fmt(v.cocomoKloc), mode: modeLabel(mode) }) };
   }
 
   function updateIntermediate() {
@@ -434,17 +446,19 @@
         { label: t("cocomo.initialEffort"), value: `${fmt(r.initialEffort)} ${t("unit.pmShort")}`, note: lecture("10.11") },
         { label: t("cocomo.eafShort"), value: fmt(r.eaf, 4), note: lecture("1.53") },
         { label: t("cocomo.cost"), value: money(r.totalCost) },
+        ...timeFacts(r),
       ],
       extra: isLecture ? `<p class="note">${icon("info")}<span>${t("cocomo.lectureNote")}</span></p>` : "",
     });
     U.renderTrace(byId("intermediateTrace"), [
       { title: titles[0], formula: t("cocomo.f.ei"), line: constantsLine(mode, r) },
-      { title: titles[1], formula: t("cocomo.f.ei"), line: `${val(r.c.toFixed(1))}${op("×")}${val(fmt(v.intermediateKloc), "intermediateKloc")}${op("^")}${val(r.k.toFixed(2))}${op("=")}${answer(fmt(r.initialEffort), t("unit.pm"))}`, lecture: lecture("3.2 × 3.16 = 10.11") },
+      { title: titles[1], formula: t("cocomo.f.ei"), line: `${val(r.c.toFixed(1))}${op("×")}${val(fmt(v.intermediateKloc), "intermediateKloc")}<sup class="pow">${val(r.k.toFixed(2))}</sup>${op("=")}${answer(fmt(r.initialEffort), t("unit.pm"))}`, lecture: lecture("3.2 × 3.16 = 10.11") },
       { title: titles[2], formula: applied.length ? t("cocomo.f.eafDrivers", { n: 15 - applied.length }) : t("cocomo.f.eafNone"), line: applied.length ? `${applied.map(({ d, i }) => val(`${driverCode(L.COCOMO_DRIVER_NAMES[i])} ${C.driverRating(d.rating)} ${fmt(d.multiplier)}`, `driver-mult-${i}`)).join(op("×"))}${op("=")}${answer(fmt(r.eaf, 4))}` : answer("1.00"), lecture: lecture("1.53") },
       { title: titles[3], formula: t("cocomo.f.e"), line: `${val(fmt(r.eaf, 4))}${op("×")}${val(fmt(r.initialEffort))}${op("=")}${answer(fmt(r.adjustedEffort), t("unit.pm"))}`, lecture: lecture("1.53 × 10.11 = 15.5") },
       { title: titles[4], formula: t("cocomo.f.costE"), line: `${val(fmt(r.adjustedEffort))}${op("×")}${val(money(v.intermediateRate), "intermediateRate")}${op("=")}${answer(money(r.totalCost))}` },
+      ...timeSteps(r, r.adjustedEffort),
     ]);
-    latest.intermediate = { effort: r.adjustedEffort, cost: r.totalCost, eaf: r.eaf, kloc: v.intermediateKloc, mode, inputs: t("cocomo.intermediateInputs", { kloc: fmt(v.intermediateKloc), mode: modeLabel(mode), eaf: fmt(r.eaf, 4) }) };
+    latest.intermediate = { effort: r.adjustedEffort, cost: r.totalCost, duration: r.duration, eaf: r.eaf, kloc: v.intermediateKloc, mode, inputs: t("cocomo.intermediateInputs", { kloc: fmt(v.intermediateKloc), mode: modeLabel(mode), eaf: fmt(r.eaf, 4) }) };
   }
 
   /* Advanced COCOMO, section 4.3.3 */
@@ -494,6 +508,7 @@
         { label: t("cocomo.initialEffort"), value: `${fmt(r.initialEffort)} ${t("unit.pmShort")}` },
         { label: t("adv.weightedEaf"), value: fmt(r.weightedEaf, 4) },
         { label: t("cocomo.cost"), value: money(r.totalCost) },
+        ...timeFacts(r),
       ],
     });
     const phaseSteps = state.phases.map((p, i) => ({
@@ -502,12 +517,13 @@
     }));
     U.renderTrace(byId("advancedTrace"), [
       { title: titles[0], formula: t("cocomo.f.ei"), line: constantsLine(mode, r) },
-      { title: titles[1], formula: t("cocomo.f.ei"), line: `${val(r.c.toFixed(1))}${op("×")}${val(fmt(v.advancedKloc), "advancedKloc")}${op("^")}${val(r.k.toFixed(2))}${op("=")}${answer(fmt(r.initialEffort), t("unit.pm"))}` },
+      { title: titles[1], formula: t("cocomo.f.ei"), line: `${val(r.c.toFixed(1))}${op("×")}${val(fmt(v.advancedKloc), "advancedKloc")}<sup class="pow">${val(r.k.toFixed(2))}</sup>${op("=")}${answer(fmt(r.initialEffort), t("unit.pm"))}` },
       ...phaseSteps,
       { title: t("adv.total"), formula: t("adv.f.total"), line: `${r.phases.map((x) => val(fmt(x.effort))).join(op("+"))}${op("=")}${answer(fmt(r.totalEffort), t("unit.pm"))}` },
       { title: t("cocomo.cost"), formula: t("cocomo.f.costE"), line: `${val(fmt(r.totalEffort))}${op("×")}${val(money(v.advancedRate), "advancedRate")}${op("=")}${answer(money(r.totalCost))}` },
+      ...timeSteps(r, r.totalEffort),
     ]);
-    latest.advanced = { effort: r.totalEffort, cost: r.totalCost, inputs: t("adv.inputs", { kloc: fmt(v.advancedKloc), mode: modeLabel(mode), n: state.phases.length }) };
+    latest.advanced = { effort: r.totalEffort, cost: r.totalCost, duration: r.duration, inputs: t("adv.inputs", { kloc: fmt(v.advancedKloc), mode: modeLabel(mode), n: state.phases.length }) };
   }
 
   /* Delphi, section 4.4, Table 11 */
@@ -597,9 +613,9 @@
     { key: "sloc", color: "sloc", name: "method.sloc", page: "sloc", duration: (x) => `${fmt(x.duration)} ${t("unit.months")}` },
     { key: "productivity", color: "planning", name: "method.productivity", page: "planning/productivity", duration: () => t("common.notCalculated") },
     { key: "hours", color: "planning", name: "method.hours", page: "planning/hours", cost: () => t("common.notCalculated"), duration: (x) => `${fmt(x.duration)} ${t("unit.months")}` },
-    { key: "basic", color: "cocomo", name: "method.basic", page: "cocomo/basic", duration: () => t("common.notInLecture") },
-    { key: "intermediate", color: "cocomo", name: "method.intermediate", page: "cocomo/intermediate", duration: () => t("common.notInLecture") },
-    { key: "advanced", color: "cocomo", name: "method.advanced", page: "cocomo/advanced", duration: () => t("common.notInLecture") },
+    { key: "basic", color: "cocomo", name: "method.basic", page: "cocomo/basic", duration: (x) => `${fmt(x.duration)} ${t("unit.months")}` },
+    { key: "intermediate", color: "cocomo", name: "method.intermediate", page: "cocomo/intermediate", duration: (x) => `${fmt(x.duration)} ${t("unit.months")}` },
+    { key: "advanced", color: "cocomo", name: "method.advanced", page: "cocomo/advanced", duration: (x) => `${fmt(x.duration)} ${t("unit.months")}` },
   ];
 
   function summaryRows() {
@@ -671,6 +687,33 @@
     byId("tablePanel").innerHTML = `<h2 class="panel-title"><span class="ref">${t("common.table", { n: x.number })}</span>${tableTitle(x.number)}</h2>${courseTableHtml(x.number)}<a class="btn btn-primary" href="#${x.page}">${esc(t("tables.openCalc", { name: t(PAGE_NAME[x.page]) }))}${icon("arrow-right", "flip")}</a>`;
   }
 
+  /* Course notes and glossary. Text comes from content.js; $...$ is typeset by math.js. */
+
+  const contentLang = () => (I.getLang() === "ar" ? "ar" : "en");
+  const typeset = (html) => (window.EstimateMath ? window.EstimateMath.renderInline(html) : html);
+
+  function renderNotes() {
+    const lang = contentLang();
+    const notes = window.CourseContent.NOTES;
+    byId("notesToc").innerHTML = notes.map((n) => `<li><a href="#notes/${n.id}" data-note="${n.id}"><small>${esc(t(`notes.part${n.part}`))}</small>${esc(n.title[lang])}</a></li>`).join("");
+    byId("notesBody").innerHTML = notes.map((n) => `<article id="note-${n.id}" class="panel note-section">
+      <h2 class="panel-title"><span class="ref">${esc(t(`notes.part${n.part}`))}</span>${esc(n.title[lang])}</h2>
+      <div class="note-text">${typeset(n.body[lang])}</div>
+      <p class="note-foot"><span>${esc(t("notes.source", { s: n.source[lang] }))}</span>${n.page ? `<a class="btn btn-secondary btn-sm" href="#${n.page}">${esc(t("notes.open"))}${icon("arrow-right", "flip")}</a>` : ""}</p>
+    </article>`).join("");
+  }
+
+  function renderGlossary() {
+    const lang = contentLang();
+    const q = byId("glossarySearch").value.trim().toLowerCase();
+    const items = window.CourseContent.GLOSSARY.filter((g) => !q || `${g.term} ${g.en} ${g.ar}`.toLowerCase().includes(q));
+    byId("glossaryList").innerHTML = items.map((g) => `<div class="glossary-item">
+      <dt><span class="term">${esc(g.term)}</span>${g.tex && window.EstimateMath ? `<span class="term-math" dir="ltr">${window.EstimateMath.render(g.tex) || ""}</span>` : ""}</dt>
+      <dd><p>${esc(g[lang])}</p>${g.page ? `<a href="#${g.page}">${esc(t("glossary.open"))}: ${esc(t(PAGE_NAME[g.page] || `nav.${g.page}`))}${icon("arrow-right", "flip")}</a>` : ""}</dd>
+    </div>`).join("");
+    byId("glossaryEmpty").hidden = items.length > 0;
+  }
+
   /* Shell: navigation, search, theme, language, project name */
 
   function parseHash() {
@@ -708,6 +751,7 @@
     if (page === "cocomo" && arg) selectTabById({ intermediate: "tab-intermediate", advanced: "tab-advanced" }[arg] || "tab-basic");
     if (page === "home") selectTabById(arg === "part2" ? "part-tab-2" : "part-tab-1");
     if (page === "tables" && Number(arg) >= 1 && Number(arg) <= 11) { selectedTable = Number(arg); renderLibrary(); }
+    if (page === "notes" && arg && byId(`note-${arg}`)) requestAnimationFrame(() => byId(`note-${arg}`).scrollIntoView({ block: "start" }));
     closeNav(false);
     window.scrollTo(0, 0);
     if (page === "fp" && FP_STEPS.includes(arg)) setFpStep(arg);
@@ -775,6 +819,8 @@
     renderDelphiSteps();
     renderDelphi();
     renderLibrary();
+    renderNotes();
+    renderGlossary();
     updateAll();
     setTitles();
     syncPrefs();
@@ -794,6 +840,9 @@
       { label: t("delphi.title"), hint: t("common.section", { s: "4.4" }), hash: "delphi" },
       { label: t("defects.title"), hint: t("common.section", { s: "4.2.5" }), hash: "defects" },
       { label: t("summary.title"), hint: t("summary.table"), hash: "summary" },
+      { label: t("nav.notes"), hint: t("notes.desc"), hash: "notes" },
+      { label: t("nav.glossary"), hint: t("glossary.desc"), hash: "glossary" },
+      ...window.CourseContent.GLOSSARY.map((g) => ({ label: g.term, hint: t("nav.glossary"), hash: "glossary", extra: g.en })),
       ...D.COURSE_TABLES.map((x) => ({ label: `${t("common.table", { n: x.number })}. ${tableTitle(x.number)}`, hint: C.tableNote(x.number, x.note), hash: `tables/${x.number}`, extra: x.title })),
     ];
   }
@@ -1020,6 +1069,7 @@
       } else if (el.id === "delphiThreshold") updateDelphi();
       else if (el.id === "searchInput") { searchIndex = 0; renderSearch(); return; }
       else if (el.id === "tableSearch") { renderLibrary(); return; }
+      else if (el.id === "glossarySearch") { renderGlossary(); return; }
       else return;
       refreshDerived();
     });

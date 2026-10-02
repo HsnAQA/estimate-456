@@ -9,9 +9,9 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const ROOT = path.resolve(__dirname, "..", "..");
-const ACTIVE = ["web-app", "streamlit-app", "assets", "shared", "docs", "README.md", "design.md", ".gitignore"];
+const ACTIVE = ["web-app", "streamlit-app", "assets", "shared", "docs", "README.md", "CONTRIBUTING.md", "SECURITY.md", ".github", ".gitignore"];
 const SKIP_DIRS = new Set(["node_modules", "__pycache__", ".pytest_cache", "fonts"]);
-const TEXT = /\.(js|mjs|html|css|md|py|json|toml|txt|svg|bat)$|^\.gitignore$/;
+const TEXT = /\.(js|mjs|html|css|md|py|json|toml|txt|svg|bat|yml)$|^\.gitignore$/;
 
 function files(entry) {
   const full = path.join(ROOT, entry);

@@ -5,7 +5,7 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const L = require("../logic.js");
+const L = require("../js/logic.js");
 
 const close = (actual, expected, where) => assert.ok(Math.abs(actual - expected) < 1e-9, `${where}: expected ${expected}, received ${actual}`);
 
@@ -86,4 +86,18 @@ test("SLOC Way 2 follows the lecture: $1.3 per LOC gives $43,160", () => {
   close(r.way2Cost, r.totalCost, "both ways agree exactly");
   assert.equal(r.roundedCostPerLoc, 1.3);
   close(r.roundedWay2Cost, 43160, "Way 2 lecture cost");
+});
+
+test("Development time follows the COCOMO article: Tdev = 2.5 x E^d", () => {
+  const d = { organic: 0.38, "semi-detached": 0.35, embedded: 0.32 };
+  Object.entries(d).forEach(([mode, exp]) => {
+    const r = L.cocomo(10, mode, [1.1]);
+    close(r.duration, 2.5 * Math.pow(r.adjustedEffort, exp), `${mode} Tdev`);
+    close(r.staff, r.adjustedEffort / r.duration, `${mode} staff`);
+  });
+  // The article's own check values: E = 10.289 PM gives Tdev = 6.062 months, and E = 1295 gives about 38.
+  assert.equal(L.roundHalfUp(2.5 * Math.pow(10.289, 0.38), 3), 6.062);
+  assert.equal(L.roundHalfUp(2.5 * Math.pow(1295, 0.38)), 38);
+  const a = L.advancedCocomo(3, "organic", [{ share: 100, eaf: 1 }]);
+  close(a.duration, 2.5 * Math.pow(a.totalEffort, 0.38), "Advanced Tdev");
 });

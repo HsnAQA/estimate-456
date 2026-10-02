@@ -15,6 +15,8 @@
 | GitHub mark in the footer | `mark-github` from GitHub Octicons | MIT; GitHub logo used only to link to the repository | Inline SVG path in `web-app/index.html` |
 | `fonts/Alexandria-Variable-arabic.woff2` | npm `@fontsource-variable/alexandria` 5.3.0, same family as the user's `Desktop\Random\Assets\Fontss\Alexandria` | SIL OFL 1.1, `fonts/licenses/Alexandria-OFL.txt` | Arabic fallback |
 | `fonts/FiraCode-Variable-latin.woff2` | npm `@fontsource-variable/fira-code` 5.3.0, same family as the user's `Desktop\Random\Assets\Fontss\Fira_Code` | SIL OFL 1.1, `fonts/licenses/FiraCode-OFL.txt` (copied from the user's folder) | All English text |
+| `web-app/vendor/anime/` | npm `animejs` 4.5.0 (UMD minified bundle) | MIT, `web-app/vendor/anime/LICENSE.md` | Entrance motion for sheets, cards, and worked-solution steps |
+| `web-app/vendor/katex/` | npm `katex` 0.19.0 (minified JS, CSS, WOFF2 fonts) | MIT, `web-app/vendor/katex/LICENSE` | Typesets the formulas offline, no CDN |
 | `fonts/private/TheYearofHandicrafts-Bold.otf`, `-Black.otf` | Ministry of Culture, from the user's `Desktop\Random\Assets\الخطوط_المستخدمة` | Ministry end-user license, same terms as the Saudi font | Ignored by git; Arabic headings on the published site |
 | `fonts/private/Saudi-Regular.ttf`, `Saudi-Bold.ttf` | Ministry of Culture, https://engage.moc.gov.sa/e/fonts/saudi-font/ | Ministry end-user license. Section 2 allows websites; section 3 forbids copying, distributing, converting, or bundling the file | Ignored by git and served unconverted by the published site only |
 

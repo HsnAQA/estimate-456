@@ -4,13 +4,13 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const I = require("../i18n.js");
-const D = require("../data.js");
-const L = require("../logic.js");
+const I = require("../js/i18n.js");
+const D = require("../js/data.js");
+const L = require("../js/logic.js");
 
 const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
-const app = fs.readFileSync(path.join(__dirname, "..", "app.js"), "utf8");
-const ui = fs.readFileSync(path.join(__dirname, "..", "ui.js"), "utf8");
+const app = fs.readFileSync(path.join(__dirname, "..", "js", "app.js"), "utf8");
+const ui = fs.readFileSync(path.join(__dirname, "..", "js", "ui.js"), "utf8");
 const placeholders = (text) => [...text.matchAll(/\{(\w+)\}/g)].map((m) => m[1]).sort();
 
 test("every string has English and Arabic text with the same placeholders", () => {

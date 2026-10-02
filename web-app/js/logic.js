@@ -47,6 +47,15 @@
     "semi-detached": [3.0, 1.12],
   });
 
+  // Development time Tdev = c x E^d, from the COCOMO article used in the course
+  // (GeeksforGeeks "COCOMO Model", read in class on 2026-10-01). The lecture names
+  // the equation but does not print it. Staff = E / Tdev.
+  const COCOMO_DURATION = Object.freeze({
+    organic: [2.5, 0.38],
+    embedded: [2.5, 0.32],
+    "semi-detached": [2.5, 0.35],
+  });
+
   const COCOMO_MODE_LABELS = Object.freeze({
     organic: "Organic",
     embedded: "Embedded",
@@ -263,7 +272,9 @@
     const eaf = values.reduce((product, current) => product * current, 1);
     const initialEffort = c * kloc ** k;
     const adjustedEffort = initialEffort * eaf;
-    return { c, k, initialEffort, eaf, adjustedEffort, totalCost: adjustedEffort * laborRate };
+    const [dc, dd] = COCOMO_DURATION[mode];
+    const duration = dc * adjustedEffort ** dd;
+    return { c, k, initialEffort, eaf, adjustedEffort, totalCost: adjustedEffort * laborRate, dc, dd, duration, staff: duration > 0 ? adjustedEffort / duration : 0 };
   }
 
   // Advanced COCOMO, section 4.3.3. The lecture says it uses the intermediate steps and
@@ -287,7 +298,8 @@
     }
     const totalEffort = rows.reduce((sum, row) => sum + row.effort, 0);
     const weightedEaf = rows.reduce((sum, row) => sum + (row.share / 100) * row.eaf, 0);
-    return { c: base.c, k: base.k, initialEffort: base.initialEffort, phases: rows, shareTotal, weightedEaf, totalEffort, totalCost: totalEffort * laborRate };
+    const duration = base.dc * totalEffort ** base.dd;
+    return { c: base.c, k: base.k, initialEffort: base.initialEffort, phases: rows, shareTotal, weightedEaf, totalEffort, totalCost: totalEffort * laborRate, dc: base.dc, dd: base.dd, duration, staff: duration > 0 ? totalEffort / duration : 0 };
   }
 
   function multiplierOutsideTypicalRange(value) {
@@ -313,6 +325,7 @@
     LOC_PER_FP,
     COCOMO_MODES,
     COCOMO_MODE_LABELS,
+    COCOMO_DURATION,
     GSC_NAMES,
     COCOMO_DRIVER_NAMES,
     DRIVER_RATINGS,

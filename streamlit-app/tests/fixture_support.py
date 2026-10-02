@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 from typing import Any, Callable
 
+from calculations import COCOMO_DURATION as DC
 from calculations import (
     calculate_advanced_cocomo,
     calculate_cocomo,
@@ -94,6 +95,10 @@ def _cocomo(i: dict[str, Any]) -> dict[str, Any]:
         "eaf": r.effort_adjustment_factor,
         "adjustedEffort": r.adjusted_effort_person_months,
         "totalCost": r.total_cost,
+        "duration": r.duration_months,
+        "staff": r.staff,
+        "dc": DC[i["mode"]][0],
+        "dd": DC[i["mode"]][1],
     }
 
 
@@ -108,6 +113,10 @@ def _advanced(i: dict[str, Any]) -> dict[str, Any]:
         "weightedEaf": r.weighted_eaf,
         "totalEffort": r.total_effort_person_months,
         "totalCost": r.total_cost,
+        "duration": r.duration_months,
+        "staff": r.staff,
+        "dc": DC[i["mode"]][0],
+        "dd": DC[i["mode"]][1],
     }
 
 

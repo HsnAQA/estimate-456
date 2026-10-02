@@ -36,6 +36,9 @@ Concept generated in Google Stitch (project "Estimate 456 - CPIT 456 estimation"
 - Choices and tabs: contiguous bordered segments; the chosen one is filled with ink.
 - Home: an orange section tag, a large headline, two part panels joined in one frame with big 01 and 02 numerals, then the chosen part's method cards.
 - No tap highlight, no focus frame on the page area, no flash on changed results.
+- Motion: the home heading sits on a live blueprint particle network (own canvas code inspired by particles.js, in the page colors, reacting to the pointer). Pages, cards, and worked-solution steps enter with short staggered motion from anime.js. Results never animate their numbers. All motion stops under prefers-reduced-motion and the network pauses when the tab is hidden. Three.js was considered and left out: it is heavy and a 3D scene does not help a calculator.
+- Formulas: typeset with KaTeX (vendored) in a tinted box; powers in the substituted values are superscripts. The same symbolic TeX serves both languages and the Glossary defines the symbols.
+- Learn pages: Course notes (table of contents beside sections, each with its source and a link to its calculator) and Glossary (filterable cards with the term, its formula, a definition, and where it is used). The top bar lists them after Part 2.
 
 # Product intent
 

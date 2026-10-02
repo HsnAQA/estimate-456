@@ -7,7 +7,7 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
-const L = require("../logic.js");
+const L = require("../js/logic.js");
 
 const FIXTURE_PATH = path.resolve(__dirname, "..", "..", "shared", "fixtures", "calculations.json");
 

@@ -2,7 +2,7 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const L = require("../logic.js");
+const L = require("../js/logic.js");
 
 test("SLOC lecture example", () => {
   const result = L.sloc(33200, 620, 6, 800);

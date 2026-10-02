@@ -1,0 +1,41 @@
+name: Wrong result or broken page
+description: A calculation disagrees with the lecture, or something on the site does not work.
+labels: [bug]
+body:
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where
+      options:
+        - SLOC
+        - Function Points
+        - FP planning
+        - Defect density
+        - COCOMO Basic
+        - COCOMO Intermediate
+        - COCOMO Advanced
+        - Delphi
+        - Course notes or glossary
+        - Home, tables, or summary
+        - Streamlit app
+    validations:
+      required: true
+  - type: textarea
+    id: inputs
+    attributes:
+      label: Inputs you entered
+      placeholder: "KLOC = 4, mode = organic"
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you got and what you expected
+      description: For a wrong result, give the lecture page that shows the expected value.
+    validations:
+      required: true
+  - type: input
+    id: setup
+    attributes:
+      label: Browser, language, and theme
+      placeholder: "Edge 141, Arabic, dark"

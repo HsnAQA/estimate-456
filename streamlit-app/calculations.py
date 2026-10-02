@@ -350,6 +350,15 @@ def calculate_defect_density(defects: float, fp: float) -> float:
     return _number(defects, "Total defects", integer=True) / _number(fp, "Project size in FP", positive=True)
 
 
+# Development time Tdev = c x E^d, from the COCOMO article used in the course
+# (GeeksforGeeks "COCOMO Model", read in class on 2026-10-01). Staff = E / Tdev.
+COCOMO_DURATION = {
+    "organic": (2.5, 0.38),
+    "embedded": (2.5, 0.32),
+    "semi-detached": (2.5, 0.35),
+}
+
+
 @dataclass(frozen=True)
 class CocomoResult:
     c: float
@@ -358,6 +367,10 @@ class CocomoResult:
     effort_adjustment_factor: float
     adjusted_effort_person_months: float
     total_cost: float
+    dc: float = 2.5
+    dd: float = 0.38
+    duration_months: float = 0.0
+    staff: float = 0.0
 
 
 def calculate_cocomo(
@@ -375,6 +388,8 @@ def calculate_cocomo(
     eaf = prod(multiplier_values) if multiplier_values else 1.0
     initial = c * (kloc**k)
     adjusted = initial * eaf
+    dc, dd = COCOMO_DURATION[mode]
+    duration = dc * adjusted**dd
     return CocomoResult(
         c=c,
         k=k,
@@ -382,6 +397,10 @@ def calculate_cocomo(
         effort_adjustment_factor=eaf,
         adjusted_effort_person_months=adjusted,
         total_cost=adjusted * labor_rate,
+        dc=dc,
+        dd=dd,
+        duration_months=duration,
+        staff=adjusted / duration if duration > 0 else 0.0,
     )
 
 
@@ -402,6 +421,8 @@ class AdvancedCocomoResult:
     weighted_eaf: float
     total_effort_person_months: float
     total_cost: float
+    duration_months: float = 0.0
+    staff: float = 0.0
 
 
 def calculate_advanced_cocomo(
@@ -445,6 +466,8 @@ def calculate_advanced_cocomo(
         weighted_eaf=weighted,
         total_effort_person_months=total,
         total_cost=total * labor_rate,
+        duration_months=base.dc * total**base.dd,
+        staff=total / (base.dc * total**base.dd) if total > 0 else 0.0,
     )
 
 

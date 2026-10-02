@@ -1,6 +1,7 @@
 // End-to-end check of every web app function in headless Edge or Chrome, in English and Arabic.
 // Run from web-app:  node tests/e2e/run-e2e.mjs
 // The page is opened straight from disk, the same way launch.bat opens it.
+import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { launch } from "./cdp.mjs";
@@ -49,6 +50,7 @@ async function functional(lang) {
   const visibleCards = `$$(".method-card").filter((e) => e.getClientRects().length).length`;
   check(`${tag} logo appears once at the top, not repeated on the home page`, await run(`$$("#page-home img").length + " " + ($(".topbar-brand img").naturalWidth > 0) + " " + txt(".topbar-brand")`), lang === "ar" ? "0 true تقدير 456" : "0 true Estimate 456");
   check(`${tag} home title`, await run(`txt("#home-title")`), lang === "ar" ? "قدّر حجم البرنامج وجهده، خطوة بخطوة." : "Estimate software size and effort, step by step.");
+  check(`${tag} home particle network is drawn behind the heading`, await run(`const c = $("#homeNetwork"); c.width > 0 && c.height > 0 && getComputedStyle(c).pointerEvents === "none" && typeof window.anime === "object"`), true);
   check(`${tag} home lead sentence`, await run(`txt(".home-head p")`), (v) => v.length > 20 && v.length < 160);
   check(`${tag} home offers exactly two parts`, await run(`$$(".part-option").length`), 2);
   check(`${tag} Part 1 is chosen first and shows SLOC and FP only`, await run(`$("#part-tab-1").getAttribute("aria-selected") + " " + ${visibleCards} + " " + $$("#part-panel-1 .method-card").map((a) => a.getAttribute("href")).join(",")`), "true 2 #sloc,#fp");
@@ -57,7 +59,7 @@ async function functional(lang) {
   check(`${tag} Part 2 lists every COCOMO level`, await run(`$$("#part-panel-2 .method-card").map((a) => a.getAttribute("href")).join(",")`), "#planning/hours,#defects,#cocomo/basic,#cocomo/intermediate,#cocomo/advanced,#delphi");
   check(`${tag} method cards show what they calculate and the main input`, await run(`$$("#part-panel-2 .method-card").every((c) => c.querySelectorAll("p").length === 2 && c.querySelectorAll("p")[0].innerText.trim() && c.querySelector(".method-input").innerText.trim())`), true);
   check(`${tag} home is not crowded: no tables or results`, await run(`$$("#page-home table, #page-home .result, #page-home .trace").length`), 0);
-  check(`${tag} tables and comparison are secondary links`, await run(`$$(".home-secondary a").map((a) => a.getAttribute("href") + ":" + a.classList.contains("btn")).join(",")`), "#tables:false,#summary:false");
+  check(`${tag} tables and comparison are secondary links`, await run(`$$(".home-secondary a").map((a) => a.getAttribute("href") + ":" + a.classList.contains("btn")).join(",")`), "#notes:false,#glossary:false,#tables:false,#summary:false");
   await open("home/part2");
   check(`${tag} #home/part2 opens Part 2`, await run(`$("#part-tab-2").getAttribute("aria-selected")`), "true");
 
@@ -90,7 +92,7 @@ async function functional(lang) {
   await run(`$("#fpCountCard .step-nav .btn-primary").click()`);
   check(`${tag} FP next step opens F1 to F14`, await run(`[$("#fpCountCard").hidden, $("#fpAdjustCard").hidden, location.hash].join(" ")`), "true false #fp/adjust");
   check(`${tag} FP shows F1 to F14 with their meaning`, await run(`$$("#gscRows .rating-q b").map((b) => b.innerText).join(",") + " " + ptxt("#gsc-pick-0")`), new RegExp("^F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,F13,F14 F1 = 2"));
-  check(`${tag} FP LOC step names the language and Table 1`, await run(`ptxt("#fpTrace .trace > li:nth-child(4) .formula")`), /SQL\/Oracle = 12/);
+  check(`${tag} FP LOC step names the language and Table 1`, await run(`ptxt("#fpTrace .trace > li:nth-child(4)")`), /SQL\/Oracle = 12/);
   check(`${tag} FP SafeHome note hidden for Example 1`, await run(`$("#fpExampleNote").hidden`), true);
   await run(`pickRadio("fp-inputs", "complex")`);
   check(`${tag} FP complexity changes CT`, await run(`txt("#fpCountTotal")`), "194");
@@ -160,13 +162,16 @@ async function functional(lang) {
   check(`${tag} insurance example`, await run(`strong("#intermediateResult")`), "15.61");
   check(`${tag} intermediate shows C and K`, await run(`ptxt("#intermediateTrace .trace > li:first-child .line")`), /C = 3\.2[\s\S]*K = 1\.05/);
   check(`${tag} intermediate EAF names every driver used`, await run(`txt("#intermediateTrace .trace > li:nth-child(3) .line")`), /SPC[\s\S]*1\.2[\s\S]*ETC[\s\S]*1\.35[\s\S]*AC[\s\S]*0\.95[\s\S]*=[\s\S]*1\.539/);
-  check(`${tag} every COCOMO tab explains the missing duration equations`, await run(`$$("#page-cocomo .note").filter((n) => n.innerText.includes("(D)")).length`), 3);
+  check(`${tag} every COCOMO tab explains the missing duration equations`, await run(`$$("#page-cocomo .note").filter((n) => n.innerText.includes("Tdev")).length`), 3);
   await open("cocomo/basic");
+  check(`${tag} basic COCOMO shows development time and staff`, await run(`txt("#basicResult")`), /6\.76[\s\S]*2\.03/);
+  check(`${tag} COCOMO formulas are typeset as math`, await run(`$$("#basicTrace .formula.is-math .katex").length >= 4`), true);
+  check(`${tag} exponent is a superscript`, await run(`$("#basicTrace .pow") !== null && $("#basicTrace .pow").innerText.trim()`), "1.05");
   check(`${tag} basic compares all three modes`, await run(`$$("#basicResult .compare tbody tr").map((r) => r.lastElementChild.innerText).join(" ")`), "13.72 14.78 14.17");
   await open("cocomo/advanced");
   check(`${tag} Advanced COCOMO tab opens`, await run(`$("#tab-advanced").getAttribute("aria-selected") + " " + $("#panel-advanced").hidden`), "true false");
   check(`${tag} Advanced placeholders equal Ei`, await run(`strong("#advancedResult")`), "10.14");
-  check(`${tag} Advanced trace has one step per phase`, await run(`$$("#advancedTrace .trace > li").length`), 8);
+  check(`${tag} Advanced trace has one step per phase, then time and staff`, await run(`$$("#advancedTrace .trace > li").length`), 10);
   await run(`setVal($("#phase-eaf-0"), "1.2"); setVal($("#phase-eaf-3"), "0.9")`);
   check(`${tag} Advanced phase EAF changes E`, await run(`strong("#advancedResult")`), "10.4");
   await run(`pickRadio("advancedMode", "embedded")`);
@@ -182,6 +187,19 @@ async function functional(lang) {
   check(`${tag} Advanced remove phase`, await run(`$$("#phaseRows .phase").length + " " + ($("#advancedResult .result-empty") === null)`), "4 true");
   await run(`click("#advUseIntermediate")`);
   check(`${tag} Advanced with the Intermediate EAF equals Intermediate E`, await run(`strong("#advancedResult")`), "15.61");
+
+  // Course notes and glossary
+  await open("notes");
+  check(`${tag} notes have seven sections with typeset math`, await run(`$$("#notesBody .note-section").length + " " + ($$("#notesBody .katex").length > 10)`), "7 true");
+  check(`${tag} notes table of contents links to each section`, await run(`$$("#notesToc a").length`), 7);
+  await open("notes/cocomo");
+  check(`${tag} a notes link opens its section`, await run(`$("#note-cocomo") !== null`), true);
+  await open("glossary");
+  check(`${tag} glossary lists the terms`, await run(`$$("#glossaryList .glossary-item").length >= 30`), true);
+  await run(`setVal($("#glossarySearch"), "KLOC")`);
+  check(`${tag} glossary filter finds KLOC with its formula`, await run(`$$("#glossaryList .glossary-item").length > 0 && $$("#glossaryList .glossary-item")[0].innerText.includes("KLOC") && $("#glossaryList .katex") !== null`), true);
+  await run(`setVal($("#glossarySearch"), "zzzz")`);
+  check(`${tag} glossary shows a message when nothing matches`, await run(`$("#glossaryEmpty").hidden`), false);
 
   // Delphi
   await open("delphi");
@@ -323,10 +341,15 @@ async function productFeatures() {
 
   // Method identity colors: navigation icons, page icons, result edges, and chart bars.
   check("[product] SLOC nav icon uses the SLOC color", await run(`getComputedStyle($('.nav a[data-page="sloc"] .icon')).color`), "rgb(98, 71, 196)");
-  check("[product] every calculator page has a heading icon", await run(`$$(".page .page-head .page-icon").length`), 8);
+  check("[product] every calculator page has a heading icon", await run(`$$(".page .page-head .page-icon").length`), 10);
   await open("fp");
   check("[product] result panels have no colored edge", await run(`getComputedStyle($("#fpResult")).borderTopWidth`), "1px");
-  check("[product] Fira Code and Saudi are loaded", await run(`(async () => { await document.fonts.ready; return [...document.fonts].filter((f) => f.status === "loaded").map((f) => f.family.replace(/"/g, "")).sort().filter((v, i, a) => a.indexOf(v) === i).join(","); })()`), "Fira Code,Saudi");
+  const loadedFonts = await run(`(async () => { await document.fonts.ready; return [...document.fonts].filter((f) => f.status === "loaded").map((f) => f.family.replace(/"/g, "")).join(","); })()`);
+  check("[product] Fira Code and KaTeX fonts are loaded", ["Fira Code", "KaTeX_Main", "KaTeX_Math"].every((f) => loadedFonts.split(",").includes(f)), true);
+  // The Ministry of Culture fonts are not in the repository, so a fresh clone or CI checks them only when present.
+  if (PAGE.startsWith("https:") || existsSync(path.resolve(here, "..", "..", "..", "assets", "fonts", "private", "Saudi-Regular.ttf"))) {
+    check("[product] Saudi Arabic font is loaded", loadedFonts.split(",").includes("Saudi"), true);
+  }
   await open("summary");
   check("[product] summary bars use method colors", await run(`new Set($$("#summaryChart .bar-fill").map((e) => getComputedStyle(e).backgroundColor)).size`), 3);
 
@@ -350,7 +373,7 @@ async function productFeatures() {
 }
 
 async function layout() {
-  const pages = ["home", "home/part2", "sloc", "fp", "fp/adjust", "planning", "cocomo", "cocomo/advanced", "delphi", "defects", "summary", "tables"];
+  const pages = ["home", "home/part2", "sloc", "fp", "fp/adjust", "planning", "cocomo", "cocomo/advanced", "delphi", "defects", "summary", "tables", "notes", "glossary"];
   for (const lang of ["en", "ar"]) {
     for (const theme of ["light", "dark"]) {
       await open("home");
@@ -361,6 +384,10 @@ async function layout() {
           await open(page);
           const overflow = await run(`document.documentElement.scrollWidth - document.documentElement.clientWidth`);
           check(`[layout] ${lang} ${theme} ${width} ${page} no horizontal overflow`, overflow, 0);
+          if (page === "home" && width >= 1025) {
+            const gap = await run(`const last = [...$$(".topnav a")].pop().getBoundingClientRect(); const a = $(".topbar-actions").getBoundingClientRect(); document.documentElement.dir === "rtl" ? last.left - a.right : a.left - last.right`);
+            check(`[layout] ${lang} ${theme} ${width} top links do not overlap the buttons`, gap >= 0, true);
+          }
         }
       }
     }

@@ -10,8 +10,8 @@ import ui_data
 from fixture_support import ROOT
 
 
-DATA_JS = ROOT / "web-app" / "data.js"
-LOGIC_JS = ROOT / "web-app" / "logic.js"
+DATA_JS = ROOT / "web-app" / "js" / "data.js"
+LOGIC_JS = ROOT / "web-app" / "js" / "logic.js"
 SCRIPT = (
     "const D = require(process.argv[1]); const L = require(process.argv[2]);"
     "process.stdout.write(JSON.stringify({D, L: {FP_WEIGHTS: L.FP_WEIGHTS, FP_LABELS: L.FP_LABELS, LOC_PER_FP: L.LOC_PER_FP,"

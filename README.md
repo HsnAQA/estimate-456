@@ -1,74 +1,130 @@
-# Estimate 456
+<p align="center">
+  <img src="assets/brand/estimate-456-mark-128.png" alt="Estimate 456 logo" width="88" />
+</p>
 
-Software project estimation calculators for the CPIT 456 course, built from the lecture *Measuring Effort for Software Project*. Every result shows the formula with the numbers you entered, so the answer can be checked step by step. English and Arabic, light and dark.
+<h1 align="center">Estimate 456 · تقدير 456</h1>
 
-**Live site:** https://estimate-456.vercel.app
+<p align="center">
+  Software project estimation calculators for CPIT 456. Every result shows its
+  formula with your numbers, in English and Arabic.
+</p>
 
-![Home page](docs/screenshots/home.png)
+<p align="center">
+  <a href="https://estimate-456.vercel.app"><strong>estimate-456.vercel.app</strong></a>
+</p>
 
-## What it calculates
+<p align="center">
+  <img src="docs/images/home.png" alt="Estimate 456 home page: a large heading over a moving blueprint network, then the Part 1 and Part 2 choice" width="760" />
+</p>
 
-| Part | Method | Lecture section |
-|---|---|---|
-| Part 1, Chapter 1 | SLOC: effort, team duration, and cost, both ways shown in the lecture | 4.1 |
-| Part 1, Chapter 1 | Function Points: CT from five weighted counts, ΣFi from F1 to F14, VAF, FP, and LOC | 4.2 |
-| Part 2, Chapter 4 | FP planning: hours, person-months, cost | 4.2.3, 4.2.4 |
-| Part 2, Chapter 4 | Defect density | 4.2.5 |
-| Part 2, Chapter 4 | COCOMO: Basic, Intermediate (15 cost drivers, EAF), and Advanced (per phase), each for organic, semi-detached, and embedded | 4.3 |
-| Part 2, Chapter 4 | Delphi: percentage of variance and A / NA | 4.4 |
+## What it does
 
-All eleven course tables are included. Where the lecture names something without printing its values (the COCOMO duration equations, the Intermediate multiplier matrix, the Advanced phase split), the app says so and asks for the value instead of inventing it. [`docs/TRACEABILITY.md`](docs/TRACEABILITY.md) maps every formula to its lecture page, its exact and lecture-rounded result, and the test that covers it.
+- **Follows the lecture in two parts.** Part 1 (Chapter 1) measures size with
+  SLOC and Function Points. Part 2 (Chapter 4) turns size into effort, cost,
+  and decisions with FP planning, defect density, COCOMO, and Delphi.
+- **Shows the work.** Each calculator writes the solution step by step:
+  the formula typeset as math, then the formula with your values, then the
+  answer. Lecture-rounded values are shown beside the exact ones.
+- **All three COCOMO levels.** Basic, Intermediate (15 cost drivers and EAF),
+  and Advanced (effort per phase), each for organic, semi-detached, and
+  embedded projects, with development time and staff.
+- **Learn pages.** Course notes explain every topic from the lecture, the
+  slides, and the COCOMO article read in class. The glossary defines every
+  term and symbol, from LOC and KLOC to EAF and Tdev.
+- **Never invents a value.** Where the course material does not print a value
+  (the Intermediate multiplier matrix, the Advanced phase split), the app asks
+  for it and says why. [docs/TRACEABILITY.md](docs/TRACEABILITY.md) maps each
+  formula to its lecture page and its test.
+- **Bilingual and accessible.** Full RTL Arabic, light and dark themes,
+  keyboard support, and reduced-motion support.
 
 | Worked solution | Dark theme |
 |---|---|
-| ![SLOC calculator](docs/screenshots/sloc.png) | ![Intermediate COCOMO in dark theme](docs/screenshots/cocomo-dark.png) |
+| ![SLOC calculator with its worked solution](docs/images/sloc.png) | ![Intermediate COCOMO in the dark theme](docs/images/cocomo-dark.png) |
 
-## Repository layout
+## How it is built
 
+```text
+web-app/index.html ── js/  logic.js    pure calculations (no DOM)
+                      │    data.js     course tables
+                      │    i18n.js     English and Arabic strings
+                      │    content.js  course notes and glossary
+                      │    math.js     formulas as TeX
+                      │    ui.js, app.js, motion.js
+                      ├── css/styles.css
+                      └── vendor/ KaTeX (math), anime.js (motion)
+
+streamlit-app/ ── calculations.py   the same calculations in Python
+shared/fixtures/calculations.json   cases both versions must pass
 ```
-web-app/          HTML, CSS, and JavaScript app (no build step), tests, packaging script
-streamlit-app/    Python and Streamlit version of the same calculators, with tests
-shared/fixtures/  Calculation cases both versions must pass
-assets/           Logo, fonts with licenses, icons
-docs/             Formula traceability and screenshots
-design.md         Visual rules
-launch.bat        Start either app on Windows
-stop.bat          Close the ports the apps use
-```
 
-Course PDFs, backups, local environments, and secrets are not part of the repository.
+There is no build step and no framework: the web app is plain HTML, CSS, and
+JavaScript and runs straight from disk. More in
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-## Run locally
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Web app | HTML, CSS, vanilla JavaScript |
+| Math and motion | KaTeX 0.19, anime.js 4.5 (both vendored, MIT) |
+| Second version | Python 3, Streamlit |
+| Fonts | Fira Code (English), Saudi and The Year of Handicrafts (Arabic, published site only), Alexandria (Arabic fallback) |
+| Tests | Node test runner, a headless browser suite, Python unittest |
+| Hosting | Vercel (static) |
+
+## Quick start (Windows)
 
 ```powershell
+git clone https://github.com/HsnAQA/estimate-456.git
+cd estimate-456
 launch.bat
 ```
 
-Or open one app directly: `web-app\launch.bat` or `streamlit-app\launch.bat`. The web app is plain files and runs from disk. The Streamlit launcher creates its own Python environment on first run.
+Choose the web app or the Streamlit app. The web app needs nothing installed.
+The Streamlit launcher creates its own Python environment on first run.
+`stop.bat` closes the ports.
 
 ## Tests
 
 ```powershell
 cd web-app
-node --test "tests/*.test.js"      # calculations, fixtures, translations, repository checks
-node tests/e2e/run-e2e.mjs         # every page in both languages, both themes, six screen widths
+node --test "tests/*.test.js"   # calculations, fixtures, translations, repository checks
+node tests/e2e/run-e2e.mjs      # every page, both languages, both themes, six widths
 
 cd ..\streamlit-app
-python -m unittest discover -s tests   # Streamlit pages and parity with the JavaScript results
+python -m unittest discover -s tests   # Streamlit pages and parity with JavaScript
 ```
 
-## Deploy
+The same checks run on every push in GitHub Actions. Details in
+[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
 
-`web-app/` is the source; `site/` is generated.
+## Where things are
 
-```powershell
-cd web-app
-node tools/build-site.js
-cd ..\site
-npx vercel@latest deploy          # preview first
-npx vercel@latest promote <preview-url>
+```text
+web-app/          the web app: index.html, css/, js/, vendor/, tests/, tools/
+streamlit-app/    the Streamlit app and its tests
+shared/fixtures/  calculation cases shared by both apps
+assets/           logo, fonts with licenses, icons
+docs/             design, architecture, development, deployment, traceability
+.github/          issue and pull request templates, test workflow
 ```
 
-## Author
+## Documentation
 
-Made by Hassan Asiri.
+| Guide | For |
+|---|---|
+| [CONTRIBUTING.md](CONTRIBUTING.md) | your first branch, commit, and pull request |
+| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | commands, tests, and troubleshooting |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | how the files fit together |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | preview, publish, and roll back |
+| [docs/TRACEABILITY.md](docs/TRACEABILITY.md) | every formula, its source, and its test |
+| [docs/DESIGN.md](docs/DESIGN.md) | visual rules |
+| [docs/CHANGELOG.md](docs/CHANGELOG.md) | history of changes |
+| [SECURITY.md](SECURITY.md) | reporting a problem privately |
+| [assets/README.md](assets/README.md) | fonts, icons, and their licenses |
+
+Course PDFs, lecture documents, backups, local environments, secrets, and the
+Ministry of Culture font files are not part of the repository.
+
+Made by Hassan Asiri for CPIT 456, King Abdulaziz University.

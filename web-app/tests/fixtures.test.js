@@ -2,7 +2,7 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const L = require("../logic.js");
+const L = require("../js/logic.js");
 const { loadFixtures, runFixtures } = require("./fixture_runner.js");
 
 const fixtures = loadFixtures();

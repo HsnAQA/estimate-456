@@ -63,8 +63,8 @@ def on_driver_change() -> None:
 
 
 DURATION_NOTE = (
-    "Duration (D) is not calculated. Page 9 of the lecture says each mode has a development time equation, "
-    "but the equations are not printed, so no duration constants are available from the course material."
+    "Development time uses Tdev = c x E^d with c = 2.5 and d = 0.38 (organic), 0.35 (semi-detached), or 0.32 (embedded), "
+    "from the COCOMO article read in class. The lecture names this equation but does not print it. Staff = E / Tdev."
 )
 
 st.caption("Sections 4.3 and 4.4. Estimate effort with Basic, Intermediate, or Advanced COCOMO, then review expert estimates with the Delphi technique.")
@@ -98,6 +98,8 @@ with basic:
                 ("Software project type", COCOMO_MODE_LABELS[mode]),
                 ("Constants", f"C = {result.c:.1f}, K = {result.k:.2f}"),
                 ("Estimated cost", money(result.total_cost)),
+                ("Development time (Tdev)", f"{number(result.duration_months)} months"),
+                ("Average staff", f"{number(result.staff)} people"),
             ])
             example = EXAMPLES["basicCocomo"]
             if kloc == example["kloc"] and mode == example["mode"]:
@@ -191,6 +193,8 @@ with intermediate:
                 ("Software project type", f"{COCOMO_MODE_LABELS[i_mode]} (C = {result.c:.1f}, K = {result.k:.2f})"),
                 ("Drivers not at Average 1.0", ", ".join(applied) if applied else "None"),
                 ("Estimated cost", money(result.total_cost)),
+                ("Development time (Tdev)", f"{number(result.duration_months)} months"),
+                ("Average staff", f"{number(result.staff)} people"),
             ])
             example = EXAMPLES["insurance"]
             expected = [1.0] * len(multipliers)
@@ -271,6 +275,8 @@ with advanced:
                 ],
                 ("Weighted EAF", number(result.weighted_eaf, 4)),
                 ("Estimated cost", money(result.total_cost)),
+                ("Development time (Tdev)", f"{number(result.duration_months)} months"),
+                ("Average staff", f"{number(result.staff)} people"),
             ])
     st.caption(DURATION_NOTE)
 

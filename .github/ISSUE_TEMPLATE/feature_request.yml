@@ -1,0 +1,19 @@
+name: Suggestion
+description: A missing topic from the course, or a way to make a page clearer.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What should change
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Course source
+      description: New formulas and constants must come from the course material. Give the lecture or slide page.
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it helps
