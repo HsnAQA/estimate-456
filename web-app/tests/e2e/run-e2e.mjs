@@ -24,6 +24,9 @@ function check(name, actual, expected) {
 }
 
 const b = await launch();
+// A fresh clone has no Ministry of Culture fonts (see assets/README.md), so their missing files are expected there.
+const privateFonts = PAGE.startsWith("https:") || existsSync(path.resolve(here, "..", "..", "..", "assets", "fonts", "private", "Saudi-Regular.ttf"));
+const consoleLogs = () => (privateFonts ? b.logs : b.logs.filter((line) => !line.includes("/assets/fonts/private/")));
 const run = (expr) => { if (process.env.E2E_TRACE) console.error("run", expr.slice(0, 90)); return b.eval(H + expr); };
 const url = (hash) => `${PAGE}${hash ? `#${hash}` : ""}`;
 // openKeep loads the page with whatever the browser saved. open starts from the lecture
@@ -347,7 +350,7 @@ async function productFeatures() {
   const loadedFonts = await run(`(async () => { await document.fonts.ready; return [...document.fonts].filter((f) => f.status === "loaded").map((f) => f.family.replace(/"/g, "")).join(","); })()`);
   check("[product] Fira Code and KaTeX fonts are loaded", ["Fira Code", "KaTeX_Main", "KaTeX_Math"].every((f) => loadedFonts.split(",").includes(f)), true);
   // The Ministry of Culture fonts are not in the repository, so a fresh clone or CI checks them only when present.
-  if (PAGE.startsWith("https:") || existsSync(path.resolve(here, "..", "..", "..", "assets", "fonts", "private", "Saudi-Regular.ttf"))) {
+  if (privateFonts) {
     check("[product] Saudi Arabic font is loaded", loadedFonts.split(",").includes("Saudi"), true);
   }
   await open("summary");
@@ -410,7 +413,7 @@ try {
   await languageSwitchKeepsValues();
   await productFeatures();
   await layout();
-  check("[console] no errors or warnings", b.logs.length, 0);
+  check("[console] no errors or warnings", consoleLogs().length, 0);
 } catch (error) {
   results.push({ name: "run finished without an exception", ok: false, actual: String(error.stack || error), expected: "no exception" });
 } finally {
@@ -421,6 +424,6 @@ const failed = results.filter((r) => !r.ok);
 failed.forEach((r) => console.log(`FAIL ${r.name}\n  expected: ${r.expected}\n  actual:   ${r.actual}`));
 // On GitHub Actions, failures also become annotations, which show on the run page without signing in.
 if (process.env.GITHUB_ACTIONS) failed.slice(0, 10).forEach((r) => console.log(`::error title=${r.name.replace(/[:,]/g, " ")}::expected ${r.expected}, got ${String(r.actual).slice(0, 200)}`));
-if (b.logs.length) console.log(`Console:\n  ${b.logs.join("\n  ")}`);
+if (consoleLogs().length) console.log(`Console:\n  ${consoleLogs().slice(0, 30).join("\n  ")}`);
 console.log(`\n${results.length - failed.length} of ${results.length} checks passed.`);
 process.exit(failed.length ? 1 : 0);

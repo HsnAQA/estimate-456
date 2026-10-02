@@ -59,7 +59,7 @@ export async function launch() {
     }
     if (msg.method === "Runtime.exceptionThrown") logs.push(`exception: ${msg.params.exceptionDetails.exception?.description || msg.params.exceptionDetails.text}`);
     if (msg.method === "Runtime.consoleAPICalled" && ["error", "warning"].includes(msg.params.type)) logs.push(`${msg.params.type}: ${msg.params.args.map((a) => a.value ?? a.description).join(" ")}`);
-    if (msg.method === "Log.entryAdded" && ["error", "warning"].includes(msg.params.entry.level)) logs.push(`${msg.params.entry.level}: ${msg.params.entry.text}`);
+    if (msg.method === "Log.entryAdded" && ["error", "warning"].includes(msg.params.entry.level)) logs.push(`${msg.params.entry.level}: ${msg.params.entry.text}${msg.params.entry.url ? ` ${msg.params.entry.url}` : ""}`);
     listeners.forEach((fn) => fn(msg));
   });
   const send = (method, params = {}) => new Promise((resolve, reject) => {
