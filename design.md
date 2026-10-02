@@ -7,8 +7,8 @@ supportedThemes:
   - "light"
   - "dark"
 fonts:
-  ui: "Alexandria, Segoe UI, Tahoma, Arial, sans-serif"
-  data: "JetBrains Mono, Alexandria, Consolas, monospace"
+  ui: "Fira Code, Saudi, Alexandria, monospace"
+  data: "Fira Code"
 radii:
   small: "4px"
   medium: "6px"
@@ -22,43 +22,20 @@ spacing:
   6: "32px"
 ---
 
-# Current web design (2026-10-02)
+# Current web design (2026-10-02, drafting notebook)
 
-The web app (`web-app/`) is now Estimate 456. Its navigation follows the source lecture in two explicit parts: Part 1 for SLOC and Function Points, then Part 2 for planning, quality, COCOMO, and Delphi. The home page shows the logo and name, one sentence, and one question: Part 1 or Part 2. Only the chosen part's method cards appear, each with what it calculates, its main input, and one Open button. Course tables and result comparison are quiet text links below the cards. No tables or results appear on the home page. Where `stitch/design.md` and the list below disagree, the list below wins.
+Concept generated in Google Stitch (project "Estimate 456 - CPIT 456 estimation"), then adapted to the app. Only real lecture content is shown; none of the labels Stitch invented were used. Where older notes below disagree, this section wins.
 
-- Product identity: the short name is `Estimate 456`, Arabic `تقدير 456`. The project-owned logo is a rounded blue tile with a snow-white geometric E and one data point at the end of the middle bar (`assets/brand/estimate-456-mark.svg`, PNG sizes beside it). It reads at 16 px. No previous product name appears in the interface.
-- Teaching rule: derived values cannot appear without context. Function Point rows show `count × weight = row total`. F1 through F14 are visible beside their questions, and the live equation shows every selected value that produces Sum Fi.
-- Information architecture: Part 1 maps to Chapter 1. Part 2 maps to Chapter 4. Reference tables and result comparison are supporting tools, not competing top-level methods. COCOMO has three tabs: Basic, Intermediate, and Advanced.
-- Progressive disclosure: Function Points shows one step at a time (Count, Adjust, Convert) with Next and Back buttons, while the result and worked solution stay beside it on wide screens and below it on narrow screens.
-- Footer: logo, name, Made by Hassan Asiri, a GitHub link with the GitHub mark and the repository address, and one line about the lecture source.
-
-- Light is the main theme and is snow white: page `--bg: #f4f6f9`, panels `--surface: #fcfcfd`, inputs `--field: #fdfdfe`. No surface uses pure white. Panels have a 1 px hairline shadow in light mode only.
-- One interaction color: `--accent: #2b5cb8` light, `#82a9f0` dark, for buttons, links, focus, and selection. Green, amber, and red appear only for accepted, warning, and error states.
-- Method identity colors (added at the user's request, 2026-09-28). They mark which method something belongs to and are never used for buttons or status. Each element sets `data-m` (or the page's `data-page`), which sets `--m`.
-
-  | Token | Light | Dark | Method |
-  |---|---|---|---|
-  | `--c-sloc` | `#6247c4` | `#a996f2` | SLOC |
-  | `--c-fp` | `#0b7280` | `#4cc3cc` | Function Points |
-  | `--c-planning` | `#a24b0b` | `#f0a262` | FP planning, hours, productivity |
-  | `--c-cocomo` | `#a8306f` | `#ec8cc2` | Basic and Intermediate COCOMO |
-  | `--c-delphi` | `#4b7010` | `#a8d45f` | Delphi |
-  | `--c-defects` | `#b8304f` | `#f58ea5` | Defect density |
-
-  Used for: navigation icons, the page heading icon tile, worked-solution and stepper numbers, the 3 px top edge of result cards, summary chart bars, the dot before each method name in tables, and course table labels by group. Every method color is at least 4.5:1 on every surface and on its own 13% tint, in both themes.
-- Thin borders, 6 to 8 px radii, and no decorative shadow. Only elements that float above the page (the mobile drawer, the search results, and the skip link) use `--shadow-pop`.
-- Colors (2026-10-02, round 3): one green. Light: page `#f5f7f6`, panels `#fcfdfc`, text `#16201b`, accent `#0b6b4f`. Dark: page `#0e1311`, panels `#141a17`, accent `#5ec39a`. Primary buttons, selected choices, the active link, and linked values use the accent. The logo tile uses the same green.
-- One top bar: logo and name, Part 1 and Part 2 links, then search (opens on demand), theme, and language. No second bar and no sidebar on desktop; under 1025 px the links move to a drawer. Course tables and Compare results are links on the home page and in the footer; Reset is in the footer.
-- Arabic uses the Saudi font from the Ministry of Culture on the published site (files kept out of git, see assets/README.md), falling back to Alexandria.
-- Worksheet style (2026-10-02, after the user said the earlier look felt generated): flat sheets with 1 px rules and 4 px corners, no shadows, no colored card edges, no pill chips, no icon tiles. Primary actions use the ink color (the text color), links and linked values use the blue accent. Chosen segments are filled with ink.
-- 16 px body text in Alexandria (one family for English and Arabic). JetBrains Mono for numbers, formulas, units, results, and uppercase section labels (English only). Main result 46 px (28 px on phones). Both fonts are self-hosted under the SIL OFL.
-- Layout: a 60 px top bar (logo and name, search, theme, language, reset) and a 50 px method bar below it grouped as Home, Part 1, Part 2, and reference links. On screens up to 1024 px the method bar becomes a drawer. Calculator pages put inputs beside the result; the result shows one large number and fact tiles, and the worked solution is a numbered rail with value chips.
-- Bilingual: English and Arabic. Arabic sets `dir="rtl"` and the stylesheet uses logical properties (`margin-inline-start`, `inset-inline-start`, `border-inline-end`), so one set of rules serves both directions. Formula lines and results stay left to right inside Arabic text.
-- Contrast measured on 2026-09-28 after the snow update: every light text, status, and method token is at least 4.5:1 on every light surface, and every dark token is at least 5:1 on every dark surface.
-
-The rules in the rest of this file still apply: light default, complete dark theme, semantic tokens only, visible focus, WCAG AA contrast, no gradients or glows, no remote fonts, and no invented course values.
-
-The Streamlit app keeps its native theme based on the tokens below and is English only.
+- Feel: an engineering drafting notebook. Paper page with a faint 24 px grid, sheets with 1 px rules, sharp corners (0 radius), no shadows except a flat 4 px offset on hovered cards.
+- Colors. Light (default): paper `#f7f6f2`, sheets `#fdfcf9`, ink navy text and primary buttons `#14213d`, signal orange `#b83c15` for labels, step numbers, the active link, and linked values. Dark: page `#0f141d`, sheets `#141b26`, text `#e9edf4`, orange `#ff7d55`.
+- Type: Fira Code for all English text and numbers. Arabic: the Saudi font for text and The Year of Handicrafts for page headings (both Ministry of Culture, on the published site only), Alexandria as fallback.
+- Layout: one top bar with the logo, Part 1 and Part 2 links (the part labels in orange), and buttons for search, theme (moon in light, sun in dark), and language. Page title with a ruled line under it. Inputs sheet beside the result.
+- Inputs: label above, value on the left, unit in a tinted slot on the right.
+- Result: a double ruled frame, the answer in a tinted box, then a ledger with dotted leaders and striped rows.
+- Worked solution: each step is an index card: STEP n, the title, the lecture value, the formula in a tinted box, then the substituted values.
+- Choices and tabs: contiguous bordered segments; the chosen one is filled with ink.
+- Home: an orange section tag, a large headline, two part panels joined in one frame with big 01 and 02 numerals, then the chosen part's method cards.
+- No tap highlight, no focus frame on the page area, no flash on changed results.
 
 # Product intent
 

@@ -44,11 +44,11 @@ async function functional(lang) {
   check(`${tag} lang and dir`, await run(`document.documentElement.lang + " " + document.documentElement.dir`), lang === "ar" ? "ar rtl" : "en ltr");
   check(`${tag} light theme is the default`, await run(`document.documentElement.dataset.theme`), "light");
   check(`${tag} panels are not pure white`, await run(`getComputedStyle($(".panel")).backgroundColor`), (v) => v !== "rgb(255, 255, 255)");
-  check(`${tag} page background is snow`, await run(`getComputedStyle(document.body).backgroundColor`), "rgb(245, 246, 248)");
+  check(`${tag} page background is snow`, await run(`getComputedStyle(document.body).backgroundColor`), "rgb(247, 246, 242)");
   // Home: logo and name, one question, two parts, and only the chosen part's methods.
   const visibleCards = `$$(".method-card").filter((e) => e.getClientRects().length).length`;
   check(`${tag} logo appears once at the top, not repeated on the home page`, await run(`$$("#page-home img").length + " " + ($(".topbar-brand img").naturalWidth > 0) + " " + txt(".topbar-brand")`), lang === "ar" ? "0 true تقدير 456" : "0 true Estimate 456");
-  check(`${tag} home title`, await run(`txt("#home-title")`), lang === "ar" ? "تقدير المشاريع البرمجية" : "Software project estimation");
+  check(`${tag} home title`, await run(`txt("#home-title")`), lang === "ar" ? "قدّر حجم البرنامج وجهده، خطوة بخطوة." : "Estimate software size and effort, step by step.");
   check(`${tag} home lead sentence`, await run(`txt(".home-head p")`), (v) => v.length > 20 && v.length < 160);
   check(`${tag} home offers exactly two parts`, await run(`$$(".part-option").length`), 2);
   check(`${tag} Part 1 is chosen first and shows SLOC and FP only`, await run(`$("#part-tab-1").getAttribute("aria-selected") + " " + ${visibleCards} + " " + $$("#part-panel-1 .method-card").map((a) => a.getAttribute("href")).join(",")`), "true 2 #sloc,#fp");
@@ -256,7 +256,7 @@ async function functional(lang) {
   check(`${tag} undo confirms`, await toast(), (v) => v.length > 3);
   await run(`click('[data-theme-choice="dark"]')`);
   await open("sloc");
-  check(`${tag} dark theme persists`, await run(`document.documentElement.dataset.theme + " " + getComputedStyle(document.body).backgroundColor`), "dark rgb(17, 20, 24)");
+  check(`${tag} dark theme persists`, await run(`document.documentElement.dataset.theme + " " + getComputedStyle(document.body).backgroundColor`), "dark rgb(15, 20, 29)");
   await run(`click('[data-theme-choice="light"]')`);
   await open("sloc");
   check(`${tag} language persists after reload`, await run(`document.documentElement.lang`), lang);
@@ -316,9 +316,9 @@ async function productFeatures() {
   check("[product] toast closes", await run(`$("#toast").hidden`), true);
 
   // Browser toolbar color follows the theme.
-  check("[product] theme-color light", await run(`$('meta[name="theme-color"]').content`), "#fcfcfd");
+  check("[product] theme-color light", await run(`$('meta[name="theme-color"]').content`), "#fdfcf9");
   await run(`click('[data-theme-choice="dark"]')`);
-  check("[product] theme-color dark", await run(`$('meta[name="theme-color"]').content`), "#171b21");
+  check("[product] theme-color dark", await run(`$('meta[name="theme-color"]').content`), "#141b26");
   await run(`click('[data-theme-choice="light"]')`);
 
   // Method identity colors: navigation icons, page icons, result edges, and chart bars.
@@ -326,7 +326,7 @@ async function productFeatures() {
   check("[product] every calculator page has a heading icon", await run(`$$(".page .page-head .page-icon").length`), 8);
   await open("fp");
   check("[product] result panels have no colored edge", await run(`getComputedStyle($("#fpResult")).borderTopWidth`), "1px");
-  check("[product] Alexandria, JetBrains Mono, and Saudi are loaded", await run(`(async () => { await document.fonts.ready; return [...document.fonts].filter((f) => f.status === "loaded").map((f) => f.family.replace(/"/g, "")).sort().filter((v, i, a) => a.indexOf(v) === i).join(","); })()`), "Alexandria,JetBrains Mono,Saudi");
+  check("[product] Fira Code and Saudi are loaded", await run(`(async () => { await document.fonts.ready; return [...document.fonts].filter((f) => f.status === "loaded").map((f) => f.family.replace(/"/g, "")).sort().filter((v, i, a) => a.indexOf(v) === i).join(","); })()`), "Fira Code,Saudi");
   await open("summary");
   check("[product] summary bars use method colors", await run(`new Set($$("#summaryChart .bar-fill").map((e) => getComputedStyle(e).backgroundColor)).size`), 3);
 

@@ -13,9 +13,9 @@ const root = path.resolve(webApp, "..");
 const out = path.join(root, "site");
 
 const PAGE_FILES = ["index.html", "styles.css", "theme.js", "logic.js", "data.js", "i18n.js", "ui.js", "app.js"];
-const FONT_FILES = ["Alexandria-Variable-latin.woff2", "Alexandria-Variable-arabic.woff2", "JetBrainsMono-Variable-latin.woff2"];
+const FONT_FILES = ["FiraCode-Variable-latin.woff2", "Alexandria-Variable-arabic.woff2"];
 // Licensed for websites but not for sharing the file, so it is not in git. Copied only when present on this machine.
-const PRIVATE_FONTS = ["Saudi-Regular.ttf", "Saudi-Bold.ttf"];
+const PRIVATE_FONTS = ["Saudi-Regular.ttf", "Saudi-Bold.ttf", "TheYearofHandicrafts-Bold.otf", "TheYearofHandicrafts-Black.otf"];
 const BRAND_FILES = ["estimate-456-mark.svg", "estimate-456-mark-32.png", "estimate-456-mark-180.png"];
 
 const CSP = [
@@ -72,7 +72,7 @@ const privateFonts = PRIVATE_FONTS.filter((file) => fs.existsSync(path.join(priv
 if (privateFonts.length) fs.mkdirSync(path.join(out, "assets", "fonts", "private"), { recursive: true });
 for (const file of privateFonts) fs.copyFileSync(path.join(privateDir, file), path.join(out, "assets", "fonts", "private", file));
 for (const file of BRAND_FILES) fs.copyFileSync(path.join(root, "assets", "brand", file), path.join(out, "assets", "brand", file));
-for (const file of ["Alexandria-OFL.txt", "JetBrainsMono-OFL.txt"]) fs.copyFileSync(path.join(root, "assets", "fonts", "licenses", file), path.join(out, "assets", "fonts", "licenses", file));
+for (const file of ["FiraCode-OFL.txt", "Alexandria-OFL.txt"]) fs.copyFileSync(path.join(root, "assets", "fonts", "licenses", file), path.join(out, "assets", "fonts", "licenses", file));
 fs.writeFileSync(path.join(out, "vercel.json"), `${JSON.stringify(VERCEL, null, 2)}\n`);
 // `vercel link` writes a token to .env.local; it must never be uploaded.
 fs.writeFileSync(path.join(out, ".vercelignore"), ".env*\n.gitignore\n");

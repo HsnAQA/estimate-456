@@ -751,6 +751,10 @@
     document.querySelectorAll("[data-theme-choice]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.themeChoice === theme)));
     document.querySelectorAll("[data-lang-choice]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.langChoice === lang)));
     byId("themeQuick").setAttribute("aria-pressed", String(theme === "dark"));
+    // The button shows the theme it switches to: a sun while dark, a moon while light.
+    byId("themeQuick").querySelector("use").setAttribute("href", theme === "dark" ? "#i-sun" : "#i-moon");
+    byId("themeQuick").setAttribute("aria-label", t(theme === "dark" ? "theme.toLight" : "theme.toDark"));
+    byId("themeQuick").setAttribute("title", t(theme === "dark" ? "theme.toLight" : "theme.toDark"));
     byId("langQuickText").textContent = lang === "ar" ? "EN" : "ع";
     // The browser toolbar color follows the surface token of the active theme.
     const surface = getComputedStyle(document.documentElement).getPropertyValue("--surface").trim();

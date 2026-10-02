@@ -10,14 +10,14 @@ from PIL import Image, ImageDraw
 
 HERE = Path(__file__).resolve().parent
 SCALE = 16  # draw at 1024 px, then downsample for clean edges
-TILE, MARK, POINT = "#3e5f8a", "#f7f9fc", "#a9c1e3"
+TILE, MARK, POINT = "#14213d", "#f7f6f2", "#e4572e"
 
 
 def draw() -> Image.Image:
     s = SCALE
     image = Image.new("RGBA", (64 * s, 64 * s), (0, 0, 0, 0))
     d = ImageDraw.Draw(image)
-    d.rounded_rectangle((0, 0, 64 * s - 1, 64 * s - 1), radius=14 * s, fill=TILE)
+    d.rounded_rectangle((0, 0, 64 * s - 1, 64 * s - 1), radius=4 * s, fill=TILE)
     half = 3 * s  # stroke width 6 with round caps
 
     def stroke(x1: float, y1: float, x2: float, y2: float) -> None:

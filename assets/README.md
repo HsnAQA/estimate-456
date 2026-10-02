@@ -1,59 +1,23 @@
-# CPIT 456 shared assets
+# Assets
 
-This directory is the source-of-truth inventory for fonts, icons, and brand-neutral visual assets used by both applications.
+| Folder | Contents |
+|---|---|
+| `brand/` | The Estimate 456 logo (SVG and PNG sizes) and the script that renders the PNGs |
+| `fonts/` | Web app fonts and their licenses |
+| `icons/` | Project-owned outline SVG icons, inlined into `web-app/index.html` by `web-app/tools/sync-icons.js` |
 
-## Structure
+## Ledger
 
-- `fonts/`: licensed WOFF2 font files and font-specific notes.
-- `fonts/licenses/`: license texts that must ship with redistributed font files.
-- `icons/`: local SVG icons used by the web application.
-- `brand/`: original CPIT 456 marks, if the project later adopts one.
-- `design-references/`: screenshots or boards created specifically for this project. Do not place third-party product screenshots here unless their use and source are documented.
+| Asset | Source | License | Notes |
+|---|---|---|---|
+| `brand/estimate-456-mark.svg` and PNGs | Drawn for this project | Project-owned | Ink navy tile `#14213d` with a paper E and one signal orange point `#e4572e` |
+| `icons/*.svg` | Drawn for this project | Project-owned | 24 px grid, 1.75 stroke |
+| GitHub mark in the footer | `mark-github` from GitHub Octicons | MIT; GitHub logo used only to link to the repository | Inline SVG path in `web-app/index.html` |
+| `fonts/Alexandria-Variable-arabic.woff2` | npm `@fontsource-variable/alexandria` 5.3.0, same family as the user's `Desktop\Random\Assets\Fontss\Alexandria` | SIL OFL 1.1, `fonts/licenses/Alexandria-OFL.txt` | Arabic fallback |
+| `fonts/FiraCode-Variable-latin.woff2` | npm `@fontsource-variable/fira-code` 5.3.0, same family as the user's `Desktop\Random\Assets\Fontss\Fira_Code` | SIL OFL 1.1, `fonts/licenses/FiraCode-OFL.txt` (copied from the user's folder) | All English text |
+| `fonts/private/TheYearofHandicrafts-Bold.otf`, `-Black.otf` | Ministry of Culture, from the user's `Desktop\Random\Assets\الخطوط_المستخدمة` | Ministry end-user license, same terms as the Saudi font | Ignored by git; Arabic headings on the published site |
+| `fonts/private/Saudi-Regular.ttf`, `Saudi-Bold.ttf` | Ministry of Culture, https://engage.moc.gov.sa/e/fonts/saudi-font/ | Ministry end-user license. Section 2 allows websites; section 3 forbids copying, distributing, converting, or bundling the file | Ignored by git and served unconverted by the published site only |
 
-## Read-only reference source
+Fonts in the user's assets folder that were not used: Chillax (Fontshare license does not allow giving the files away), Ramis Arabic trial and InkBrush demo (trial and demo licenses).
 
-Claude may inspect this project for organization and suitable open-licensed assets:
-
-`C:\Users\dtrr\Desktop\DevWorkspace\CapstoneProject1\Prototype\Version1.0\Capstone`
-
-The reference project must remain untouched. Copy files into this project, never move them. Never copy `.env`, data, databases, user content, caches, build output, logos, or product-specific artwork.
-
-IBM Plex Sans font files may be reused only with their matching SIL Open Font License. Demo-only, personal-use-only, or redistribution-restricted fonts must not be copied.
-
-## Asset ledger
-
-Record every imported asset before using it.
-
-| Asset | Source | Destination | License | Purpose | Verified |
-|---|---|---|---|---|---|
-| IBMPlexSans-Regular.woff2 | `C:\Users\dtrr\Desktop\DevWorkspace\CapstoneProject1\Prototype\Version1.0\Capstone\assets\fonts\english\IBMPlexSans-Regular.woff2` | `assets/fonts/IBMPlexSans-Regular.woff2` and `streamlit-app/static/fonts/IBMPlexSans-Regular.woff2` | SIL Open Font License 1.1, `assets/fonts/licenses/IBM-Plex-OFL.txt` | Body text, weight 400 | 2026-09-27, SHA-256 starts `BA711A3085FF9F27`, identical to the source |
-| IBMPlexSans-Medium.woff2 | `C:\Users\dtrr\Desktop\DevWorkspace\CapstoneProject1\Prototype\Version1.0\Capstone\assets\fonts\english\IBMPlexSans-Medium.woff2` | `assets/fonts/IBMPlexSans-Medium.woff2` and `streamlit-app/static/fonts/IBMPlexSans-Medium.woff2` | SIL Open Font License 1.1, `assets/fonts/licenses/IBM-Plex-OFL.txt` | Numeric data and navigation, weight 500 | 2026-09-27, SHA-256 starts `5660F8A658F8BB50`, identical to the source |
-| IBMPlexSans-SemiBold.woff2 | `C:\Users\dtrr\Desktop\DevWorkspace\CapstoneProject1\Prototype\Version1.0\Capstone\assets\fonts\english\IBMPlexSans-SemiBold.woff2` | `assets/fonts/IBMPlexSans-SemiBold.woff2` and `streamlit-app/static/fonts/IBMPlexSans-SemiBold.woff2` | SIL Open Font License 1.1, `assets/fonts/licenses/IBM-Plex-OFL.txt` | Headings and labels, weight 600 | 2026-09-27, SHA-256 starts `F78048030EAB62E8`, identical to the source |
-| IBM-Plex-OFL.txt | `C:\Users\dtrr\Desktop\DevWorkspace\CapstoneProject1\Prototype\Version1.0\Capstone\assets\fonts\licenses\IBM-Plex-OFL.txt` | `assets/fonts/licenses/IBM-Plex-OFL.txt` and `streamlit-app/static/fonts/licenses/IBM-Plex-OFL.txt` | License text itself. Copyright 2017 IBM Corp. with Reserved Font Name "Plex" | Required license for the three font files | 2026-09-27, SHA-256 starts `D7F63CDCCF0C57F3`, identical to the source |
-| IBMPlexSansArabic-Regular.woff2 | `C:\Users\dtrr\Desktop\DevWorkspace\CapstoneProject1\Prototype\Version1.0\Capstone\assets\fonts\arabic\IBMPlexSansArabic-Regular.woff2` | `assets/fonts/IBMPlexSansArabic-Regular.woff2` | SIL Open Font License 1.1, `assets/fonts/licenses/IBM-Plex-OFL.txt` (the IBM Plex license covers the whole Plex family, including Plex Sans Arabic) | Arabic body text, weight 400, web app only | 2026-09-28, SHA-256 starts `74112E1B7BF2E2C5`, identical to the source |
-| IBMPlexSansArabic-Medium.woff2 | `C:\Users\dtrr\Desktop\DevWorkspace\CapstoneProject1\Prototype\Version1.0\Capstone\assets\fonts\arabic\IBMPlexSansArabic-Medium.woff2` | `assets/fonts/IBMPlexSansArabic-Medium.woff2` | SIL Open Font License 1.1, `assets/fonts/licenses/IBM-Plex-OFL.txt` (the IBM Plex license covers the whole Plex family, including Plex Sans Arabic) | Arabic navigation and numeric emphasis, weight 500, web app only | 2026-09-28, SHA-256 starts `C72F6986F50DED74`, identical to the source |
-| IBMPlexSansArabic-SemiBold.woff2 | `C:\Users\dtrr\Desktop\DevWorkspace\CapstoneProject1\Prototype\Version1.0\Capstone\assets\fonts\arabic\IBMPlexSansArabic-SemiBold.woff2` | `assets/fonts/IBMPlexSansArabic-SemiBold.woff2` | SIL Open Font License 1.1, `assets/fonts/licenses/IBM-Plex-OFL.txt` (the IBM Plex license covers the whole Plex family, including Plex Sans Arabic) | Arabic headings, labels, and buttons, weight 600, web app only | 2026-09-28, SHA-256 starts `869B2ACD0A966060`, identical to the source |
-| icons/*.svg (25 files) | Original to CPIT 456, drawn for this project | `assets/icons/` and the inline sprite in `web-app/index.html`, generated by `web-app/tools/sync-icons.js` | Project-owned | Navigation, method, theme, status, and action icons for the web app. See `assets/icons/README.md` | 2026-09-28 |
-| Alexandria-Variable-latin.woff2 and Alexandria-Variable-arabic.woff2 | npm package `@fontsource-variable/alexandria` 5.3.0 (The Alexandria Project Authors, https://github.com/Gue3bara/Alexandria). Same family as `Desktop\Random\Assets\Fontss\Alexandria,Fira_Code\Alexandria`, which ships the same OFL text | `assets/fonts/`, copied to `site/assets/fonts/` during packaging | SIL Open Font License 1.1, `assets/fonts/licenses/Alexandria-OFL.txt` | Web app text in English and Arabic, weights 100 to 900 | 2026-10-02, SHA-256 starts `98CCEC0BC3C45633` (latin) and `E8D8CA61D4DA1A1A` (arabic) |
-| JetBrainsMono-Variable-latin.woff2 | npm package `@fontsource-variable/jetbrains-mono` 5.3.0 (The JetBrains Mono Project Authors). Same family as `Desktop\Random\Assets\Fontss\JetBrainsMono-2.304` | `assets/fonts/`, copied to `site/assets/fonts/` during packaging | SIL Open Font License 1.1, `assets/fonts/licenses/JetBrainsMono-OFL.txt` | Web app numbers, formulas, units, and section labels | 2026-10-02, SHA-256 starts `18BE452724BFDC23` |
-| Saudi-Regular.ttf and Saudi-Bold.ttf (Saudi font, Ministry of Culture) | `C:\Users\dtrr\Desktop\Random\Assets\الخطوط_المستخدمة\`, downloaded by the user from https://engage.moc.gov.sa/e/fonts/saudi-font/ | `assets/fonts/private/` (ignored by git), copied to `site/assets/fonts/private/` during packaging | Ministry of Culture end-user license. Section 2 allows use in digital publishing including websites. Section 3 forbids copying or distributing the font, sub-licensing, converting it, and bundling it in a software package, and asks that copies stay under the licensee's control. So the files are served by the website only, unconverted, and are not in the public repository | Arabic text on the published web app. A clone of the repository falls back to Alexandria | 2026-10-02, license text read on the Ministry page |
-| estimate-456-mark.svg and PNG sizes 32, 64, 128, 180, 512 | Original to this project, drawn on 2026-10-02 as a blue tile with a snow-white geometric E and one data point. PNGs are rendered by `assets/brand/render_png.py` | `assets/brand/`, copied to `site/assets/brand/` during packaging | Project-owned | Product logo, favicon, apple-touch-icon, footer, Streamlit browser icon | 2026-10-02, checked in the page, the footer, and the browser tab at 16, 32, 64, and 128 px |
-| GitHub mark (inline SVG path in the footer of `web-app/index.html`) | `mark-github` from GitHub Octicons (https://github.com/primer/octicons) | Inline in `web-app/index.html` only, not stored as a file | Octicons code: MIT License. The GitHub mark is a GitHub trademark used only to link to the project repository, as the GitHub logo guidelines allow | Footer link to the public repository | 2026-10-02 |
-
-The web app no longer loads IBM Plex Sans or IBM Plex Sans Arabic. The files stay because the Streamlit app uses IBM Plex Sans. Fonts in `Desktop\Random\Assets` that were not used: Chillax (Fontshare EULA does not allow giving the files away, which a public repository would do), The Year of Handicrafts (Ministry of Culture font, not needed), Ramis Arabic trial and InkBrush demo (trial and demo licenses).
-
-Copy method: `Copy-Item` from the read-only reference project into this project only. The source files were hashed before and after copying and did not change. No file in the reference project was modified. Only the three IBM Plex Sans weights and the three matching IBM Plex Sans Arabic weights used by the interface were copied. RamisArabic, the InkBrush Arabic demo font, Newsreader, Chillax, logos, and all other Capstone assets were not copied.
-
-Streamlit needs its own copy of the fonts because it serves static files only from `streamlit-app/static/` when `server.enableStaticServing` is on. The web app loads the fonts from `assets/fonts/` with a relative path, which works both from disk and from a local server.
-
-## Rules
-
-- Prefer WOFF2 for fonts.
-- Use `font-display: swap`.
-- Load only weights actually used.
-- Preload at most the regular body face, and only if measurement justifies it.
-- Functional icons must be SVG, use a consistent stroke width, and include an accessible label when the surrounding control has no visible text.
-- Optimize raster images and declare dimensions.
-- Both applications must retain usable system font fallbacks when optional font files are absent.
-- Do not add assets that make the project look like a generic AI dashboard.
-
+The Capstone reference project was read only. Nothing from it is in this repository.

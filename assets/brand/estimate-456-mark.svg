@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-labelledby="title">
   <title id="title">Estimate 456</title>
-  <rect width="64" height="64" rx="14" fill="#3e5f8a"/>
-  <path d="M21 17h22M21 32h15M21 47h22M21 17v30" fill="none" stroke="#f7f9fc" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="41" y="29" width="6" height="6" rx="1.5" fill="#a9c1e3"/>
+  <rect width="64" height="64" rx="4" fill="#14213d"/>
+  <path d="M21 17h22M21 32h15M21 47h22M21 17v30" fill="none" stroke="#f7f6f2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="41" y="29" width="6" height="6" rx="1.5" fill="#e4572e"/>
 </svg>
