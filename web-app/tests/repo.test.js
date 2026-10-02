@@ -55,7 +55,7 @@ test("logo and favicon files exist", () => {
 
 test(".gitignore keeps lecture files, backups, environments, and secrets out of the repository", () => {
   const ignore = fs.readFileSync(path.join(ROOT, ".gitignore"), "utf8").split(/\r?\n/);
-  ["source-materials/", "CPIT456-FULL-TRANSFER-*/", "RARs/", "site/", ".venv*/", "tmp/", ".env", ".env.*", ".vercel/", "__pycache__/", "*.zip", "*.rar", "*.pdf", "*.docx"].forEach((rule) => {
+  ["source-materials/", "assets/fonts/private/", "CPIT456-FULL-TRANSFER-*/", "RARs/", "site/", ".venv*/", "tmp/", ".env", ".env.*", ".vercel/", "__pycache__/", "*.zip", "*.rar", "*.pdf", "*.docx"].forEach((rule) => {
     assert.ok(ignore.includes(rule), rule);
   });
 });

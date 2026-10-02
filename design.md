@@ -7,8 +7,8 @@ supportedThemes:
   - "light"
   - "dark"
 fonts:
-  ui: "IBM Plex Sans, Segoe UI Variable, Segoe UI, Arial, sans-serif"
-  data: "IBM Plex Sans, Cascadia Code, Consolas, monospace"
+  ui: "Alexandria, Segoe UI, Tahoma, Arial, sans-serif"
+  data: "JetBrains Mono, Alexandria, Consolas, monospace"
 radii:
   small: "4px"
   medium: "6px"
@@ -47,8 +47,12 @@ The web app (`web-app/`) is now Estimate 456. Its navigation follows the source 
 
   Used for: navigation icons, the page heading icon tile, worked-solution and stepper numbers, the 3 px top edge of result cards, summary chart bars, the dot before each method name in tables, and course table labels by group. Every method color is at least 4.5:1 on every surface and on its own 13% tint, in both themes.
 - Thin borders, 6 to 8 px radii, and no decorative shadow. Only elements that float above the page (the mobile drawer, the search results, and the skip link) use `--shadow-pop`.
-- 16 px body text, 32 px main result (28 px on phones), IBM Plex Sans for Latin text and IBM Plex Sans Arabic for Arabic text, both self-hosted.
-- Layout: a fixed 248 px sidebar (Overview, Methods, Analysis, Reference, then Theme and Language switches), a top bar with breadcrumb and search, and a page body where inputs sit beside the result and the worked solution.
+- Colors (2026-10-02, round 3): one green. Light: page `#f5f7f6`, panels `#fcfdfc`, text `#16201b`, accent `#0b6b4f`. Dark: page `#0e1311`, panels `#141a17`, accent `#5ec39a`. Primary buttons, selected choices, the active link, and linked values use the accent. The logo tile uses the same green.
+- One top bar: logo and name, Part 1 and Part 2 links, then search (opens on demand), theme, and language. No second bar and no sidebar on desktop; under 1025 px the links move to a drawer. Course tables and Compare results are links on the home page and in the footer; Reset is in the footer.
+- Arabic uses the Saudi font from the Ministry of Culture on the published site (files kept out of git, see assets/README.md), falling back to Alexandria.
+- Worksheet style (2026-10-02, after the user said the earlier look felt generated): flat sheets with 1 px rules and 4 px corners, no shadows, no colored card edges, no pill chips, no icon tiles. Primary actions use the ink color (the text color), links and linked values use the blue accent. Chosen segments are filled with ink.
+- 16 px body text in Alexandria (one family for English and Arabic). JetBrains Mono for numbers, formulas, units, results, and uppercase section labels (English only). Main result 46 px (28 px on phones). Both fonts are self-hosted under the SIL OFL.
+- Layout: a 60 px top bar (logo and name, search, theme, language, reset) and a 50 px method bar below it grouped as Home, Part 1, Part 2, and reference links. On screens up to 1024 px the method bar becomes a drawer. Calculator pages put inputs beside the result; the result shows one large number and fact tiles, and the worked solution is a numbered rail with value chips.
 - Bilingual: English and Arabic. Arabic sets `dir="rtl"` and the stylesheet uses logical properties (`margin-inline-start`, `inset-inline-start`, `border-inline-end`), so one set of rules serves both directions. Formula lines and results stay left to right inside Arabic text.
 - Contrast measured on 2026-09-28 after the snow update: every light text, status, and method token is at least 4.5:1 on every light surface, and every dark token is at least 5:1 on every dark surface.
 

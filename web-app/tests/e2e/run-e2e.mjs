@@ -44,17 +44,18 @@ async function functional(lang) {
   check(`${tag} lang and dir`, await run(`document.documentElement.lang + " " + document.documentElement.dir`), lang === "ar" ? "ar rtl" : "en ltr");
   check(`${tag} light theme is the default`, await run(`document.documentElement.dataset.theme`), "light");
   check(`${tag} panels are not pure white`, await run(`getComputedStyle($(".panel")).backgroundColor`), (v) => v !== "rgb(255, 255, 255)");
-  check(`${tag} page background is snow`, await run(`getComputedStyle(document.body).backgroundColor`), "rgb(244, 246, 249)");
+  check(`${tag} page background is snow`, await run(`getComputedStyle(document.body).backgroundColor`), "rgb(245, 247, 246)");
   // Home: logo and name, one question, two parts, and only the chosen part's methods.
   const visibleCards = `$$(".method-card").filter((e) => e.getClientRects().length).length`;
-  check(`${tag} home shows the logo and product name`, await run(`$(".home-logo").naturalWidth > 0 && txt("#home-title")`), lang === "ar" ? "تقدير 456" : "Estimate 456");
+  check(`${tag} logo appears once at the top, not repeated on the home page`, await run(`$$("#page-home img").length + " " + ($(".topbar-brand img").naturalWidth > 0) + " " + txt(".topbar-brand")`), lang === "ar" ? "0 true تقدير 456" : "0 true Estimate 456");
+  check(`${tag} home title`, await run(`txt("#home-title")`), lang === "ar" ? "تقدير المشاريع البرمجية" : "Software project estimation");
   check(`${tag} home lead sentence`, await run(`txt(".home-head p")`), (v) => v.length > 20 && v.length < 160);
   check(`${tag} home offers exactly two parts`, await run(`$$(".part-option").length`), 2);
-  check(`${tag} Part 1 is chosen first and shows SLOC and FP only`, await run(`$("#part-tab-1").getAttribute("aria-selected") + " " + ${visibleCards} + " " + $$("#part-panel-1 .method-card a").map((a) => a.getAttribute("href")).join(",")`), "true 2 #sloc,#fp");
+  check(`${tag} Part 1 is chosen first and shows SLOC and FP only`, await run(`$("#part-tab-1").getAttribute("aria-selected") + " " + ${visibleCards} + " " + $$("#part-panel-1 .method-card").map((a) => a.getAttribute("href")).join(",")`), "true 2 #sloc,#fp");
   await run(`click("#part-tab-2")`);
   check(`${tag} choosing Part 2 shows its six methods only`, await run(`$("#part-panel-1").hidden + " " + ${visibleCards} + " " + location.hash`), "true 6 #home/part2");
-  check(`${tag} Part 2 lists every COCOMO level`, await run(`$$("#part-panel-2 .method-card a").map((a) => a.getAttribute("href")).join(",")`), "#planning/hours,#defects,#cocomo/basic,#cocomo/intermediate,#cocomo/advanced,#delphi");
-  check(`${tag} method cards show what they calculate and the main input`, await run(`$$("#part-panel-2 .method-card").every((c) => c.querySelectorAll("dd").length === 2 && c.querySelectorAll("dd")[0].innerText.trim() && c.querySelectorAll("dd")[1].innerText.trim())`), true);
+  check(`${tag} Part 2 lists every COCOMO level`, await run(`$$("#part-panel-2 .method-card").map((a) => a.getAttribute("href")).join(",")`), "#planning/hours,#defects,#cocomo/basic,#cocomo/intermediate,#cocomo/advanced,#delphi");
+  check(`${tag} method cards show what they calculate and the main input`, await run(`$$("#part-panel-2 .method-card").every((c) => c.querySelectorAll("p").length === 2 && c.querySelectorAll("p")[0].innerText.trim() && c.querySelector(".method-input").innerText.trim())`), true);
   check(`${tag} home is not crowded: no tables or results`, await run(`$$("#page-home table, #page-home .result, #page-home .trace").length`), 0);
   check(`${tag} tables and comparison are secondary links`, await run(`$$(".home-secondary a").map((a) => a.getAttribute("href") + ":" + a.classList.contains("btn")).join(",")`), "#tables:false,#summary:false");
   await open("home/part2");
@@ -255,7 +256,7 @@ async function functional(lang) {
   check(`${tag} undo confirms`, await toast(), (v) => v.length > 3);
   await run(`click('[data-theme-choice="dark"]')`);
   await open("sloc");
-  check(`${tag} dark theme persists`, await run(`document.documentElement.dataset.theme + " " + getComputedStyle(document.body).backgroundColor`), "dark rgb(18, 20, 24)");
+  check(`${tag} dark theme persists`, await run(`document.documentElement.dataset.theme + " " + getComputedStyle(document.body).backgroundColor`), "dark rgb(14, 19, 17)");
   await run(`click('[data-theme-choice="light"]')`);
   await open("sloc");
   check(`${tag} language persists after reload`, await run(`document.documentElement.lang`), lang);
@@ -315,23 +316,24 @@ async function productFeatures() {
   check("[product] toast closes", await run(`$("#toast").hidden`), true);
 
   // Browser toolbar color follows the theme.
-  check("[product] theme-color light", await run(`$('meta[name="theme-color"]').content`), "#fcfcfd");
+  check("[product] theme-color light", await run(`$('meta[name="theme-color"]').content`), "#fcfdfc");
   await run(`click('[data-theme-choice="dark"]')`);
-  check("[product] theme-color dark", await run(`$('meta[name="theme-color"]').content`), "#1a1d22");
+  check("[product] theme-color dark", await run(`$('meta[name="theme-color"]').content`), "#141a17");
   await run(`click('[data-theme-choice="light"]')`);
 
   // Method identity colors: navigation icons, page icons, result edges, and chart bars.
   check("[product] SLOC nav icon uses the SLOC color", await run(`getComputedStyle($('.nav a[data-page="sloc"] .icon')).color`), "rgb(98, 71, 196)");
   check("[product] every calculator page has a heading icon", await run(`$$(".page .page-head .page-icon").length`), 8);
   await open("fp");
-  check("[product] FP result edge uses the FP color", await run(`getComputedStyle($("#fpResult")).borderTopColor`), "rgb(11, 114, 128)");
+  check("[product] result panels have no colored edge", await run(`getComputedStyle($("#fpResult")).borderTopWidth`), "1px");
+  check("[product] Alexandria, JetBrains Mono, and Saudi are loaded", await run(`(async () => { await document.fonts.ready; return [...document.fonts].filter((f) => f.status === "loaded").map((f) => f.family.replace(/"/g, "")).sort().filter((v, i, a) => a.indexOf(v) === i).join(","); })()`), "Alexandria,JetBrains Mono,Saudi");
   await open("summary");
   check("[product] summary bars use method colors", await run(`new Set($$("#summaryChart .bar-fill").map((e) => getComputedStyle(e).backgroundColor)).size`), 3);
 
   // Footer and a changed result highlight.
   check("[product] footer shows logo, product, author, repository, and course", await run(`($(".foot-brand img").naturalWidth > 0) + " " + txt(".site-foot")`), /^true Estimate 456[\s\S]*Made by Hassan Asiri[\s\S]*github\.com\/HsnAQA\/estimate-456[\s\S]*CPIT 456/);
   check("[product] footer has a visible GitHub icon", await run(`const r = $("#repoLink .gh-mark").getBoundingClientRect(); r.width >= 16 && r.height >= 16 && $("#repoLink .gh-mark path").getAttribute("d").length > 100`), true);
-  check("[product] footer has no link to the site itself", await run(`$("#siteLink") === null && !$$(".site-foot a").some((a) => a.hostname === location.hostname)`), true);
+  check("[product] footer has no link to the site itself", await run(`$("#siteLink") === null && $$(".site-foot a").every((a) => a.getAttribute("href").startsWith("#") || a.getAttribute("href").startsWith("https://github.com/"))`), true);
   check("[product] footer links to the public repository", await run(`$("#repoLink").href + " " + $("#repoLink").target + " " + $("#repoLink").rel`), "https://github.com/HsnAQA/estimate-456 _blank noopener noreferrer");
   await open("sloc");
   await run(`setVal($("#slocLoc"), "34000")`);

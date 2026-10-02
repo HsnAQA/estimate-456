@@ -1028,6 +1028,7 @@
     byId("loadFpExample").addEventListener("click", () => { loadFpExample(D.EXAMPLES.example1); refreshDerived(); });
     byId("loadSafeHome").addEventListener("click", () => { loadFpExample(D.EXAMPLES.safeHome); refreshDerived(); });
     byId("resetAll").addEventListener("click", resetAll);
+    byId("resetQuick").addEventListener("click", resetAll);
 
     document.addEventListener("click", (e) => {
       const step = e.target.closest("[data-fp-step]");
@@ -1161,6 +1162,13 @@
     byId("printSummary").addEventListener("click", () => window.print());
 
     const search = byId("searchInput");
+    const setSearchOpen = (open) => {
+      document.querySelector(".topbar").classList.toggle("search-open", open);
+      byId("searchToggle").setAttribute("aria-expanded", String(open));
+      if (open) search.focus();
+      else closeSearch(true);
+    };
+    byId("searchToggle").addEventListener("click", () => setSearchOpen(!document.querySelector(".topbar").classList.contains("search-open")));
     search.addEventListener("keydown", (e) => {
       const options = byId("searchResults").querySelectorAll("a");
       if (e.key === "ArrowDown" || e.key === "ArrowUp") {
@@ -1172,11 +1180,11 @@
         e.preventDefault();
         window.location.hash = options[searchIndex].getAttribute("href").slice(1);
         closeSearch(true);
-      } else if (e.key === "Escape") closeSearch(true);
+      } else if (e.key === "Escape") { setSearchOpen(false); byId("searchToggle").focus(); }
     });
-    byId("searchResults").addEventListener("click", (e) => { if (e.target.closest("a")) closeSearch(true); });
+    byId("searchResults").addEventListener("click", (e) => { if (e.target.closest("a")) setSearchOpen(false); });
     document.addEventListener("keydown", (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); search.focus(); }
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); setSearchOpen(true); }
       if (e.key === "Escape" && document.body.classList.contains("nav-open")) closeNav(true);
     });
 

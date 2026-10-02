@@ -15,6 +15,9 @@ node_modules/
 site/
 tmp/
 
+# Fonts whose license allows website use but not sharing the file (Ministry of Culture Saudi font)
+assets/fonts/private/
+
 # Course material and preserved transfer archives are not public project source
 source-materials/
 CPIT456-FULL-TRANSFER-*/
