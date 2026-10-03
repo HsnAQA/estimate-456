@@ -2,7 +2,7 @@
   <img src="assets/brand/estimate-456-mark-128.png" alt="Estimate 456 logo" width="88" />
 </p>
 
-<h1 align="center">Estimate 456 · تقدير 456</h1>
+<h1 align="center">Estimate تقدير 456</h1>
 
 <p align="center">
   Software project estimation calculators for CPIT 456. Every result shows its
