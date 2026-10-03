@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-03: open fonts and deploys from GitHub
+
+- Arabic text and headings use Alexandria, English headings use Josefin Sans,
+  English text stays in Fira Code. The Ministry of Culture fonts are removed,
+  because their license forbids sharing the files.
+- Vercel deploys from this repository on every push to `main`. Its settings
+  are in `vercel.json`.
+
 ## 2026-10-02: math, learn pages, motion, and a reorganized repository
 
 - Formulas are typeset as math with KaTeX, vendored so the site works offline.

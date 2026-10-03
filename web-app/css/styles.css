@@ -3,14 +3,11 @@
    same rules work left to right (English) and right to left (Arabic). */
 
 
-@font-face { font-family: "Alexandria"; src: url("../../assets/fonts/Alexandria-Variable-arabic.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC; }
+@font-face { font-family: "Alexandria"; src: url("../../assets/fonts/Alexandria-Variable-arabic.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; unicode-range: U+0020, U+00A0, U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC; }
 @font-face { font-family: "Fira Code"; src: url("../../assets/fonts/FiraCode-Variable-latin.woff2") format("woff2"); font-weight: 300 700; font-style: normal; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Handicrafts"; src: url("../../assets/fonts/private/TheYearofHandicrafts-Bold.otf") format("opentype"); font-weight: 400 700; font-style: normal; font-display: swap; unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC; }
-@font-face { font-family: "Handicrafts"; src: url("../../assets/fonts/private/TheYearofHandicrafts-Black.otf") format("opentype"); font-weight: 800 900; font-style: normal; font-display: swap; unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC; }
-/* Saudi (Ministry of Culture) is used on the published site only. Its license allows websites but not sharing the
-   file, so the files live in assets/fonts/private/, which git ignores. Without them, Arabic falls back to Alexandria. */
-@font-face { font-family: "Saudi"; src: url("../../assets/fonts/private/Saudi-Regular.ttf") format("truetype"); font-weight: 300 500; font-style: normal; font-display: swap; unicode-range: U+0020, U+00A0, U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC; }
-@font-face { font-family: "Saudi"; src: url("../../assets/fonts/private/Saudi-Bold.ttf") format("truetype"); font-weight: 600 800; font-style: normal; font-display: swap; unicode-range: U+0020, U+00A0, U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC; }
+/* Josefin Sans (OFL) sets English page headings. The original variable TTF is shipped unmodified,
+   because its license reserves the font name for modified versions. */
+@font-face { font-family: "Josefin Sans"; src: url("../../assets/fonts/JosefinSans-VariableFont_wght.ttf") format("truetype"); font-weight: 100 700; font-style: normal; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2212; }
 
 /* Light is the main theme: snow white page and panels, no pure white surfaces.
    Blue is the only interaction color. Each estimation method also has an identity color
@@ -526,8 +523,8 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
    Google Stitch (project "Estimate 456 - CPIT 456 estimation"), then adapted.
    Paper with a faint grid, ink navy, one cobalt accent, sharp corners, ledger
    results with dotted leaders, and worked-solution steps as index cards.
-   Fira Code for English and numbers. Arabic: Saudi for text and The Year of
-   Handicrafts for headings on the published site, Alexandria as fallback.
+   Fira Code for English text and numbers, Josefin Sans for English headings,
+   Alexandria for all Arabic text. Every font is OFL and ships in the repository.
    ========================================================================== */
 :root,
 :root[data-theme="light"] {
@@ -573,9 +570,10 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
   --shadow-card: none;
 }
 :root {
-  --font: "Fira Code", "Saudi", "Alexandria", Consolas, "Segoe UI", Tahoma, monospace;
-  --mono: "Fira Code", "Saudi", "Alexandria", Consolas, monospace;
-  --display-ar: "Handicrafts", "Saudi", "Alexandria", sans-serif;
+  --font: "Fira Code", "Alexandria", Consolas, "Segoe UI", Tahoma, monospace;
+  --mono: "Fira Code", "Alexandria", Consolas, monospace;
+  --display-en: "Josefin Sans", "Fira Code", "Segoe UI", sans-serif;
+  --display-ar: "Alexandria", "Segoe UI", Tahoma, sans-serif;
   --radius: 0px;
   --radius-sm: 0px;
   --topbar: 64px;
@@ -584,9 +582,10 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
 }
 html, body { background-color: var(--bg); }
 body { background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 24px 24px; font-size: 15.5px; line-height: 1.65; font-variant-ligatures: contextual; }
-html[lang="ar"] { --font: "Saudi", "Fira Code", "Alexandria", "Segoe UI", Tahoma, sans-serif; }
+html[lang="ar"] { --font: "Alexandria", "Fira Code", "Segoe UI", Tahoma, sans-serif; }
 html[lang="ar"] body { font-size: 16px; line-height: 1.85; font-family: var(--font); }
-html[lang="ar"] h1, html[lang="ar"] h2, html[lang="ar"] .home-head h1, html[lang="ar"] .page-head h1 { font-family: var(--display-ar); font-weight: 700; letter-spacing: 0; }
+html[lang="ar"] h1, html[lang="ar"] h2, html[lang="ar"] .home-head h1, html[lang="ar"] .page-head h1 { font-family: var(--display-ar); font-weight: 800; letter-spacing: 0; }
+html[lang="en"] h1, html[lang="en"] h2, html[lang="en"] .home-head h1, html[lang="en"] .page-head h1 { font-family: var(--display-en); font-weight: 700; letter-spacing: -0.01em; }
 h1, h2, h3 { letter-spacing: -0.01em; }
 * { -webkit-tap-highlight-color: transparent; }
 button, .btn, .seg label, .tabs [role="tab"], .nav a, .part-option, .stepper button, .lang, .mode { -webkit-user-select: none; user-select: none; }
@@ -610,7 +609,7 @@ main, main:focus, main:focus-visible, h1:focus, h1:focus-visible, .page:focus { 
 .icon-btn { width: 40px; height: 40px; border: 1px solid var(--border-strong); border-radius: 0; background: var(--surface); color: var(--text); }
 .icon-btn:hover { border-color: var(--text); background: var(--surface-2); }
 #themeQuick[aria-pressed="true"] { border-color: var(--border-strong); color: var(--text); }
-.lang-quick { font-family: "Saudi", "Alexandria", sans-serif; font-size: 18px; font-weight: 700; line-height: 1; }
+.lang-quick { font-family: "Alexandria", sans-serif; font-size: 18px; font-weight: 700; line-height: 1; }
 .topbar .search { position: absolute; top: calc(100% + 8px); inset-inline-end: max(var(--gutter), calc((100% - var(--content)) / 2 + var(--gutter))); z-index: 50; display: none; width: min(380px, calc(100% - 2 * var(--gutter))); margin: 0; border: 1px solid var(--text); border-radius: 0; background: var(--surface); box-shadow: 6px 6px 0 var(--grid); }
 .topbar.search-open .search { display: flex; }
 #searchToggle[aria-expanded="true"] { border-color: var(--accent); color: var(--accent); }

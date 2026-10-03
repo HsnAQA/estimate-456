@@ -35,6 +35,5 @@ another. Set `E2E_URL` to test a served copy, such as a preview deployment.
 | Problem | Fix |
 |---|---|
 | `git` says "dubious ownership" | run git as `git -c safe.directory=* ...`, or add the folder to `safe.directory` |
-| Arabic text uses Alexandria instead of Saudi | expected in a fresh clone: the Ministry of Culture fonts are not in the repository |
 | The browser suite cannot find a browser | set `BROWSER_PATH` to `msedge.exe` or `chrome.exe` |
 | Icons look out of date | `node web-app/tools/sync-icons.js` |

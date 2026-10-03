@@ -1,7 +1,6 @@
 // End-to-end check of every web app function in headless Edge or Chrome, in English and Arabic.
 // Run from web-app:  node tests/e2e/run-e2e.mjs
 // The page is opened straight from disk, the same way launch.bat opens it.
-import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { launch } from "./cdp.mjs";
@@ -24,9 +23,7 @@ function check(name, actual, expected) {
 }
 
 const b = await launch();
-// A fresh clone has no Ministry of Culture fonts (see assets/README.md), so their missing files are expected there.
-const privateFonts = PAGE.startsWith("https:") || existsSync(path.resolve(here, "..", "..", "..", "assets", "fonts", "private", "Saudi-Regular.ttf"));
-const consoleLogs = () => (privateFonts ? b.logs : b.logs.filter((line) => !line.includes("/assets/fonts/private/")));
+const consoleLogs = () => b.logs;
 const run = (expr) => { if (process.env.E2E_TRACE) console.error("run", expr.slice(0, 90)); return b.eval(H + expr); };
 const url = (hash) => `${PAGE}${hash ? `#${hash}` : ""}`;
 // openKeep loads the page with whatever the browser saved. open starts from the lecture
@@ -349,11 +346,10 @@ async function productFeatures() {
   await open("fp");
   check("[product] result panels have no colored edge", await run(`getComputedStyle($("#fpResult")).borderTopWidth`), "1px");
   const loadedFonts = await run(`(async () => { await document.fonts.ready; return [...document.fonts].filter((f) => f.status === "loaded").map((f) => f.family.replace(/"/g, "")).join(","); })()`);
-  check("[product] Fira Code and KaTeX fonts are loaded", ["Fira Code", "KaTeX_Main", "KaTeX_Math"].every((f) => loadedFonts.split(",").includes(f)), true);
-  // The Ministry of Culture fonts are not in the repository, so a fresh clone or CI checks them only when present.
-  if (privateFonts) {
-    check("[product] Saudi Arabic font is loaded", loadedFonts.split(",").includes("Saudi"), true);
+  for (const family of ["Fira Code", "Josefin Sans", "Alexandria", "KaTeX_Main", "KaTeX_Math"]) {
+    check(`[product] ${family} font is loaded`, loadedFonts.split(",").includes(family), true);
   }
+  check("[product] English headings use Josefin Sans", await run(`getComputedStyle($(".page:not([hidden]) h1")).fontFamily.split(",")[0].replace(/"/g, "")`), "Josefin Sans");
   await open("summary");
   check("[product] summary bars use method colors", await run(`new Set($$("#summaryChart .bar-fill").map((e) => getComputedStyle(e).backgroundColor)).size`), 3);
 

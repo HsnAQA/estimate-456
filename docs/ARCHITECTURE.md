@@ -43,6 +43,5 @@ through `logic.js`.
 
 `web-app/tools/build-site.js` copies `index.html`, `css/`, `js/`, `vendor/`,
 the logo, the licensed fonts, and their licenses into `site/`, then writes
-`vercel.json` with security headers. The Ministry of Culture Arabic fonts are
-copied only when present on the publishing machine, since their license allows
-website use but not sharing the files. See [DEPLOYMENT.md](DEPLOYMENT.md).
+a copy of the headers from the root `vercel.json`. Vercel runs the same script
+for every push to `main`. See [DEPLOYMENT.md](DEPLOYMENT.md).

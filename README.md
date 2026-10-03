@@ -61,9 +61,6 @@ You do not need to install anything. Pick the way that suits you:
 
 Your inputs are saved in your own browser only. Nothing is sent to a server.
 
-In the downloaded copy, Arabic text uses the Alexandria font. The published site
-uses the Ministry of Culture fonts, whose license allows websites but not
-sharing the font files.
 
 ## How it is built
 
@@ -90,9 +87,9 @@ JavaScript and runs straight from disk. More in
 |---|---|
 | Web app | HTML, CSS, vanilla JavaScript |
 | Math and motion | KaTeX 0.19, anime.js 4.5 (both vendored, MIT) |
-| Fonts | Fira Code (English), Saudi and The Year of Handicrafts (Arabic, published site only), Alexandria (Arabic fallback) |
+| Fonts | Fira Code (English text), Josefin Sans (English headings), Alexandria (Arabic); all open license |
 | Tests | Node test runner and a headless browser suite |
-| Hosting | Vercel (static) |
+| Hosting | Vercel, deployed from this repository on every push to `main` |
 
 ## Tests
 

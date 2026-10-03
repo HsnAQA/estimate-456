@@ -7,7 +7,7 @@ supportedThemes:
   - "light"
   - "dark"
 fonts:
-  ui: "Fira Code, Saudi, Alexandria, monospace"
+  ui: "Fira Code, Alexandria, monospace"
   data: "Fira Code"
 radii:
   small: "4px"
@@ -28,7 +28,7 @@ Concept generated in Google Stitch (project "Estimate 456 - CPIT 456 estimation"
 
 - Feel: an engineering drafting notebook. Paper page with a faint 24 px grid, sheets with 1 px rules, sharp corners (0 radius), no shadows except a flat 4 px offset on hovered cards.
 - Colors. Light (default): cool snow paper `#f5f7fa`, sheets `#fbfcfd`, ink navy text and primary buttons `#14213d`, cobalt `#2c56c9` for labels, step numbers, the active link, and linked values. Dark: page `#0d1320`, sheets `#141b26`, text `#e9edf4`, cobalt `#86a4ff`. No beige and no orange: the owner found them generic.
-- Type: Fira Code for all English text and numbers. Arabic: the Saudi font for text and The Year of Handicrafts for page headings (both Ministry of Culture, on the published site only), Alexandria as fallback.
+- Type: Fira Code for English text and numbers, Josefin Sans for English page headings, Alexandria for all Arabic text (headings at weight 800). All three are open license and ship in the repository.
 - Layout: one top bar with the logo, Part 1 and Part 2 links (the part labels in cobalt), and buttons for search, theme (moon in light, sun in dark), and language. Page title with a ruled line under it. Inputs sheet beside the result.
 - Inputs: label above, value on the left, unit in a tinted slot on the right.
 - Result: a double ruled frame, the answer in a tinted box, then a ledger with dotted leaders and striped rows.
