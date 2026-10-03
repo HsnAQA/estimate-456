@@ -80,10 +80,12 @@ const privateFonts = PRIVATE_FONTS.filter((file) => fs.existsSync(path.join(priv
 if (privateFonts.length) fs.mkdirSync(path.join(out, "assets", "fonts", "private"), { recursive: true });
 for (const file of privateFonts) fs.copyFileSync(path.join(privateDir, file), path.join(out, "assets", "fonts", "private", file));
 for (const file of BRAND_FILES) fs.copyFileSync(path.join(root, "assets", "brand", file), path.join(out, "assets", "brand", file));
+// Vercel's dashboard and some browsers ask only for /favicon.ico.
+fs.copyFileSync(path.join(root, "assets", "brand", "favicon.ico"), path.join(out, "favicon.ico"));
 for (const file of ["FiraCode-OFL.txt", "Alexandria-OFL.txt"]) fs.copyFileSync(path.join(root, "assets", "fonts", "licenses", file), path.join(out, "assets", "fonts", "licenses", file));
 fs.writeFileSync(path.join(out, "vercel.json"), `${JSON.stringify(VERCEL, null, 2)}\n`);
 // `vercel link` writes a token to .env.local; it must never be uploaded.
 fs.writeFileSync(path.join(out, ".vercelignore"), ".env*\n.gitignore\n");
 
-const count = PAGE_FILES.length + CODE_DIRS.length + FONT_FILES.length + BRAND_FILES.length + privateFonts.length + 4;
+const count = PAGE_FILES.length + CODE_DIRS.length + FONT_FILES.length + BRAND_FILES.length + privateFonts.length + 5;
 console.log(`Built ${count} files in ${path.relative(root, out) || "."}`);

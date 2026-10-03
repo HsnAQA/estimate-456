@@ -47,4 +47,6 @@ if __name__ == "__main__":
     big = draw()
     for size in (32, 64, 128, 180, 512):
         big.resize((size, size), Image.LANCZOS).save(HERE / f"estimate-456-mark-{size}.png", optimize=True)
+    # favicon.ico at the site root: Vercel and some browsers read only this file.
+    big.resize((256, 256), Image.LANCZOS).save(HERE / "favicon.ico", sizes=[(16, 16), (32, 32), (48, 48), (64, 64)])
     print("PNG sizes written.")
